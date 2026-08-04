@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Save, Trash2, X, Copy, Check, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet } from 'lucide-react';
+import { Plus, Edit2, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet } from 'lucide-react';
 import './Documentos.css';
 
 const Documentos = () => {
@@ -11,12 +11,11 @@ const Documentos = () => {
       { id: 4, titulo: 'Nº Segurança Social (NISS)', numero: '', type: 'social' },
       { id: 5, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
     ];
-    
+
     const saved = localStorage.getItem('sofia_documentos');
     if (saved) {
       let parsed = JSON.parse(saved);
       if (!parsed.find(d => d.id === 5 || d.type === 'social' || (d.titulo && d.titulo.toLowerCase().includes('segurança social')))) {
-        // Insert NISS after Utente de Saúde
         const insertIndex = parsed.findIndex(d => d.id === 3 || (d.titulo && d.titulo.toLowerCase().includes('utente')));
         const nissDoc = { id: 5, titulo: 'Nº Segurança Social (NISS)', numero: '', type: 'social' };
         if (insertIndex !== -1) {
@@ -30,46 +29,58 @@ const Documentos = () => {
     return defaultDocs;
   });
 
+  // Desktop inline edit
   const [editandoId, setEditandoId] = useState(null);
   const [editValue, setEditValue] = useState('');
-  
+
+  // Mobile modal edit
+  const [modalDoc, setModalDoc] = useState(null);
+  const [modalValue, setModalValue] = useState('');
+
   const [adicionandoNovo, setAdicionandoNovo] = useState(false);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novoNumero, setNovoNumero] = useState('');
-  
+
   const [copiadoId, setCopiadoId] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('sofia_documentos', JSON.stringify(documentos));
   }, [documentos]);
 
+  // Detect mobile
+  const isMobile = () => window.innerWidth <= 640;
+
   const iniciarEdicao = (doc) => {
-    setEditandoId(doc.id);
-    setEditValue(doc.numero);
+    if (isMobile()) {
+      setModalDoc(doc);
+      setModalValue(doc.numero || '');
+    } else {
+      setEditandoId(doc.id);
+      setEditValue(doc.numero || '');
+    }
   };
 
   const guardarEdicao = (id) => {
-    setDocumentos(documentos.map(doc => 
+    setDocumentos(documentos.map(doc =>
       doc.id === id ? { ...doc, numero: editValue } : doc
     ));
     setEditandoId(null);
   };
 
-  const cancelarEdicao = () => {
-    setEditandoId(null);
+  const guardarModal = () => {
+    if (!modalDoc) return;
+    setDocumentos(documentos.map(doc =>
+      doc.id === modalDoc.id ? { ...doc, numero: modalValue } : doc
+    ));
+    setModalDoc(null);
   };
+
+  const cancelarEdicao = () => setEditandoId(null);
 
   const adicionarNovoDocumento = (e) => {
     e.preventDefault();
     if (novoTitulo.trim() === '') return;
-    
-    const novoDoc = {
-      id: Date.now(),
-      titulo: novoTitulo,
-      numero: novoNumero,
-      type: 'custom'
-    };
-    
+    const novoDoc = { id: Date.now(), titulo: novoTitulo, numero: novoNumero, type: 'custom' };
     setDocumentos([...documentos, novoDoc]);
     setAdicionandoNovo(false);
     setNovoTitulo('');
@@ -105,14 +116,14 @@ const Documentos = () => {
   const getDocIcon = (doc) => {
     const docType = getDocType(doc);
     switch (docType) {
-      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '46px', height: '46px', objectFit: 'contain', transform: 'scale(1.15)' }} />;
-      case 'id': return <img src="/cc_logo.png" alt="Cartão de Cidadão" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
-      case 'health': return <img src="/sns_logo.png" alt="SNS Utente de Saúde" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
-      case 'social': return <img src="/seg_social_logo.png" alt="Segurança Social NISS" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
-      case 'blood': return <Droplet size={24} color="#ef4444" />;
-      case 'passport': return <img src="/passport_logo.png" alt="Passaporte Português" style={{ width: '34px', height: '34px', objectFit: 'contain', borderRadius: '4px' }} />;
-      case 'custom': return <CreditCard size={24} />;
-      default: return <FolderHeart size={24} />;
+      case 'tax': return <img src="/nif_logo.png" alt="NIF" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
+      case 'id': return <img src="/cc_logo.png" alt="CC" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />;
+      case 'health': return <img src="/sns_logo.png" alt="SNS" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />;
+      case 'social': return <img src="/seg_social_logo.png" alt="NISS" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />;
+      case 'blood': return <Droplet size={22} color="#ef4444" />;
+      case 'passport': return <img src="/passport_logo.png" alt="Passaporte" style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '4px' }} />;
+      case 'custom': return <CreditCard size={22} />;
+      default: return <FolderHeart size={22} />;
     }
   };
 
@@ -140,8 +151,8 @@ const Documentos = () => {
         </div>
       </div>
 
-      {/* Clean 3-Column Table Container */}
-      <div className="executive-table-wrapper glass-card">
+      {/* ─── DESKTOP TABLE (hidden on mobile) ─── */}
+      <div className="executive-table-wrapper glass-card desktop-table">
         <table className="executive-table">
           <thead>
             <tr>
@@ -156,13 +167,11 @@ const Documentos = () => {
               const isEditing = editandoId === doc.id;
 
               return (
-                <tr 
-                  key={doc.id} 
-                  className={`executive-row ${getDocType(doc) === 'blood' ? 'blood-type-row' : ''} ${isEditing ? 'editing-row' : ''}`}
+                <tr
+                  key={doc.id}
+                  className={`executive-row ${isEditing ? 'editing-row' : ''}`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  
-                  {/* Document Title + Icon */}
                   <td className="cell-doc">
                     <div className={`cell-icon-badge icon-bg-${getDocType(doc)}`}>
                       {getDocIcon(doc)}
@@ -172,50 +181,24 @@ const Documentos = () => {
                     </div>
                   </td>
 
-                  {/* Value / Edit Field */}
                   <td className="cell-value">
                     {isEditing ? (
                       <div className="inline-edit-box">
                         {getDocType(doc) === 'blood' ? (
-                          <select
-                            className="inline-select"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            autoFocus
-                          >
+                          <select className="inline-select" value={editValue} onChange={(e) => setEditValue(e.target.value)} autoFocus>
                             <option value="">Selecione...</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
+                            {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(t => <option key={t} value={t}>{t}</option>)}
                           </select>
                         ) : (
-                          <input
-                            type="text"
-                            className="inline-input"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            placeholder="Insira o número..."
-                            autoFocus
-                          />
+                          <input type="text" className="inline-input" value={editValue} onChange={(e) => setEditValue(e.target.value)} placeholder="Insira o número..." autoFocus />
                         )}
                       </div>
                     ) : (
                       <div className="value-display-wrapper">
                         {isPreenchido ? (
                           <div className="value-badge-container">
-                            <span className={getDocType(doc) === 'blood' ? 'blood-type-badge' : 'mono-number'}>
-                              {doc.numero}
-                            </span>
-                            <button
-                              className={`quick-copy-icon ${copiadoId === doc.id ? 'copied' : ''}`}
-                              onClick={() => copiarParaClipboard(doc.numero, doc.id)}
-                              title="Copiar rápido"
-                            >
+                            <span className={getDocType(doc) === 'blood' ? 'blood-type-badge' : 'mono-number'}>{doc.numero}</span>
+                            <button className={`quick-copy-icon ${copiadoId === doc.id ? 'copied' : ''}`} onClick={() => copiarParaClipboard(doc.numero, doc.id)} title="Copiar">
                               {copiadoId === doc.id ? <Check size={14} /> : <Copy size={14} />}
                             </button>
                           </div>
@@ -226,29 +209,19 @@ const Documentos = () => {
                     )}
                   </td>
 
-                  {/* Actions */}
                   <td className="cell-actions text-right">
                     {isEditing ? (
                       <div className="action-pill-group justify-end">
-                        <button className="pill-btn save-pill" onClick={() => guardarEdicao(doc.id)} title="Guardar">
-                          <Save size={15} /> <span>Guardar</span>
-                        </button>
-                        <button className="pill-btn cancel-pill" onClick={cancelarEdicao} title="Cancelar">
-                          <X size={15} /> <span>Cancelar</span>
-                        </button>
+                        <button className="pill-btn save-pill" onClick={() => guardarEdicao(doc.id)}><Save size={15} /> <span>Guardar</span></button>
+                        <button className="pill-btn cancel-pill" onClick={cancelarEdicao}><X size={15} /> <span>Cancelar</span></button>
                       </div>
                     ) : (
                       <div className="action-pill-group justify-end">
-                        <button className="pill-btn edit-pill" onClick={() => iniciarEdicao(doc)} title="Editar">
-                          <Edit2 size={15} /> <span>Editar</span>
-                        </button>
-                        <button className="pill-btn delete-pill" onClick={() => removerDocumento(doc.id)} title="Apagar">
-                          <Trash2 size={15} /> <span>Apagar</span>
-                        </button>
+                        <button className="pill-btn edit-pill" onClick={() => iniciarEdicao(doc)}><Edit2 size={15} /> <span>Editar</span></button>
+                        <button className="pill-btn delete-pill" onClick={() => removerDocumento(doc.id)}><Trash2 size={15} /> <span>Apagar</span></button>
                       </div>
                     )}
                   </td>
-
                 </tr>
               );
             })}
@@ -256,7 +229,89 @@ const Documentos = () => {
         </table>
       </div>
 
-      {/* Add Document Modal/Card */}
+      {/* ─── MOBILE CARD LIST (hidden on desktop) ─── */}
+      <div className="mobile-doc-list">
+        {documentos.map((doc, index) => {
+          const isPreenchido = doc.numero && doc.numero.trim() !== '';
+          return (
+            <div key={doc.id} className="mobile-doc-card glass-card animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
+              <div className="mobile-doc-main">
+                <div className={`cell-icon-badge icon-bg-${getDocType(doc)}`}>
+                  {getDocIcon(doc)}
+                </div>
+                <div className="mobile-doc-info">
+                  <span className="doc-name">{doc.titulo}</span>
+                  {isPreenchido ? (
+                    <div className="value-badge-container" style={{ marginTop: '0.35rem' }}>
+                      <span className={getDocType(doc) === 'blood' ? 'blood-type-badge' : 'mono-number'}>{doc.numero}</span>
+                      <button className={`quick-copy-icon ${copiadoId === doc.id ? 'copied' : ''}`} onClick={() => copiarParaClipboard(doc.numero, doc.id)}>
+                        {copiadoId === doc.id ? <Check size={13} /> : <Copy size={13} />}
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="empty-placeholder" style={{ marginTop: '0.25rem', display: 'block' }}>Não preenchido</span>
+                  )}
+                </div>
+              </div>
+              <div className="mobile-doc-actions">
+                <button className="pill-btn edit-pill" onClick={() => iniciarEdicao(doc)}>
+                  <Edit2 size={14} /> Editar
+                </button>
+                <button className="pill-btn delete-pill" onClick={() => removerDocumento(doc.id)}>
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ─── MOBILE EDIT MODAL ─── */}
+      {modalDoc && (
+        <div className="doc-modal-overlay" onClick={() => setModalDoc(null)}>
+          <div className="doc-modal-sheet glass-card animate-fade-in" onClick={e => e.stopPropagation()}>
+            <div className="flex-between mb-4">
+              <div>
+                <p className="doc-modal-label">A editar</p>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>{modalDoc.titulo}</h3>
+              </div>
+              <button className="btn-icon" onClick={() => setModalDoc(null)}><X size={20} /></button>
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">
+                {getDocType(modalDoc) === 'blood' ? 'Grupo Sanguíneo' : 'Número / Identificador'}
+              </label>
+              {getDocType(modalDoc) === 'blood' ? (
+                <select className="input-field" value={modalValue} onChange={e => setModalValue(e.target.value)} autoFocus>
+                  <option value="">Selecione o grupo...</option>
+                  {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  className="input-field"
+                  value={modalValue}
+                  onChange={e => setModalValue(e.target.value)}
+                  placeholder="Insira o número..."
+                  autoFocus
+                />
+              )}
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+              <button className="btn-outline" style={{ flex: 1 }} onClick={() => setModalDoc(null)}>
+                <X size={16} /> Cancelar
+              </button>
+              <button className="btn-primary" style={{ flex: 1 }} onClick={guardarModal}>
+                <Save size={16} /> Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── ADD DOCUMENT FORM ─── */}
       {adicionandoNovo && (
         <div className="executive-add-card glass-card animate-fade-in">
           <div className="flex-between mb-3">
@@ -266,32 +321,15 @@ const Documentos = () => {
           <form onSubmit={adicionarNovoDocumento} className="add-form-grid">
             <div className="input-group">
               <label className="input-label">Nome do Documento</label>
-              <input
-                type="text"
-                className="input-field"
-                value={novoTitulo}
-                onChange={(e) => setNovoTitulo(e.target.value)}
-                required
-                placeholder="Ex: Passaporte / Cartão de Seguro"
-              />
+              <input type="text" className="input-field" value={novoTitulo} onChange={(e) => setNovoTitulo(e.target.value)} required placeholder="Ex: Passaporte / Cartão de Seguro" />
             </div>
             <div className="input-group">
               <label className="input-label">Número de Registo</label>
-              <input
-                type="text"
-                className="input-field"
-                value={novoNumero}
-                onChange={(e) => setNovoNumero(e.target.value)}
-                placeholder="Ex: N12345678"
-              />
+              <input type="text" className="input-field" value={novoNumero} onChange={(e) => setNovoNumero(e.target.value)} placeholder="Ex: N12345678" />
             </div>
             <div className="form-submit-row">
-              <button type="button" className="btn-outline" onClick={() => setAdicionandoNovo(false)}>
-                Cancelar
-              </button>
-              <button type="submit" className="btn-primary">
-                Gravar Registo
-              </button>
+              <button type="button" className="btn-outline" onClick={() => setAdicionandoNovo(false)}>Cancelar</button>
+              <button type="submit" className="btn-primary">Gravar Registo</button>
             </div>
           </form>
         </div>

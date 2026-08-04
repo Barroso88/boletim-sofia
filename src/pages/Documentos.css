@@ -337,67 +337,117 @@
   text-align: right;
 }
 
-/* Responsive Table Adjustment */
+/* ─── Responsive Table Adjustment ─── */
 @media (max-width: 900px) {
-  /* Table only has 3 columns — no columns should be hidden at this breakpoint */
+  /* No columns hidden — all 3 columns visible on tablet */
+}
+
+/* ─── Mobile: hide table, show card list ─── */
+.mobile-doc-list {
+  display: none; /* hidden on desktop */
 }
 
 @media (max-width: 640px) {
-  .executive-table th:nth-child(4),
-  .executive-table td:nth-child(4) {
-    display: none; /* Hide Status on mobile */
-  }
-
-  .executive-table td {
-    padding: 0.75rem 0.6rem;
-  }
-
-  .doc-name {
-    font-size: 0.82rem;
-  }
-
-  .cell-icon-badge {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    flex-shrink: 0;
-  }
-
-  .mono-number {
-    font-size: 0.85rem;
-    padding: 0.15rem 0.4rem;
-    letter-spacing: 0.04em;
-  }
-
-  .blood-type-badge {
-    font-size: 0.9rem;
-    padding: 0.25rem 0.7rem;
-  }
-
-  .add-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* Icon-only pill buttons on narrow screens */
-  .pill-btn span {
+  /* Hide the desktop table */
+  .desktop-table {
     display: none;
   }
 
-  .pill-btn {
-    padding: 0.45rem 0.55rem;
-    border-radius: 50%;
-    min-width: 36px;
-    min-height: 36px;
-    justify-content: center;
+  /* Show the mobile card list */
+  .mobile-doc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
-  /* Inline edit input should be full width */
-  .inline-edit-box {
-    max-width: 100%;
+  .mobile-doc-card {
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-radius: 18px;
+  }
+
+  .mobile-doc-main {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex: 1;
+  }
+
+  .mobile-doc-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-doc-info .doc-name {
+    font-size: 0.88rem;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .mobile-doc-actions {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mobile-doc-actions .edit-pill {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  .mobile-doc-actions .delete-pill {
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
   }
 
   /* Make executive-add-card scroll into view properly */
   .executive-add-card {
     margin-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
   }
+
+  .add-form-grid {
+    grid-template-columns: 1fr;
+  }
 }
+
+/* ─── Mobile Edit Modal ─── */
+.doc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2147483647;
+  padding: 0;
+}
+
+.doc-modal-sheet {
+  width: 100%;
+  max-width: 480px;
+  padding: 1.75rem 1.5rem;
+  border-radius: 24px 24px 0 0;
+  border-bottom: none;
+  padding-bottom: calc(1.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+.doc-modal-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-light);
+  margin: 0 0 0.2rem;
+}
+
