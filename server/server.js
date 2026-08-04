@@ -136,6 +136,13 @@ async function setupTables() {
         hora TEXT NOT NULL,
         quantidade_ml INTEGER NOT NULL
       );
+
+      CREATE TABLE IF NOT EXISTS fraldas (
+        id BIGINT PRIMARY KEY,
+        data TEXT NOT NULL,
+        hora TEXT NOT NULL,
+        tipo TEXT NOT NULL
+      );
     `);
 
     client.release();
@@ -384,6 +391,38 @@ app.post('/api/leite', async (req, res) => {
 app.delete('/api/leite/:id', async (req, res) => {
   try {
     await pool.query('DELETE FROM leite WHERE id = $1', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- FRALDAS ---
+app.get('/api/fraldas', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM fraldas ORDER BY hora DESC, id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/fraldas', async (req, res) => {
+  const { id, data, hora, tipo } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO fraldas (id, data, hora, tipo) VALUES ($1, $2, $3, $4)',
+      [id, data, hora, tipo]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/fraldas/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM fraldas WHERE id = $1', [req.params.id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

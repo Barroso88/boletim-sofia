@@ -237,5 +237,39 @@ export const api = {
       localStorage.setItem(localKey, JSON.stringify(list));
     }
     fetchWithFallback(`${API_BASE}/leite/${id}`, { method: 'DELETE' });
+  },
+
+  // --- FRALDAS ---
+  async getFraldas(localKey = 'sofia_fraldas') {
+    const remote = await fetchWithFallback(`${API_BASE}/fraldas`);
+    if (remote && Array.isArray(remote)) {
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  async saveFralda(registo, localKey = 'sofia_fraldas') {
+    const saved = localStorage.getItem(localKey);
+    let list = saved ? JSON.parse(saved) : [];
+    list.push(registo);
+    list.sort((a, b) => b.hora.localeCompare(a.hora));
+    localStorage.setItem(localKey, JSON.stringify(list));
+
+    fetchWithFallback(`${API_BASE}/fraldas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registo)
+    });
+  },
+
+  async deleteFralda(id, localKey = 'sofia_fraldas') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(r => r.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/fraldas/${id}`, { method: 'DELETE' });
   }
 };
