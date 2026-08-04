@@ -32,46 +32,52 @@
 }
 
 .age-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem; /* Reduced gap */
-  margin-top: 2rem; /* Reduced margin */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  background: rgba(15, 23, 42, 0.02);
+  padding: 1.25rem 2.5rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+  width: fit-content;
+  margin-inline: auto;
+  position: relative;
+}
+
+/* Subtle inner glow for the premium pill */
+.age-stats::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
 }
 
 .stat-box {
-  background: var(--color-surface);
-  padding: 1.5rem 1rem; /* Reduced padding */
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-sm);
   position: relative;
 }
 
-.stat-box::after {
+/* Add elegant dividers between stats */
+.stat-box:not(:last-child)::after {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 0 0 1px transparent;
-  transition: all var(--transition-normal);
-}
-
-.stat-box:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-}
-
-.stat-box:hover::after {
-  box-shadow: inset 0 0 0 2px rgba(244, 63, 94, 0.15); /* Suble primary highlight on hover */
+  right: -1rem;
+  top: 10%;
+  height: 80%;
+  width: 1px;
+  background: var(--color-border);
 }
 
 .stat-value {
-  font-size: 3rem; /* Reduced font size from 4rem to 3rem */
+  font-size: 2.25rem;
   font-weight: 800;
   background: linear-gradient(135deg, var(--color-primary-dark), var(--color-secondary));
   -webkit-background-clip: text;
@@ -79,12 +85,12 @@
   background-clip: text;
   color: transparent;
   line-height: 1;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.03em;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
 }
 
 .stat-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -204,8 +210,14 @@
 
 @media (max-width: 768px) {
   .age-stats {
-    grid-template-columns: 1fr;
     gap: 1rem;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .stat-box:not(:last-child)::after {
+    right: -0.5rem;
   }
   
   .hero-card {
@@ -213,7 +225,11 @@
   }
   
   .stat-value {
-    font-size: 2.5rem;
+    font-size: 1.75rem;
+  }
+  
+  .stat-label {
+    font-size: 0.7rem;
   }
   
   .health-summary {
