@@ -80,23 +80,47 @@
 
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.25rem;
+    padding: 1rem;
     margin: 1rem;
-    border-radius: var(--radius-lg);
+    position: static; /* Let it scroll naturally at the top */
+    justify-content: center;
   }
   
   .nav-links {
-    width: 100%;
-    justify-content: space-around;
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 3rem);
+    max-width: 400px;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.85); /* Fallback */
+    background: var(--color-surface);
+    opacity: 0.95;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    z-index: 1000;
+    padding: 0.5rem;
   }
   
-  .nav-item span {
-    display: none;
+  /* Make sure the main content doesn't get hidden behind the bottom bar */
+  .main-content {
+    padding-bottom: 6rem;
   }
   
   .nav-item {
-    padding: 0.75rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .nav-item span {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
   }
 }
