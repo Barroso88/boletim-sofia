@@ -1,0 +1,45 @@
+import { Link, useLocation } from 'react-router-dom';
+import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings } from 'lucide-react';
+import './Layout.css';
+
+const Layout = ({ children }) => {
+  const location = useLocation();
+
+  const navItems = [
+    { path: '/', label: 'Início', icon: <Baby size={24} /> },
+    { path: '/agenda', label: 'Agenda', icon: <Calendar size={24} /> },
+    { path: '/marcos', label: 'Marcos', icon: <Image size={24} /> },
+    { path: '/documentos', label: 'Documentos', icon: <FileText size={24} /> },
+    { path: '/peso', label: 'Peso', icon: <Scale size={24} /> },
+    { path: '/vacinas', label: 'Vacinas', icon: <Syringe size={24} /> },
+    { path: '/definicoes', label: 'Definições', icon: <Settings size={24} /> },
+  ];
+
+  return (
+    <div className="layout">
+      <nav className="navbar glass-card">
+        <div className="navbar-brand">
+          <div className="avatar">S</div>
+          <span className="h3 text-gradient">Boletim da Sofia</span>
+        </div>
+        <div className="nav-links">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </Link>
+          ))}
+        </div>
+      </nav>
+      <main className="main-content container animate-fade-in">
+        {children}
+      </main>
+    </div>
+  );
+};
+
+export default Layout;

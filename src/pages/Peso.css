@@ -1,0 +1,140 @@
+/* Premium Peso Tracker Styles */
+
+.peso-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.peso-item {
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.peso-date-block {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  min-width: 100px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+.peso-day {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(225, 29, 72, 0.2);
+}
+
+.peso-month {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.peso-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.peso-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.peso-unit {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.ganho-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.ganho-badge.gain {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a; /* Green */
+}
+
+.ganho-badge.loss {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626; /* Red */
+}
+
+.ganho-badge.neutral {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--color-text-light); /* Gray */
+}
+
+.btn-delete {
+  color: var(--color-text-light);
+  padding: 0.75rem;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .peso-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .peso-date-block {
+    width: 100%;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .peso-day {
+    font-size: 1.5rem;
+  }
+  
+  .peso-value {
+    font-size: 2rem;
+  }
+  
+  .btn-delete {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+}

@@ -1,0 +1,222 @@
+/* Premium Dashboard Layout & Page Styles */
+
+.dashboard {
+  max-width: 1000px; /* Slightly wider to accommodate two columns comfortably */
+  margin: 0 auto;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.hero-card {
+  padding: 2.5rem 2rem; /* Reduced padding for a more compact hero card */
+  text-align: center;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle premium top border accent */
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+}
+
+.age-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem; /* Reduced gap */
+  margin-top: 2rem; /* Reduced margin */
+}
+
+.stat-box {
+  background: var(--color-surface);
+  padding: 1.5rem 1rem; /* Reduced padding */
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.stat-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: all var(--transition-normal);
+}
+
+.stat-box:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-box:hover::after {
+  box-shadow: inset 0 0 0 2px rgba(244, 63, 94, 0.15); /* Suble primary highlight on hover */
+}
+
+.stat-value {
+  font-size: 3rem; /* Reduced font size from 4rem to 3rem */
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-light);
+}
+
+/* Health Summary Grid (Consultas e Vacinas) */
+.health-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.health-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.health-section {
+  background: var(--color-surface);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-normal);
+}
+
+.health-section:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.health-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(15, 23, 42, 0.03);
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.04);
+}
+
+.event-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.event-item:first-child {
+  padding-top: 0;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.25rem;
+  gap: 1rem;
+}
+
+.event-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.event-date {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  background: rgba(244, 63, 94, 0.08);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.event-date.past {
+  color: var(--color-text-light);
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.no-events {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+
+/* Common Utility Overrides */
+.text-light {
+  color: var(--color-text-light);
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .age-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .hero-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .stat-value {
+    font-size: 2.5rem;
+  }
+  
+  .health-summary {
+    grid-template-columns: 1fr;
+  }
+}
