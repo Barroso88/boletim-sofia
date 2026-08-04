@@ -96,7 +96,7 @@ const Documentos = () => {
   const getDocIcon = (doc) => {
     const docType = getDocType(doc);
     switch (docType) {
-      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '42px', height: '42px', objectFit: 'contain' }} />;
+      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '46px', height: '46px', objectFit: 'contain', transform: 'scale(1.15)' }} />;
       case 'id': return <img src="/cc_logo.png" alt="Cartão de Cidadão" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'health': return <img src="/sns_logo.png" alt="SNS Utente de Saúde" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'blood': return <Droplet size={24} color="#ef4444" />;
