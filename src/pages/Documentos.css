@@ -339,10 +339,7 @@
 
 /* Responsive Table Adjustment */
 @media (max-width: 900px) {
-  .executive-table th:nth-child(2),
-  .executive-table td:nth-child(2) {
-    display: none; /* Hide Category on smaller tablets */
-  }
+  /* Table only has 3 columns — no columns should be hidden at this breakpoint */
 }
 
 @media (max-width: 640px) {
