@@ -89,16 +89,18 @@ const Documentos = () => {
     if (title.includes('civil') || title.includes('cc')) return 'id';
     if (title.includes('saúde') || title.includes('utente')) return 'health';
     if (title.includes('sanguíneo') || title.includes('sangue')) return 'blood';
+    if (title.includes('passaporte') || title.includes('passport')) return 'passport';
     return doc.type || 'custom';
   };
 
   const getDocIcon = (doc) => {
     const docType = getDocType(doc);
     switch (docType) {
-      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
+      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '42px', height: '42px', objectFit: 'contain' }} />;
       case 'id': return <img src="/cc_logo.png" alt="Cartão de Cidadão" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'health': return <img src="/sns_logo.png" alt="SNS Utente de Saúde" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'blood': return <Droplet size={24} color="#ef4444" />;
+      case 'passport': return <img src="/passport_logo.png" alt="Passaporte Português" style={{ width: '34px', height: '34px', objectFit: 'contain', borderRadius: '4px' }} />;
       case 'custom': return <CreditCard size={24} />;
       default: return <FolderHeart size={24} />;
     }
