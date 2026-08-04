@@ -446,10 +446,9 @@
 .doc-modal-sheet {
   width: 100%;
   max-width: 480px;
-  padding: 0.5rem 1.5rem 1.75rem;
+  padding: 0.5rem 1.5rem calc(5.5rem + env(safe-area-inset-bottom, 0px));
   border-radius: 24px 24px 0 0;
   border-bottom: none;
-  padding-bottom: calc(1.75rem + env(safe-area-inset-bottom, 0px));
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
