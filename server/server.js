@@ -25,6 +25,7 @@ const dbConfig = {
 };
 
 let pool = null;
+let isDbConnected = false;
 function initDbPool() {
   if (process.env.DATABASE_URL) {
     pool = new Pool({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 5000 });
