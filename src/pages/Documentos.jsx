@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Save, Trash2, X, Copy, Check, FileBadge, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Plus, Edit2, Save, Trash2, X, Copy, Check, Landmark, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet, ShieldCheck, AlertCircle } from 'lucide-react';
 import './Documentos.css';
 
 const Documentos = () => {
@@ -85,7 +85,7 @@ const Documentos = () => {
 
   const getDocIcon = (type) => {
     switch (type) {
-      case 'tax': return <FileBadge size={18} />;
+      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />;
       case 'id': return <Fingerprint size={18} />;
       case 'health': return <Stethoscope size={18} />;
       case 'blood': return <Droplet size={18} color="#ef4444" />;
