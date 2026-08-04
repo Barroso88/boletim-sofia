@@ -8,14 +8,22 @@ const Documentos = () => {
       { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax' },
       { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id' },
       { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health' },
-      { id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
+      { id: 4, titulo: 'Nº Segurança Social (NISS)', numero: '', type: 'social' },
+      { id: 5, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
     ];
     
     const saved = localStorage.getItem('sofia_documentos');
     if (saved) {
       let parsed = JSON.parse(saved);
-      if (!parsed.find(d => d.id === 4)) {
-        parsed.push({ id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' });
+      if (!parsed.find(d => d.id === 5 || d.type === 'social' || (d.titulo && d.titulo.toLowerCase().includes('segurança social')))) {
+        // Insert NISS after Utente de Saúde
+        const insertIndex = parsed.findIndex(d => d.id === 3 || (d.titulo && d.titulo.toLowerCase().includes('utente')));
+        const nissDoc = { id: 5, titulo: 'Nº Segurança Social (NISS)', numero: '', type: 'social' };
+        if (insertIndex !== -1) {
+          parsed.splice(insertIndex + 1, 0, nissDoc);
+        } else {
+          parsed.push(nissDoc);
+        }
       }
       return parsed;
     }
@@ -88,6 +96,7 @@ const Documentos = () => {
     if (title.includes('nif') || title.includes('fiscal')) return 'tax';
     if (title.includes('civil') || title.includes('cc')) return 'id';
     if (title.includes('saúde') || title.includes('utente')) return 'health';
+    if (title.includes('segurança social') || title.includes('niss') || title.includes('social')) return 'social';
     if (title.includes('sanguíneo') || title.includes('sangue')) return 'blood';
     if (title.includes('passaporte') || title.includes('passport')) return 'passport';
     return doc.type || 'custom';
@@ -99,6 +108,7 @@ const Documentos = () => {
       case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '46px', height: '46px', objectFit: 'contain', transform: 'scale(1.15)' }} />;
       case 'id': return <img src="/cc_logo.png" alt="Cartão de Cidadão" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'health': return <img src="/sns_logo.png" alt="SNS Utente de Saúde" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
+      case 'social': return <img src="/seg_social_logo.png" alt="Segurança Social NISS" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'blood': return <Droplet size={24} color="#ef4444" />;
       case 'passport': return <img src="/passport_logo.png" alt="Passaporte Português" style={{ width: '34px', height: '34px', objectFit: 'contain', borderRadius: '4px' }} />;
       case 'custom': return <CreditCard size={24} />;
