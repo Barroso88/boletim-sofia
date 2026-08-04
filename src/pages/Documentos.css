@@ -224,3 +224,10 @@
 .blood-card .doc-value-container {
   justify-content: center;
 }
+
+.blood-card .doc-value {
+  font-size: 3rem;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4);
+  line-height: 1;
+  margin-top: 0.5rem;
+}
