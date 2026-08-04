@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Save, Trash2, X, Copy, Check, Landmark, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Plus, Edit2, Save, Trash2, X, Copy, Check, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet } from 'lucide-react';
 import './Documentos.css';
 
 const Documentos = () => {
   const [documentos, setDocumentos] = useState(() => {
     const defaultDocs = [
-      { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax', cat: 'Fiscal' },
-      { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id', cat: 'Identificação' },
-      { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health', cat: 'Saúde' },
-      { id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood', cat: 'Saúde' },
+      { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax' },
+      { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id' },
+      { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health' },
+      { id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
     ];
     
     const saved = localStorage.getItem('sofia_documentos');
     if (saved) {
       let parsed = JSON.parse(saved);
       if (!parsed.find(d => d.id === 4)) {
-        parsed.push({ id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood', cat: 'Saúde' });
+        parsed.push({ id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' });
       }
       return parsed;
     }
@@ -59,8 +59,7 @@ const Documentos = () => {
       id: Date.now(),
       titulo: novoTitulo,
       numero: novoNumero,
-      type: 'custom',
-      cat: 'Geral'
+      type: 'custom'
     };
     
     setDocumentos([...documentos, novoDoc]);
@@ -98,12 +97,12 @@ const Documentos = () => {
 
   return (
     <div className="page-container">
-      {/* Header with Stats Summary */}
+      {/* Header */}
       <div className="flex-between mb-4 flex-wrap gap-3">
         <div>
           <h2 className="h2 text-gradient">Registo Documental</h2>
           <p style={{ color: 'var(--color-text-light)', fontSize: '0.9rem', marginTop: '2px' }}>
-            Base de dados central de registos oficiais da Sofia
+            Documentos oficiais da Sofia
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -118,15 +117,13 @@ const Documentos = () => {
         </div>
       </div>
 
-      {/* Main Table Container */}
+      {/* Clean 3-Column Table Container */}
       <div className="executive-table-wrapper glass-card">
         <table className="executive-table">
           <thead>
             <tr>
               <th>Documento</th>
-              <th>Categoria</th>
               <th>Número / Identificador</th>
-              <th>Estado</th>
               <th className="text-right">Ações</th>
             </tr>
           </thead>
@@ -150,13 +147,6 @@ const Documentos = () => {
                     <div className="doc-meta">
                       <span className="doc-name">{doc.titulo}</span>
                     </div>
-                  </td>
-
-                  {/* Category Pill */}
-                  <td className="cell-category">
-                    <span className={`category-tag tag-${doc.type}`}>
-                      {doc.cat || 'Geral'}
-                    </span>
                   </td>
 
                   {/* Value / Edit Field */}
@@ -207,22 +197,9 @@ const Documentos = () => {
                             </button>
                           </div>
                         ) : (
-                          <span className="empty-placeholder">Pendente de registo</span>
+                          <span className="empty-placeholder">Não preenchido</span>
                         )}
                       </div>
-                    )}
-                  </td>
-
-                  {/* Status Badge */}
-                  <td className="cell-status">
-                    {isPreenchido ? (
-                      <span className="status-badge status-active">
-                        <ShieldCheck size={14} /> Válido
-                      </span>
-                    ) : (
-                      <span className="status-badge status-pending">
-                        <AlertCircle size={14} /> Incompleto
-                      </span>
                     )}
                   </td>
 
