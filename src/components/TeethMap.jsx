@@ -138,7 +138,7 @@ const TeethMap = () => {
              })}
           </div>
 
-          <div className="gum-divider">ORDEM DE SAÍDA</div>
+          <div className="gum-divider">DENTINHOS DA SOFIA</div>
 
           {/* Lower Gum */}
           <div className="gum-arch lower-gum">
