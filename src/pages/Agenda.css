@@ -250,3 +250,24 @@
     flex: 1;
   }
 }
+
+/* Responsiveness for Mobile */
+@media (max-width: 768px) {
+  .calendar-section {
+    padding: 1.25rem 1rem;
+  }
+  
+  .evento-card {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .calendar-title {
+    font-size: 1.5rem;
+  }
+  
+  .evento-time {
+    font-size: 1.1rem;
+    min-width: 50px;
+  }
+}
