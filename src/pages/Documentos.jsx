@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Save, Trash2, X, Copy, Check, FileBadge, CreditCard, Stethoscope, Fingerprint, FolderHeart } from 'lucide-react';
+import { Plus, Edit2, Save, Trash2, X, Copy, Check, FileBadge, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet } from 'lucide-react';
 import './Documentos.css';
 
 const Documentos = () => {
   const [documentos, setDocumentos] = useState(() => {
-    const saved = localStorage.getItem('sofia_documentos');
-    if (saved) return JSON.parse(saved);
-    return [
+    const defaultDocs = [
       { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax' },
       { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id' },
       { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health' },
+      { id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
     ];
+    
+    const saved = localStorage.getItem('sofia_documentos');
+    if (saved) {
+      let parsed = JSON.parse(saved);
+      if (!parsed.find(d => d.id === 4)) {
+        parsed.push({ id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' });
+      }
+      return parsed;
+    }
+    return defaultDocs;
   });
 
   const [editandoId, setEditandoId] = useState(null);
@@ -78,6 +87,7 @@ const Documentos = () => {
       case 'tax': return <FileBadge size={24} />;
       case 'id': return <Fingerprint size={24} />;
       case 'health': return <Stethoscope size={24} />;
+      case 'blood': return <Droplet size={24} color="#ef4444" />;
       case 'custom': return <CreditCard size={24} />;
       default: return <FolderHeart size={24} />;
     }
