@@ -25,8 +25,6 @@ const dbConfig = {
 };
 
 let pool = null;
-let isDbConnected = false;
-
 function initDbPool() {
   if (process.env.DATABASE_URL) {
     pool = new Pool({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 5000 });
@@ -40,10 +38,54 @@ function initDbPool() {
   });
 }
 
-initDbPool();
+// Ensure target database exists before connecting pool
+async function ensureDatabaseExists() {
+  let targetDb = process.env.DB_NAME || 'boletim_sofia';
+  let rootConnectionString = null;
+
+  if (process.env.DATABASE_URL) {
+    try {
+      const parsedUrl = new URL(process.env.DATABASE_URL);
+      const dbPath = parsedUrl.pathname.replace('/', '');
+      if (dbPath) targetDb = dbPath;
+      parsedUrl.pathname = '/postgres';
+      rootConnectionString = parsedUrl.toString();
+    } catch (e) {
+      console.warn('Could not parse DATABASE_URL for DB auto-creation:', e.message);
+    }
+  }
+
+  if (targetDb === 'postgres' || targetDb === 'template1') {
+    return;
+  }
+
+  const rootConfig = rootConnectionString
+    ? { connectionString: rootConnectionString, connectionTimeoutMillis: 5000 }
+    : { ...dbConfig, database: 'postgres' };
+
+  const rootPool = new Pool(rootConfig);
+  try {
+    const client = await rootPool.connect();
+    const checkRes = await client.query('SELECT 1 FROM pg_database WHERE datname = $1', [targetDb]);
+    if (checkRes.rows.length === 0) {
+      console.log(`Database "${targetDb}" does not exist. Creating database "${targetDb}"...`);
+      const safeDbName = targetDb.replace(/[^a-zA-Z0-9_]/g, '');
+      await client.query(`CREATE DATABASE "${safeDbName}"`);
+      console.log(`Database "${safeDbName}" created successfully!`);
+    }
+    client.release();
+  } catch (err) {
+    console.warn(`Database check/creation warning (will attempt direct connection): ${err.message}`);
+  } finally {
+    await rootPool.end().catch(() => {});
+  }
+}
 
 // Auto-create Tables
 async function setupTables() {
+  await ensureDatabaseExists();
+  initDbPool();
+
   if (!pool) return;
   try {
     const client = await pool.connect();
