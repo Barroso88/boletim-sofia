@@ -12,17 +12,25 @@ const Layout = ({ children }) => {
     { path: '/documentos', label: 'Documentos', icon: <FileText size={20} /> },
     { path: '/peso', label: 'Peso', icon: <Scale size={20} /> },
     { path: '/vacinas', label: 'Vacinas', icon: <Syringe size={20} /> },
-    { path: '/definicoes', label: 'Definições', icon: <Settings size={20} /> },
   ];
 
   return (
     <div className="layout">
       <nav className="navbar glass-card">
-        <div className="navbar-brand">
-          <div className="avatar">S</div>
-          <span className="h3 text-gradient">Boletim da Sofia</span>
+        <div className="navbar-left">
+          <Link
+            to="/definicoes"
+            className={`btn-settings-header ${location.pathname === '/definicoes' ? 'active' : ''}`}
+            title="Definições"
+          >
+            <Settings size={20} />
+          </Link>
+          <div className="navbar-brand">
+            <div className="avatar">S</div>
+            <span className="h3 text-gradient">Boletim da Sofia</span>
+          </div>
         </div>
-        {/* On desktop, this hidden class can be applied, or we handle via CSS */}
+
         <div className="nav-links desktop-only">
           {navItems.map((item) => (
             <Link
@@ -34,6 +42,13 @@ const Layout = ({ children }) => {
               <span>{item.label}</span>
             </Link>
           ))}
+          <Link
+            to="/definicoes"
+            className={`nav-item ${location.pathname === '/definicoes' ? 'active' : ''}`}
+          >
+            <Settings size={20} />
+            <span>Definições</span>
+          </Link>
         </div>
       </nav>
       
