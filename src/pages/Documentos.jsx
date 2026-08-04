@@ -137,14 +137,33 @@ const Documentos = () => {
             
             {editandoId === doc.id ? (
               <div className="doc-edit-mode">
-                <input
-                  type="text"
-                  className="input-field"
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  placeholder="Introduza o número..."
-                  autoFocus
-                />
+                {doc.type === 'blood' ? (
+                  <select
+                    className="input-field"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    autoFocus
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    placeholder="Introduza o número..."
+                    autoFocus
+                  />
+                )}
                 <div className="doc-edit-actions">
                   <button className="btn-outline" onClick={cancelarEdicao} style={{ padding: '0.5rem' }}>
                     <X size={18} /> Cancelar
