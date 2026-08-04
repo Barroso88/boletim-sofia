@@ -28,53 +28,32 @@ const LEGEND = [
   { num: 7, label: 'Entre os 2 e 3 anos',     desc: 'Quatro segundos molares',            color: '#FF9800' },
 ];
 
-// Hotspot positions as % of the image (1024x661 original, cropped to 65% width → circle only)
-// Mapped from visual inspection of each tooth in the image.
-// Format: { id, label, order, top%, left%, w%, h% }
+// Image: 1024x687. Circle occupies left ~62% (≈634px wide), centered vertically.
+// Hotspot positions as % relative to the CLIPPED container (634x687).
+// The container shows only the left 62% of the image via object-position.
 const TEETH = [
-  // ── UPPER arch (top of circle) ─────────────────────────────────────────────
-  // Incisivo Central Superior Dir (2) — top center-left
-  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 7,  left: 37, w: 8, h: 13 },
-  // Incisivo Central Superior Esq (2)
-  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 7,  left: 47, w: 8, h: 13 },
-  // Incisivo Lateral Superior Dir (3)
-  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 10, left: 27, w: 8, h: 12 },
-  // Incisivo Lateral Superior Esq (3)
-  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 10, left: 57, w: 8, h: 12 },
-  // Canino Superior Dir (6)
-  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 20, left: 19, w: 8, h: 13 },
-  // Canino Superior Esq (6)
-  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 20, left: 65, w: 8, h: 13 },
-  // 1º Molar Superior Dir (5)
-  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 30, left: 10, w: 10, h: 15 },
-  // 1º Molar Superior Esq (5)
-  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 30, left: 73, w: 10, h: 15 },
-  // 2º Molar Superior Dir (7)
-  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 46, left: 5,  w: 11, h: 15 },
-  // 2º Molar Superior Esq (7)
-  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 46, left: 78, w: 11, h: 15 },
-
-  // ── LOWER arch (bottom of circle) ──────────────────────────────────────────
-  // Incisivo Central Inferior Dir (1)
-  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 78, left: 37, w: 8, h: 13 },
-  // Incisivo Central Inferior Esq (1)
-  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 78, left: 47, w: 8, h: 13 },
-  // Incisivo Lateral Inferior Dir (4)
-  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 74, left: 27, w: 8, h: 12 },
-  // Incisivo Lateral Inferior Esq (4)
-  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 74, left: 57, w: 8, h: 12 },
-  // Canino Inferior Dir (6)
-  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 65, left: 19, w: 8, h: 13 },
-  // Canino Inferior Esq (6)
-  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 65, left: 65, w: 8, h: 13 },
-  // 1º Molar Inferior Dir (5)
-  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 55, left: 10, w: 10, h: 15 },
-  // 1º Molar Inferior Esq (5)
-  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 55, left: 73, w: 10, h: 15 },
-  // 2º Molar Inferior Dir (7)
-  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 43, left: 4,  w: 12, h: 16 },
-  // 2º Molar Inferior Esq (7)
-  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 43, left: 78, w: 12, h: 16 },
+  // ── UPPER arch ────────────────────────────────────────────────────────────
+  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 5,  left: 41, w: 10, h: 14 },
+  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 5,  left: 52, w: 10, h: 14 },
+  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 7,  left: 29, w:  9, h: 13 },
+  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 7,  left: 62, w:  9, h: 13 },
+  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 19, left: 19, w:  9, h: 14 },
+  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 19, left: 72, w:  9, h: 14 },
+  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 30, left: 9,  w: 12, h: 16 },
+  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 30, left: 79, w: 12, h: 16 },
+  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 46, left: 2,  w: 13, h: 17 },
+  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 46, left: 85, w: 13, h: 17 },
+  // ── LOWER arch ────────────────────────────────────────────────────────────
+  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 79, left: 41, w: 10, h: 13 },
+  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 79, left: 52, w: 10, h: 13 },
+  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 74, left: 29, w:  9, h: 12 },
+  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 74, left: 62, w:  9, h: 12 },
+  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 64, left: 19, w:  9, h: 13 },
+  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 64, left: 72, w:  9, h: 13 },
+  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 53, left: 9,  w: 12, h: 15 },
+  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 53, left: 79, w: 12, h: 15 },
+  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 40, left: 2,  w: 13, h: 17 },
+  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 40, left: 85, w: 13, h: 17 },
 ];
 
 const TeethMap = () => {
@@ -116,40 +95,42 @@ const TeethMap = () => {
         </p>
       </div>
 
-      {/* ── Image map ── */}
+      {/* ── Image map (circle only, legend shown separately below) ── */}
       <div className="teeth-image-map-container">
-        <img
-          src="/dentes-leite.png"
-          alt="Mapa de Dentes de Leite"
-          className="teeth-base-image"
-          draggable={false}
-        />
+        <div className="teeth-image-clip">
+          <img
+            src="/dentes-leite.png"
+            alt="Mapa de Dentes de Leite"
+            className="teeth-base-image"
+            draggable={false}
+          />
 
-        {/* Clickable hotspots overlaid on image */}
-        {TEETH.map(tooth => {
-          const isErupted = !!teethingData[tooth.id];
-          const color = ORDER_COLORS[tooth.order];
-          return (
-            <button
-              key={tooth.id}
-              className={`tooth-hotspot ${isErupted ? 'tooth-erupted' : ''}`}
-              style={{
-                top: `${tooth.top}%`,
-                left: `${tooth.left}%`,
-                width: `${tooth.w}%`,
-                height: `${tooth.h}%`,
-                borderColor: color,
-                backgroundColor: isErupted ? `${color}55` : 'transparent',
-              }}
-              onClick={() => openModal(tooth)}
-              title={tooth.label}
-            >
-              {isErupted && (
-                <span className="tooth-check">✓</span>
-              )}
-            </button>
-          );
-        })}
+          {/* Clickable hotspots overlaid on image */}
+          {TEETH.map(tooth => {
+            const isErupted = !!teethingData[tooth.id];
+            const color = ORDER_COLORS[tooth.order];
+            return (
+              <button
+                key={tooth.id}
+                className={`tooth-hotspot ${isErupted ? 'tooth-erupted' : ''}`}
+                style={{
+                  top: `${tooth.top}%`,
+                  left: `${tooth.left}%`,
+                  width: `${tooth.w}%`,
+                  height: `${tooth.h}%`,
+                  borderColor: color,
+                  backgroundColor: isErupted ? `${color}55` : 'transparent',
+                }}
+                onClick={() => openModal(tooth)}
+                title={tooth.label}
+              >
+                {isErupted && (
+                  <span className="tooth-check">✓</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* ── Legend ── */}

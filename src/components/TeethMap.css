@@ -70,16 +70,23 @@
 .teeth-image-map-container {
   position: relative;
   width: 100%;
-  max-width: 520px;
+  max-width: 420px;
   margin: 0 auto;
   user-select: none;
 }
 
-.teeth-base-image {
+/* Clip the image to show only the circle (left ~62% of the 1024x687 image) */
+.teeth-image-clip {
+  position: relative;
   width: 100%;
+  overflow: hidden;
+}
+
+.teeth-base-image {
+  width: 162%;   /* show full image wider, let clip hide the right part */
+  max-width: none;
   height: auto;
   display: block;
-  border-radius: 16px;
 }
 
 .tooth-hotspot {
