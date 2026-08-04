@@ -2,121 +2,128 @@ import { useState, useEffect } from 'react';
 import { X, Calendar as CalendarIcon, Trash2 } from 'lucide-react';
 import './TeethMap.css';
 
+// ── Legend based on reference image ───────────────────────────────────────────
 const LEGEND = [
-  { num: 1, months: '6-10 meses' },
-  { num: 2, months: '7-12 meses' },
-  { num: 3, months: '9-13 meses' },
-  { num: 4, months: '7-16 meses' },
-  { num: 5, months: '13-19 meses' },
-  { num: 6, months: '12-18 meses' },
-  { num: 7, months: '16-22 meses' },
-  { num: 8, months: '16-23 meses' },
-  { num: 9, months: '20-31 meses' },
-  { num: 10, months: '25-33 meses' },
+  { num: 1, label: 'Entre os 6 e 8 meses',    desc: 'Dois incisivos inferiores centrais', color: '#4CAF50' },
+  { num: 2, label: 'Por volta dos 8 meses',    desc: 'Dois incisivos superiores centrais', color: '#2196F3' },
+  { num: 3, label: 'Entre os 8 e 12 meses',    desc: 'Dois incisivos superiores laterais', color: '#2196F3' },
+  { num: 4, label: 'Entre os 10 e 12 meses',   desc: 'Dois incisivos inferiores laterais', color: '#4CAF50' },
+  { num: 5, label: 'Entre os 14 e 20 meses',   desc: 'Quatro primeiros molares',           color: '#FF9800' },
+  { num: 6, label: 'Entre os 18 e 24 meses',   desc: 'Quatro caninos',                     color: '#E91E63' },
+  { num: 7, label: 'Entre os 2 e 3 anos',      desc: 'Quatro segundos molares',            color: '#FF9800' },
 ];
 
-// SVG canvas: 400 x 420
-// Upper arch center: (200, 210), radius 155
-// Lower arch center: (200, 210), radius 155
-// Teeth are placed along an ellipse arc
+// Color per order number
+const ORDER_COLORS = {
+  1: '#4CAF50',
+  2: '#2196F3',
+  3: '#2196F3',
+  4: '#4CAF50',
+  5: '#FF9800',
+  6: '#E91E63',
+  7: '#FF9800',
+};
 
-// Upper teeth: angles from 200° to 340° (left to right from viewer's perspective)
-// Lower teeth: angles from 20° to 160°
+// ── Teeth definition (20 total, circular layout) ───────────────────────────────
+// Angles: 0° = right, going clockwise
+// Upper teeth (top of circle): 210° → 330° (left to right from viewer)
+// Lower teeth (bottom of circle): 30° → 150°
 
-function toothPosition(cx, cy, rx, ry, angleDeg) {
+// SVG center and radius
+const CX = 210, CY = 210, R_GUM = 190, R_TEETH = 155, R_BADGE = 120;
+
+function pos(cx, cy, r, angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;
-  return {
-    x: cx + rx * Math.cos(rad),
-    y: cy + ry * Math.sin(rad),
-  };
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
 }
 
-// Upper arch: 10 teeth, spread from 215° to 325°
-const upperAngles = [215, 228, 242, 257, 271, 289, 303, 318, 332, 345];
-// Lower arch: 10 teeth, spread from 35° to 145°
-const lowerAngles = [35, 48, 57, 71, 89, 107, 121, 135, 148, 161];
-
-const CX = 200, CY_UP = 185, CY_LOW = 235;
-const RX = 155, RY = 110;
-// Number badge offset inward from the tooth (toward center)
-const NUM_RX = 125, NUM_RY = 82;
+// Upper teeth: angles 210→330, 10 teeth evenly spaced
+// Lower teeth: angles 30→150, 10 teeth evenly spaced
+const UP_ANGLES   = [210, 222, 234, 246, 258, 282, 294, 306, 318, 330];
+const LOW_ANGLES  = [30,   42,  54,  66,  78, 102, 114, 126, 138, 150];
 
 const UPPER_TEETH = [
-  { id: 't1',  label: '2º Molar Sup. Dir.',       order: 10, size: 'molar',   cross: true  },
-  { id: 't2',  label: '1º Molar Sup. Dir.',        order: 6,  size: 'molar',   cross: false },
-  { id: 't3',  label: 'Canino Sup. Dir.',          order: 7,  size: 'canine',  cross: false },
-  { id: 't4',  label: 'Incisivo Lat. Sup. Dir.',   order: 3,  size: 'incisor', cross: false },
-  { id: 't5',  label: 'Incisivo Cent. Sup. Dir.',  order: 2,  size: 'incisor', cross: false },
-  { id: 't6',  label: 'Incisivo Cent. Sup. Esq.',  order: 2,  size: 'incisor', cross: false },
-  { id: 't7',  label: 'Incisivo Lat. Sup. Esq.',   order: 3,  size: 'incisor', cross: false },
-  { id: 't8',  label: 'Canino Sup. Esq.',          order: 7,  size: 'canine',  cross: false },
-  { id: 't9',  label: '1º Molar Sup. Esq.',        order: 6,  size: 'molar',   cross: false },
-  { id: 't10', label: '2º Molar Sup. Esq.',        order: 10, size: 'molar',   cross: true  },
+  { id: 'u0',  label: '2º Molar Sup. Dir.',       order: 7, shape: 'molar'   },
+  { id: 'u1',  label: '1º Molar Sup. Dir.',        order: 5, shape: 'molar'   },
+  { id: 'u2',  label: 'Canino Sup. Dir.',          order: 6, shape: 'canine'  },
+  { id: 'u3',  label: 'Incisivo Lat. Sup. Dir.',   order: 3, shape: 'incisor' },
+  { id: 'u4',  label: 'Incisivo Cent. Sup. Dir.',  order: 2, shape: 'incisor' },
+  { id: 'u5',  label: 'Incisivo Cent. Sup. Esq.',  order: 2, shape: 'incisor' },
+  { id: 'u6',  label: 'Incisivo Lat. Sup. Esq.',   order: 3, shape: 'incisor' },
+  { id: 'u7',  label: 'Canino Sup. Esq.',          order: 6, shape: 'canine'  },
+  { id: 'u8',  label: '1º Molar Sup. Esq.',        order: 5, shape: 'molar'   },
+  { id: 'u9',  label: '2º Molar Sup. Esq.',        order: 7, shape: 'molar'   },
 ].map((t, i) => ({
   ...t,
-  ...toothPosition(CX, CY_UP, RX, RY, upperAngles[i]),
-  angle: upperAngles[i],
-  numPos: toothPosition(CX, CY_UP, NUM_RX, NUM_RY, upperAngles[i]),
+  angle: UP_ANGLES[i],
+  pos: pos(CX, CY, R_TEETH, UP_ANGLES[i]),
+  badgePos: pos(CX, CY, R_BADGE, UP_ANGLES[i]),
+  color: ORDER_COLORS[t.order],
 }));
 
 const LOWER_TEETH = [
-  { id: 'b1',  label: '2º Molar Inf. Dir.',        order: 9,  size: 'molar',   cross: true  },
-  { id: 'b2',  label: '1º Molar Inf. Dir.',        order: 5,  size: 'molar',   cross: true  },
-  { id: 'b3',  label: 'Canino Inf. Dir.',          order: 8,  size: 'canine',  cross: false },
-  { id: 'b4',  label: 'Incisivo Lat. Inf. Dir.',   order: 4,  size: 'incisor', cross: false },
-  { id: 'b5',  label: 'Incisivo Cent. Inf. Dir.',  order: 1,  size: 'incisor', cross: false },
-  { id: 'b6',  label: 'Incisivo Cent. Inf. Esq.',  order: 1,  size: 'incisor', cross: false },
-  { id: 'b7',  label: 'Incisivo Lat. Inf. Esq.',   order: 4,  size: 'incisor', cross: false },
-  { id: 'b8',  label: 'Canino Inf. Esq.',          order: 8,  size: 'canine',  cross: false },
-  { id: 'b9',  label: '1º Molar Inf. Esq.',        order: 5,  size: 'molar',   cross: true  },
-  { id: 'b10', label: '2º Molar Inf. Esq.',        order: 9,  size: 'molar',   cross: true  },
+  { id: 'l0',  label: '2º Molar Inf. Dir.',        order: 7, shape: 'molar'   },
+  { id: 'l1',  label: '1º Molar Inf. Dir.',        order: 5, shape: 'molar'   },
+  { id: 'l2',  label: 'Canino Inf. Dir.',          order: 6, shape: 'canine'  },
+  { id: 'l3',  label: 'Incisivo Lat. Inf. Dir.',   order: 4, shape: 'incisor' },
+  { id: 'l4',  label: 'Incisivo Cent. Inf. Dir.',  order: 1, shape: 'incisor' },
+  { id: 'l5',  label: 'Incisivo Cent. Inf. Esq.',  order: 1, shape: 'incisor' },
+  { id: 'l6',  label: 'Incisivo Lat. Inf. Esq.',   order: 4, shape: 'incisor' },
+  { id: 'l7',  label: 'Canino Inf. Esq.',          order: 6, shape: 'canine'  },
+  { id: 'l8',  label: '1º Molar Inf. Esq.',        order: 5, shape: 'molar'   },
+  { id: 'l9',  label: '2º Molar Inf. Esq.',        order: 7, shape: 'molar'   },
 ].map((t, i) => ({
   ...t,
-  ...toothPosition(CX, CY_LOW, RX, RY, lowerAngles[i]),
-  angle: lowerAngles[i],
-  numPos: toothPosition(CX, CY_LOW, NUM_RX, NUM_RY, lowerAngles[i]),
+  angle: LOW_ANGLES[i],
+  pos: pos(CX, CY, R_TEETH, LOW_ANGLES[i]),
+  badgePos: pos(CX, CY, R_BADGE, LOW_ANGLES[i]),
+  color: ORDER_COLORS[t.order],
 }));
 
-function ToothShape({ size, cross, erupted, onClick, cx, cy, angle }) {
-  const toothAngle = angle + 90; // teeth point inward
-  const sizes = { molar: 22, canine: 16, incisor: 13 };
-  const r = sizes[size] || 14;
+const ALL_TEETH = [...UPPER_TEETH, ...LOWER_TEETH];
 
-  const fill = erupted ? '#fff9c4' : 'white';
-  const stroke = erupted ? '#f9a825' : '#ccc';
+// ── Tooth SVG shape ────────────────────────────────────────────────────────────
+function ToothGroup({ tooth, erupted, onClick }) {
+  const { pos: p, angle, color, shape } = tooth;
+  // Rotate to point inward (toward center)
+  const rotate = angle + 90;
+
+  const sizes = { molar: 20, canine: 15, incisor: 12 };
+  const hw = sizes[shape]; // half-width
+  const hh = shape === 'molar' ? 14 : shape === 'canine' ? 18 : 15;
+
+  const fillColor = erupted ? '#FFF9C4' : '#FFF5F0';
+  const strokeColor = color;
 
   return (
     <g
-      transform={`translate(${cx},${cy}) rotate(${toothAngle})`}
+      transform={`translate(${p.x},${p.y}) rotate(${rotate})`}
       onClick={onClick}
       style={{ cursor: 'pointer' }}
     >
-      {size === 'molar' ? (
-        <rect x={-r} y={-r * 0.65} width={r * 2} height={r * 1.3} rx={r * 0.5} fill={fill} stroke={stroke} strokeWidth="1.5" />
-      ) : size === 'canine' ? (
-        <ellipse cx={0} cy={0} rx={r * 0.7} ry={r} fill={fill} stroke={stroke} strokeWidth="1.5" />
+      {shape === 'molar' ? (
+        <rect x={-hw} y={-hh} width={hw * 2} height={hh * 2} rx={8} ry={8}
+          fill={fillColor} stroke={strokeColor} strokeWidth="2.5" />
+      ) : shape === 'canine' ? (
+        <ellipse cx={0} cy={0} rx={hw * 0.8} ry={hh}
+          fill={fillColor} stroke={strokeColor} strokeWidth="2.5" />
       ) : (
-        <rect x={-r * 0.75} y={-r * 0.6} width={r * 1.5} height={r * 1.2} rx={r * 0.4} fill={fill} stroke={stroke} strokeWidth="1.5" />
-      )}
-      {cross && (
-        <>
-          <line x1={-r * 0.5} y1={-r * 0.4} x2={r * 0.5} y2={r * 0.4} stroke={stroke} strokeWidth="1" />
-          <line x1={r * 0.5} y1={-r * 0.4} x2={-r * 0.5} y2={r * 0.4} stroke={stroke} strokeWidth="1" />
-        </>
+        <rect x={-hw} y={-hh} width={hw * 2} height={hh * 2} rx={6} ry={6}
+          fill={fillColor} stroke={strokeColor} strokeWidth="2.5" />
       )}
       {erupted && (
-        <circle cx={0} cy={0} r={r * 0.25} fill="#f9a825" opacity="0.6" />
+        <circle cx={0} cy={0} r={4} fill={strokeColor} opacity={0.5} />
       )}
     </g>
   );
 }
 
+// ── Main Component ─────────────────────────────────────────────────────────────
 const TeethMap = () => {
   const [teethingData, setTeethingData] = useState(() => {
     const saved = localStorage.getItem('sofia_denticao');
     return saved ? JSON.parse(saved) : {};
   });
-
   const [selectedTooth, setSelectedTooth] = useState(null);
   const [eruptionDate, setEruptionDate] = useState('');
 
@@ -124,11 +131,8 @@ const TeethMap = () => {
     localStorage.setItem('sofia_denticao', JSON.stringify(teethingData));
   }, [teethingData]);
 
-  const openModal = (tooth) => {
-    setSelectedTooth(tooth);
-    setEruptionDate(teethingData[tooth.id] || '');
-  };
-  const closeModal = () => { setSelectedTooth(null); setEruptionDate(''); };
+  const openModal  = (t)  => { setSelectedTooth(t); setEruptionDate(teethingData[t.id] || ''); };
+  const closeModal = ()   => { setSelectedTooth(null); setEruptionDate(''); };
 
   const saveToothDate = (e) => {
     e.preventDefault();
@@ -142,89 +146,58 @@ const TeethMap = () => {
     closeModal();
   };
 
-  const allTeeth = [...UPPER_TEETH, ...LOWER_TEETH];
-
   return (
     <div className="teething-illustration-layout">
 
       <div className="teething-header">
-        <h2 className="teething-title">ORDEM DE NASCIMENTO</h2>
-        <p className="teething-subtitle">Toque num dente para registar!</p>
+        <h2 className="teething-title">Dentes de Leite</h2>
+        <p className="teething-subtitle">Toque num dente para registar a data!</p>
       </div>
 
       <div className="teething-main-content">
 
-        {/* SVG Mouth Map */}
+        {/* ── SVG Circular Map ── */}
         <div className="teething-svg-wrap">
-          <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg" className="teething-svg">
+          <svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" className="teething-svg">
 
-            {/* Upper gum arch */}
-            <ellipse cx={CX} cy={CY_UP} rx={RX + 28} ry={RY + 28} fill="#d68787" opacity="0.9" />
-            <ellipse cx={CX} cy={CY_UP} rx={RX - 30} ry={RY - 35} fill="#c97474" />
+            {/* Outer gum circle */}
+            <circle cx={CX} cy={CY} r={R_GUM} fill="#e8a0a0" />
+            {/* Inner mouth void */}
+            <circle cx={CX} cy={CY} r={96} fill="#f5e6d3" />
 
-            {/* Lower gum arch */}
-            <ellipse cx={CX} cy={CY_LOW} rx={RX + 28} ry={RY + 28} fill="#d68787" opacity="0.9" />
-            <ellipse cx={CX} cy={CY_LOW} rx={RX - 30} ry={RY - 35} fill="#c97474" />
+            {/* Center text */}
+            <text x={CX} y={CY - 8} textAnchor="middle" fontSize="22" fontWeight="800"
+              fill="#E91E63" fontFamily="Outfit, sans-serif">Dentes</text>
+            <text x={CX} y={CY + 16} textAnchor="middle" fontSize="16" fontWeight="600"
+              fill="#E91E63" fontFamily="Outfit, sans-serif">de Leite</text>
+            <text x={CX} y={CY + 38} textAnchor="middle" fontSize="11"
+              fill="#c97474" fontFamily="Outfit, sans-serif">
+              {20 - Object.keys(teethingData).length} por nascer
+            </text>
 
-            {/* Center divider label */}
-            <text x={CX} y={212} textAnchor="middle" fontSize="11" fontWeight="700" fill="#d68787" letterSpacing="2">DENTINHOS DA SOFIA</text>
-
-            {/* Upper Teeth */}
-            {UPPER_TEETH.map(tooth => (
-              <ToothShape
+            {/* All Teeth */}
+            {ALL_TEETH.map(tooth => (
+              <ToothGroup
                 key={tooth.id}
-                size={tooth.size}
-                cross={tooth.cross}
+                tooth={tooth}
                 erupted={!!teethingData[tooth.id]}
                 onClick={() => openModal(tooth)}
-                cx={tooth.x}
-                cy={tooth.y}
-                angle={tooth.angle}
               />
             ))}
 
-            {/* Lower Teeth */}
-            {LOWER_TEETH.map(tooth => (
-              <ToothShape
-                key={tooth.id}
-                size={tooth.size}
-                cross={tooth.cross}
-                erupted={!!teethingData[tooth.id]}
-                onClick={() => openModal(tooth)}
-                cx={tooth.x}
-                cy={tooth.y}
-                angle={tooth.angle}
-              />
-            ))}
-
-            {/* Upper number badges */}
-            {UPPER_TEETH.map(tooth => (
-              <g key={`num-${tooth.id}`} style={{ pointerEvents: 'none' }}>
-                <circle cx={tooth.numPos.x} cy={tooth.numPos.y} r={11} fill="#3b7d6a" />
+            {/* Order number badges */}
+            {ALL_TEETH.map(tooth => (
+              <g key={`badge-${tooth.id}`} style={{ pointerEvents: 'none' }}>
+                <circle cx={tooth.badgePos.x} cy={tooth.badgePos.y} r={12}
+                  fill={tooth.color} />
                 <text
-                  x={tooth.numPos.x}
-                  y={tooth.numPos.y + 4}
+                  x={tooth.badgePos.x}
+                  y={tooth.badgePos.y + 4}
                   textAnchor="middle"
-                  fontSize="10"
+                  fontSize="11"
                   fontWeight="800"
                   fill="white"
-                >
-                  {tooth.order}
-                </text>
-              </g>
-            ))}
-
-            {/* Lower number badges */}
-            {LOWER_TEETH.map(tooth => (
-              <g key={`num-${tooth.id}`} style={{ pointerEvents: 'none' }}>
-                <circle cx={tooth.numPos.x} cy={tooth.numPos.y} r={11} fill="#3b7d6a" />
-                <text
-                  x={tooth.numPos.x}
-                  y={tooth.numPos.y + 4}
-                  textAnchor="middle"
-                  fontSize="10"
-                  fontWeight="800"
-                  fill="white"
+                  fontFamily="Outfit, sans-serif"
                 >
                   {tooth.order}
                 </text>
@@ -233,14 +206,17 @@ const TeethMap = () => {
           </svg>
         </div>
 
-        {/* Legend */}
+        {/* ── Legend ── */}
         <div className="teething-legend">
-          <h3 className="legend-title">IDADE (MESES)</h3>
+          <h3 className="legend-title">QUANDO NASCEM?</h3>
           <div className="legend-list">
             {LEGEND.map(item => (
               <div key={item.num} className="legend-item">
-                <div className="legend-number">{item.num}</div>
-                <div className="legend-text">{item.months}</div>
+                <div className="legend-number" style={{ backgroundColor: item.color }}>{item.num}</div>
+                <div>
+                  <div className="legend-text" style={{ color: item.color }}>{item.label}</div>
+                  <div className="legend-desc">{item.desc}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -248,11 +224,7 @@ const TeethMap = () => {
 
       </div>
 
-      <div className="teething-footer">
-        Faltam nascer {20 - Object.keys(teethingData).length} dentes!
-      </div>
-
-      {/* Modal */}
+      {/* ── Modal ── */}
       {selectedTooth && (
         <div className="tooth-modal-overlay" onClick={closeModal}>
           <div className="tooth-modal" onClick={e => e.stopPropagation()}>
@@ -261,12 +233,18 @@ const TeethMap = () => {
               <button className="btn-icon" onClick={closeModal}><X size={24} /></button>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#3b7d6a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ color: 'white', fontWeight: 800, fontSize: '1.1rem' }}>{selectedTooth.order}</span>
+              <div style={{
+                width: '44px', height: '44px', borderRadius: '50%',
+                background: selectedTooth.color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}>
+                <span style={{ color: 'white', fontWeight: 800, fontSize: '1.2rem' }}>{selectedTooth.order}</span>
               </div>
               <div>
                 <p style={{ fontWeight: 700, margin: 0 }}>{selectedTooth.label}</p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-light)', margin: 0 }}>Ordem típica: {selectedTooth.order}</p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-light)', margin: 0 }}>
+                  Ordem de nascimento: {selectedTooth.order}
+                </p>
               </div>
             </div>
             <form onSubmit={saveToothDate}>
@@ -279,7 +257,7 @@ const TeethMap = () => {
                   type="date"
                   className="input-field"
                   value={eruptionDate}
-                  onChange={(e) => setEruptionDate(e.target.value)}
+                  onChange={e => setEruptionDate(e.target.value)}
                   required
                 />
               </div>
