@@ -39,6 +39,7 @@
   border-collapse: separate;
   border-spacing: 0;
   text-align: left;
+  table-layout: fixed; /* Prevent columns from overflowing */
 }
 
 .executive-table th {

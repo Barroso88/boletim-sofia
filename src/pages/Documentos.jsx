@@ -5,18 +5,33 @@ import './Documentos.css';
 const Documentos = () => {
   const [documentos, setDocumentos] = useState(() => {
     const defaultDocs = [
-      { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax' },
-      { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id' },
-      { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health' },
-      { id: 4, titulo: 'Nº Segurança Social (NISS)', numero: '', type: 'social' },
+      { id: 1, titulo: 'NIF', numero: '', type: 'tax' },
+      { id: 2, titulo: 'Cartão Cidadão', numero: '', type: 'id' },
+      { id: 3, titulo: 'Nº Utente', numero: '', type: 'health' },
+      { id: 4, titulo: 'Segurança Social', numero: '', type: 'social' },
       { id: 5, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
     ];
+
+    // Title migration map: old verbose → short
+    const titleMigration = {
+      'NIF (Número de Identificação Fiscal)': 'NIF',
+      'Nº Identificação Civil (CC)': 'Cartão Cidadão',
+      'Nº Utente de Saúde': 'Nº Utente',
+      'Nº Segurança Social (NISS)': 'Segurança Social',
+    };
+
     const saved = localStorage.getItem('sofia_documentos');
     if (saved) {
       let parsed = JSON.parse(saved);
+      // Migrate old verbose titles
+      parsed = parsed.map(d => ({
+        ...d,
+        titulo: titleMigration[d.titulo] ?? d.titulo,
+      }));
+      // Add Segurança Social if missing
       if (!parsed.find(d => d.type === 'social' || (d.titulo && d.titulo.toLowerCase().includes('segurança social')))) {
         const insertIndex = parsed.findIndex(d => d.titulo && d.titulo.toLowerCase().includes('utente'));
-        const nissDoc = { id: Date.now(), titulo: 'Nº Segurança Social (NISS)', numero: '', type: 'social' };
+        const nissDoc = { id: Date.now(), titulo: 'Segurança Social', numero: '', type: 'social' };
         insertIndex !== -1 ? parsed.splice(insertIndex + 1, 0, nissDoc) : parsed.push(nissDoc);
       }
       return parsed;
@@ -132,6 +147,11 @@ const Documentos = () => {
       {/* Table — visible on all screen sizes */}
       <div className="executive-table-wrapper glass-card">
         <table className="executive-table">
+          <colgroup>
+            <col style={{ width: '42%' }} />   {/* Document name */}
+            <col style={{ width: '38%' }} />   {/* Number */}
+            <col style={{ width: '20%' }} />   {/* Actions */}
+          </colgroup>
           <thead>
             <tr>
               <th>Documento</th>
