@@ -95,12 +95,12 @@ const Documentos = () => {
   const getDocIcon = (doc) => {
     const docType = getDocType(doc);
     switch (docType) {
-      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />;
-      case 'id': return <Fingerprint size={18} />;
-      case 'health': return <Stethoscope size={18} />;
-      case 'blood': return <Droplet size={18} color="#ef4444" />;
-      case 'custom': return <CreditCard size={18} />;
-      default: return <FolderHeart size={18} />;
+      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
+      case 'id': return <Fingerprint size={24} />;
+      case 'health': return <Stethoscope size={24} />;
+      case 'blood': return <Droplet size={24} color="#ef4444" />;
+      case 'custom': return <CreditCard size={24} />;
+      default: return <FolderHeart size={24} />;
     }
   };
 
