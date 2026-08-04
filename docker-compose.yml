@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  boletim-sofia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: boletim-sofia
+    ports:
+      - "8085:80"
+    restart: unless-stopped
