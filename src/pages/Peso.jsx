@@ -116,19 +116,19 @@ const Peso = () => {
       )}
 
       {registos.length > 0 && (
-        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '1.5rem', height: '350px' }}>
-          <h3 className="h3 mb-4" style={{ fontSize: '1.1rem', color: 'var(--color-text-light)' }}>Curva de Crescimento</h3>
-          <ResponsiveContainer width="100%" height="85%">
-            <AreaChart data={chartData} margin={{ top: 15, right: 10, bottom: 0, left: -20 }}>
+        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '2rem 1.5rem', height: '380px' }}>
+          <h3 className="h3 mb-4" style={{ fontSize: '1.2rem', color: 'var(--color-primary-dark)' }}>Curva de Crescimento</h3>
+          <ResponsiveContainer width="99%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 30, right: 20, bottom: 10, left: -20 }}>
               <defs>
                 <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.6}/>
-                  <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+                  <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.8}/>
+                  <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0.05}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.25)" vertical={false} />
-              <XAxis dataKey="dataFormato" stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
-              <YAxis stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - 0.2', 'dataMax + 0.2']} tickFormatter={(value) => `${parseFloat(value).toFixed(1)}kg`} dx={-10} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.4)" vertical={false} />
+              <XAxis dataKey="dataFormato" stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} dy={15} />
+              <YAxis stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - 1', 'dataMax + 1']} tickFormatter={(value) => `${parseFloat(value).toFixed(1)}kg`} dx={-10} />
               <Tooltip 
                 contentStyle={{ borderRadius: '16px', border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.85)', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', backdropFilter: 'blur(12px)' }}
                 itemStyle={{ color: 'var(--color-primary-dark)', fontWeight: '800', fontSize: '1.2rem' }}
