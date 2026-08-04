@@ -84,7 +84,7 @@ const Documentos = () => {
 
   const getDocIcon = (type) => {
     switch (type) {
-      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />;
+      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />;
       case 'id': return <Fingerprint size={18} />;
       case 'health': return <Stethoscope size={18} />;
       case 'blood': return <Droplet size={18} color="#ef4444" />;
