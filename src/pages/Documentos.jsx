@@ -97,7 +97,7 @@ const Documentos = () => {
     switch (docType) {
       case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'id': return <img src="/cc_logo.png" alt="Cartão de Cidadão" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
-      case 'health': return <Stethoscope size={24} />;
+      case 'health': return <img src="/sns_logo.png" alt="SNS Utente de Saúde" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />;
       case 'blood': return <Droplet size={24} color="#ef4444" />;
       case 'custom': return <CreditCard size={24} />;
       default: return <FolderHeart size={24} />;
