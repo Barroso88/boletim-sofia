@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Plus, Scale, Trash2, TrendingUp, Minus } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './Peso.css';
 
 const Peso = () => {
@@ -116,36 +116,44 @@ const Peso = () => {
       )}
 
       {registos.length > 0 && (
-        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '2rem 1.5rem', height: '380px' }}>
-          <h3 className="h3 mb-4" style={{ fontSize: '1.2rem', color: 'var(--color-primary-dark)' }}>Curva de Crescimento</h3>
+        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '2rem 1.5rem', height: '350px' }}>
+          <h3 className="h3 mb-4" style={{ fontSize: '1.2rem', color: 'var(--color-primary-dark)', textAlign: 'center' }}>Evolução de Peso</h3>
           <ResponsiveContainer width="99%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 30, right: 20, bottom: 10, left: -20 }}>
-              <defs>
-                <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.8}/>
-                  <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0.05}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.4)" vertical={false} />
-              <XAxis dataKey="dataFormato" stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} dy={15} />
-              <YAxis stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - 1', 'dataMax + 1']} tickFormatter={(value) => `${parseFloat(value).toFixed(1)}kg`} dx={-10} />
-              <Tooltip 
-                contentStyle={{ borderRadius: '16px', border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.85)', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', backdropFilter: 'blur(12px)' }}
-                itemStyle={{ color: 'var(--color-primary-dark)', fontWeight: '800', fontSize: '1.2rem' }}
-                formatter={(value) => [`${value} kg`, 'Peso']}
-                labelStyle={{ color: 'var(--color-text-light)', marginBottom: '4px', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.05em', fontWeight: 'bold' }}
-                cursor={{ stroke: 'rgba(255,255,255,0.6)', strokeWidth: 2, strokeDasharray: '5 5' }}
+            <LineChart data={chartData} margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
+              <XAxis 
+                dataKey="dataFormato" 
+                stroke="var(--color-text-light)" 
+                fontSize={12} 
+                tickLine={false} 
+                axisLine={false} 
+                dy={15} 
               />
-              <Area 
+              <YAxis 
+                stroke="var(--color-text-light)" 
+                fontSize={12} 
+                tickLine={false} 
+                axisLine={false} 
+                domain={['dataMin - 0.5', 'dataMax + 0.5']} 
+                tickFormatter={(value) => `${parseFloat(value).toFixed(1)}kg`} 
+                dx={-10} 
+              />
+              <Tooltip 
+                contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--color-surface)', boxShadow: 'var(--shadow-md)', padding: '10px 15px' }}
+                itemStyle={{ color: 'var(--color-primary-dark)', fontWeight: 'bold', fontSize: '1.1rem' }}
+                formatter={(value) => [`${value} kg`, 'Peso']}
+                labelStyle={{ color: 'var(--color-text-light)', marginBottom: '5px', fontSize: '0.8rem', textTransform: 'uppercase' }}
+                cursor={{ stroke: 'var(--color-primary-light)', strokeWidth: 1, strokeDasharray: '4 4' }}
+              />
+              <Line 
                 type="monotone" 
                 dataKey="peso" 
                 stroke="var(--color-primary)" 
-                strokeWidth={4}
-                fillOpacity={1}
-                fill="url(#colorWeight)"
-                activeDot={{ r: 6, fill: 'var(--color-primary)', stroke: 'white', strokeWidth: 3, style: { filter: 'drop-shadow(0 0 10px rgba(225,29,72,0.8))' } }} 
+                strokeWidth={3}
+                dot={{ r: 4, fill: '#fff', stroke: 'var(--color-primary)', strokeWidth: 2 }}
+                activeDot={{ r: 7, fill: 'var(--color-primary)', stroke: '#fff', strokeWidth: 2, style: { filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' } }} 
               />
-            </AreaChart>
+            </LineChart>
           </ResponsiveContainer>
         </div>
       )}
