@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { differenceInMonths, differenceInDays, differenceInYears, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Calendar, Syringe } from 'lucide-react';
+import { api } from '../services/api';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -22,10 +23,7 @@ const Dashboard = () => {
   const [eventos, setEventos] = useState([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('sofia_agenda');
-    if (saved) {
-      setEventos(JSON.parse(saved));
-    }
+    api.getAgenda().then(data => setEventos(data));
   }, []);
 
   // Filter and Sort Logic

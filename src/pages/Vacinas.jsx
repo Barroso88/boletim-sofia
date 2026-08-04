@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Syringe, CheckCircle, Circle } from 'lucide-react';
+import { api } from '../services/api';
 import './Vacinas.css';
 
 const defaultVacinas = [
@@ -16,20 +17,18 @@ const defaultVacinas = [
 ];
 
 const Vacinas = () => {
-  const [vacinas, setVacinas] = useState(() => {
-    const saved = localStorage.getItem('sofia_vacinas');
-    if (saved) return JSON.parse(saved);
-    return defaultVacinas;
-  });
+  const [vacinas, setVacinas] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem('sofia_vacinas', JSON.stringify(vacinas));
-  }, [vacinas]);
+    api.getVacinas(defaultVacinas).then(data => setVacinas(data));
+  }, []);
 
   const toggleTomada = (id) => {
-    setVacinas(vacinas.map(v => 
+    const novaLista = vacinas.map(v => 
       v.id === id ? { ...v, tomada: !v.tomada } : v
-    ));
+    );
+    setVacinas(novaLista);
+    api.toggleVacina(id, novaLista);
   };
 
   // Group by 'grupo'

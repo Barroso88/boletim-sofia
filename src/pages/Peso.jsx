@@ -3,25 +3,19 @@ import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Plus, Scale, Trash2, TrendingUp, TrendingDown, Minus, AlertTriangle, X } from 'lucide-react';
 import WeightChart from '../components/WeightChart';
+import { api } from '../services/api';
 import './Peso.css';
 
 const Peso = () => {
-  const [registos, setRegistos] = useState(() => {
-    const saved = localStorage.getItem('sofia_peso');
-    if (saved) return JSON.parse(saved);
-    return [];
-  });
-
+  const [registos, setRegistos] = useState([]);
   const [adicionando, setAdicionando] = useState(false);
   const [novaData, setNovaData] = useState('');
   const [novoPeso, setNovoPeso] = useState('');
-
-  // Delete confirmation modal
-  const [confirmarDelete, setConfirmarDelete] = useState(null); // holds the id to delete
+  const [confirmarDelete, setConfirmarDelete] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('sofia_peso', JSON.stringify(registos));
-  }, [registos]);
+    api.getPesos().then(data => setRegistos(data));
+  }, []);
 
   const adicionarRegisto = (e) => {
     e.preventDefault();
@@ -32,6 +26,7 @@ const Peso = () => {
       peso: parseFloat(novoPeso),
     };
     setRegistos(prev => [...prev, registo]);
+    api.savePeso(registo);
     setAdicionando(false);
     setNovaData('');
     setNovoPeso('');
@@ -40,7 +35,9 @@ const Peso = () => {
   const confirmarRemocao = (id) => setConfirmarDelete(id);
 
   const removerRegisto = () => {
-    setRegistos(prev => prev.filter(r => r.id !== confirmarDelete));
+    const idToDelete = confirmarDelete;
+    setRegistos(prev => prev.filter(r => r.id !== idToDelete));
+    api.deletePeso(idToDelete);
     setConfirmarDelete(null);
   };
 

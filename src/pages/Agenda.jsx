@@ -2,25 +2,21 @@ import { useState, useEffect } from 'react';
 import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { api } from '../services/api';
 import './Agenda.css';
 
 const Agenda = () => {
-  const [eventos, setEventos] = useState(() => {
-    const saved = localStorage.getItem('sofia_agenda');
-    if (saved) return JSON.parse(saved);
-    return [];
-  });
-  
+  const [eventos, setEventos] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [adicionando, setAdicionando] = useState(false);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novaHora, setNovaHora] = useState('09:00');
-  const [novoTipo, setNovoTipo] = useState('Consulta'); // 'Consulta' ou 'Vacina'
+  const [novoTipo, setNovoTipo] = useState('Consulta');
 
   useEffect(() => {
-    localStorage.setItem('sofia_agenda', JSON.stringify(eventos));
-  }, [eventos]);
+    api.getAgenda().then(data => setEventos(data));
+  }, []);
 
   // --- Calendar Logic ---
   const monthStart = startOfMonth(currentMonth);
@@ -43,7 +39,6 @@ const Agenda = () => {
     e.preventDefault();
     if (!novoTitulo || !novaHora || !selectedDate) return;
     
-    // Combine selectedDate with novaHora
     const [hours, minutes] = novaHora.split(':');
     const dataComHora = new Date(selectedDate);
     dataComHora.setHours(parseInt(hours, 10));
@@ -56,9 +51,9 @@ const Agenda = () => {
       tipo: novoTipo
     };
     
-    // Sort by date ascending
     const novaLista = [...eventos, evento].sort((a, b) => new Date(a.data) - new Date(b.data));
     setEventos(novaLista);
+    api.saveEvento(evento);
     setAdicionando(false);
     setNovoTitulo('');
     setNovaHora('09:00');
@@ -67,6 +62,7 @@ const Agenda = () => {
   const removerEvento = (id) => {
     if (window.confirm('Tem a certeza que deseja remover este evento?')) {
       setEventos(eventos.filter(e => e.id !== id));
+      api.deleteEvento(id);
     }
   };
 

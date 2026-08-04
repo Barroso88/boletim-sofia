@@ -1,59 +1,29 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet } from 'lucide-react';
+import { api } from '../services/api';
 import './Documentos.css';
 
+const defaultDocs = [
+  { id: 1, titulo: 'NIF', numero: '', type: 'tax' },
+  { id: 2, titulo: 'Cartão Cidadão', numero: '', type: 'id' },
+  { id: 3, titulo: 'Nº Utente', numero: '', type: 'health' },
+  { id: 4, titulo: 'Segurança Social', numero: '', type: 'social' },
+  { id: 5, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
+];
+
 const Documentos = () => {
-  const [documentos, setDocumentos] = useState(() => {
-    const defaultDocs = [
-      { id: 1, titulo: 'NIF', numero: '', type: 'tax' },
-      { id: 2, titulo: 'Cartão Cidadão', numero: '', type: 'id' },
-      { id: 3, titulo: 'Nº Utente', numero: '', type: 'health' },
-      { id: 4, titulo: 'Segurança Social', numero: '', type: 'social' },
-      { id: 5, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
-    ];
-
-    // Title migration map: old verbose → short
-    const titleMigration = {
-      'NIF (Número de Identificação Fiscal)': 'NIF',
-      'Nº Identificação Civil (CC)': 'Cartão Cidadão',
-      'Nº Utente de Saúde': 'Nº Utente',
-      'Nº Segurança Social (NISS)': 'Segurança Social',
-    };
-
-    const saved = localStorage.getItem('sofia_documentos');
-    if (saved) {
-      let parsed = JSON.parse(saved);
-      // Migrate old verbose titles
-      parsed = parsed.map(d => ({
-        ...d,
-        titulo: titleMigration[d.titulo] ?? d.titulo,
-      }));
-      // Add Segurança Social if missing
-      if (!parsed.find(d => d.type === 'social' || (d.titulo && d.titulo.toLowerCase().includes('segurança social')))) {
-        const insertIndex = parsed.findIndex(d => d.titulo && d.titulo.toLowerCase().includes('utente'));
-        const nissDoc = { id: Date.now(), titulo: 'Segurança Social', numero: '', type: 'social' };
-        insertIndex !== -1 ? parsed.splice(insertIndex + 1, 0, nissDoc) : parsed.push(nissDoc);
-      }
-      return parsed;
-    }
-    return defaultDocs;
-  });
-
-  // Edit modal state
-  const [editDoc, setEditDoc] = useState(null);   // doc being edited
+  const [documentos, setDocumentos] = useState([]);
+  const [editDoc, setEditDoc] = useState(null);
   const [editTitulo, setEditTitulo] = useState('');
   const [editNumero, setEditNumero] = useState('');
-
-  // Add new doc form
   const [adicionandoNovo, setAdicionandoNovo] = useState(false);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novoNumero, setNovoNumero] = useState('');
-
   const [copiadoId, setCopiadoId] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('sofia_documentos', JSON.stringify(documentos));
-  }, [documentos]);
+    api.getDocumentos(defaultDocs).then(data => setDocumentos(data));
+  }, []);
 
   const abrirEdicao = (doc) => {
     setEditDoc(doc);
@@ -63,9 +33,11 @@ const Documentos = () => {
 
   const guardarEdicao = () => {
     if (!editDoc) return;
-    setDocumentos(documentos.map(doc =>
+    const novaLista = documentos.map(doc =>
       doc.id === editDoc.id ? { ...doc, titulo: editTitulo, numero: editNumero } : doc
-    ));
+    );
+    setDocumentos(novaLista);
+    api.updateDocumento(editDoc.id, editTitulo, editNumero, novaLista);
     setEditDoc(null);
   };
 
@@ -73,7 +45,9 @@ const Documentos = () => {
     e.preventDefault();
     if (novoTitulo.trim() === '') return;
     const novoDoc = { id: Date.now(), titulo: novoTitulo, numero: novoNumero, type: 'custom' };
-    setDocumentos([...documentos, novoDoc]);
+    const novaLista = [...documentos, novoDoc];
+    setDocumentos(novaLista);
+    api.saveDocumentos(novaLista);
     setAdicionandoNovo(false);
     setNovoTitulo('');
     setNovoNumero('');
@@ -81,7 +55,9 @@ const Documentos = () => {
 
   const removerDocumento = (id) => {
     if (window.confirm('Tem a certeza que deseja remover este documento?')) {
-      setDocumentos(documentos.filter(doc => doc.id !== id));
+      const novaLista = documentos.filter(doc => doc.id !== id);
+      setDocumentos(novaLista);
+      api.deleteDocumento(id, novaLista);
     }
   };
 

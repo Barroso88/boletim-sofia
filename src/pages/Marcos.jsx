@@ -3,19 +3,13 @@ import { Plus, Trash2, Star, Calendar, AlertTriangle, X } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import TeethMap from '../components/TeethMap';
+import { api } from '../services/api';
 import './Marcos.css';
 
 const ICONS = ['👶', '🌟', '👣', '🗣️', '🦷', '🍼', '🧸', '🎉', '✈️', '❤️', '🎂', '🏥', '💉', '🌈', '🐣', '👏'];
 
 const Marcos = () => {
-  const [marcos, setMarcos] = useState(() => {
-    const saved = localStorage.getItem('sofia_marcos');
-    if (saved) return JSON.parse(saved);
-    return [
-      { id: 1, titulo: 'Nasceu!', data: '2026-07-13', descricao: 'O dia mais feliz das nossas vidas.', icone: '👶' }
-    ];
-  });
-
+  const [marcos, setMarcos] = useState([]);
   const [adicionando, setAdicionando] = useState(false);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novaData, setNovaData] = useState('');
@@ -25,8 +19,16 @@ const Marcos = () => {
   const [confirmarDelete, setConfirmarDelete] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('sofia_marcos', JSON.stringify(marcos));
-  }, [marcos]);
+    api.getMarcos().then(data => {
+      if (data.length === 0) {
+        const defaultMarco = { id: 1, titulo: 'Nasceu!', data: '2026-07-13', descricao: 'O dia mais feliz das nossas vidas.', icone: '👶' };
+        setMarcos([defaultMarco]);
+        api.saveMarco(defaultMarco);
+      } else {
+        setMarcos(data);
+      }
+    });
+  }, []);
 
   const adicionarMarco = (e) => {
     e.preventDefault();
@@ -34,12 +36,15 @@ const Marcos = () => {
     const marco = { id: Date.now(), titulo: novoTitulo, data: novaData, descricao: novaDescricao, icone: novoIcone };
     const novaLista = [...marcos, marco].sort((a, b) => new Date(a.data) - new Date(b.data));
     setMarcos(novaLista);
+    api.saveMarco(marco);
     setAdicionando(false);
     setNovoTitulo(''); setNovaData(''); setNovaDescricao(''); setNovoIcone('🌟');
   };
 
   const removerMarco = () => {
-    setMarcos(prev => prev.filter(m => m.id !== confirmarDelete));
+    const idToDelete = confirmarDelete;
+    setMarcos(prev => prev.filter(m => m.id !== idToDelete));
+    api.deleteMarco(idToDelete);
     setConfirmarDelete(null);
   };
 
