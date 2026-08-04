@@ -3,16 +3,16 @@ import { Settings, Palette, CheckCircle } from 'lucide-react';
 import './Definicoes.css';
 
 const THEMES = [
-  { id: 'rosegold', name: 'Rose Gold', primary: '#F43F5E', bg: '#F8FAFC' },
-  { id: 'ocean', name: 'Ocean Blue', primary: '#0EA5E9', bg: '#F0F9FF' },
-  { id: 'forest', name: 'Forest Green', primary: '#10B981', bg: '#F0FDF4' },
-  { id: 'lavender', name: 'Lavender Purple', primary: '#A855F7', bg: '#FAF5FF' },
-  { id: 'sunflower', name: 'Sunflower Yellow', primary: '#EAB308', bg: '#FEFCE8' },
-  { id: 'midnight', name: 'Midnight Dark', primary: '#6366F1', bg: '#0F172A' },
-  { id: 'mocha', name: 'Mocha Brown', primary: '#A8A29E', bg: '#FAFAF9' },
-  { id: 'sunset', name: 'Sunset Orange', primary: '#F97316', bg: '#FFF7ED' },
-  { id: 'mint', name: 'Mint Green', primary: '#14B8A6', bg: '#F0FDFA' },
-  { id: 'cherry', name: 'Cherry Red', primary: '#DC2626', bg: '#FEF2F2' },
+  { id: 'rosegold', name: 'Rose Gold', primary: '#F43F5E', secondary: '#FB923C', bg: '#FFF5F7' },
+  { id: 'ocean', name: 'Ocean Blue', primary: '#0284C7', secondary: '#6366F1', bg: '#E0F2FE' },
+  { id: 'forest', name: 'Forest Green', primary: '#059669', secondary: '#0D9488', bg: '#DCFCE7' },
+  { id: 'lavender', name: 'Lavender Purple', primary: '#9333EA', secondary: '#EC4899', bg: '#F3E8FF' },
+  { id: 'sunflower', name: 'Sunflower Amber', primary: '#D97706', secondary: '#EA580C', bg: '#FEF3C7' },
+  { id: 'midnight', name: 'Midnight Dark', primary: '#6366F1', secondary: '#F43F5E', bg: '#0B132B' },
+  { id: 'mocha', name: 'Mocha Cream', primary: '#87431D', secondary: '#D97706', bg: '#F5EBE6' },
+  { id: 'sunset', name: 'Sunset Orange', primary: '#EA580C', secondary: '#E11D48', bg: '#FFEDD5' },
+  { id: 'mint', name: 'Mint Fresh', primary: '#0D9488', secondary: '#10B981', bg: '#CCFBF1' },
+  { id: 'cherry', name: 'Cherry Ruby', primary: '#E11D48', secondary: '#F43F5E', bg: '#FFE4E6' },
 ];
 
 const Definicoes = () => {
@@ -61,10 +61,10 @@ const Definicoes = () => {
                   className="theme-preview"
                   style={{ backgroundColor: theme.bg }}
                 >
-                  <div className="theme-color-circle" style={{ backgroundColor: theme.primary }}></div>
+                  <div className="theme-color-swatch" style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}></div>
                   <div className="theme-fake-card">
-                    <div className="fake-line" style={{ width: '40%' }}></div>
-                    <div className="fake-line" style={{ width: '80%' }}></div>
+                    <div className="fake-line" style={{ width: '40%', background: theme.primary }}></div>
+                    <div className="fake-line" style={{ width: '70%' }}></div>
                   </div>
                   
                   {activeTheme === theme.id && (

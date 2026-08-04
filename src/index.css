@@ -5,116 +5,129 @@
   --color-primary-light: #FDA4AF;
   --color-primary-dark: #E11D48;
   --color-secondary: #FB923C; /* Orange 400 */
-  --color-bg: #F8FAFC;
+  --color-bg: #FFF5F7; /* Soft Vibrant Pink Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #FDFDFD;
+  --color-surface-hover: #FFF1F2;
   --color-text: #0F172A;
   --color-text-light: #64748B;
-  --color-border: rgba(15, 23, 42, 0.06);
+  --color-border: rgba(244, 63, 94, 0.14);
 }
 
 [data-theme="ocean"] {
-  --color-primary: #0EA5E9; /* Sky 500 */
-  --color-primary-light: #7DD3FC;
-  --color-primary-dark: #0284C7;
-  --color-secondary: #8B5CF6; /* Violet 500 */
-  --color-bg: #F0F9FF; /* Sky 50 */
+  --color-primary: #0284C7; /* Rich Sky Blue */
+  --color-primary-light: #38BDF8;
+  --color-primary-dark: #0369A1;
+  --color-secondary: #6366F1; /* Indigo Accent */
+  --color-bg: #E0F2FE; /* Vivid Ocean Blue Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F8FAFC;
-  --color-text: #082F49; /* Sky 900 */
-  --color-text-light: #38BDF8; /* Sky 400 */
-  --color-border: rgba(14, 165, 233, 0.1);
+  --color-surface-hover: #F0F9FF;
+  --color-text: #0C4A6E; /* Ocean Deep */
+  --color-text-light: #0369A1;
+  --color-border: rgba(2, 132, 199, 0.18);
 }
 
 [data-theme="forest"] {
-  --color-primary: #10B981; /* Emerald 500 */
-  --color-primary-light: #6EE7B7;
-  --color-primary-dark: #059669;
-  --color-secondary: #0D9488; /* Teal 600 */
-  --color-bg: #F0FDF4; /* Green 50 */
+  --color-primary: #059669; /* Emerald Green */
+  --color-primary-light: #34D399;
+  --color-primary-dark: #047857;
+  --color-secondary: #0D9488; /* Teal Accent */
+  --color-bg: #DCFCE7; /* Vivid Mint Green Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F8FAFC;
-  --color-text: #064E3B; /* Emerald 900 */
-  --color-text-light: #34D399; /* Emerald 400 */
-  --color-border: rgba(16, 185, 129, 0.1);
+  --color-surface-hover: #F0FDF4;
+  --color-text: #064E3B;
+  --color-text-light: #047857;
+  --color-border: rgba(5, 150, 105, 0.18);
 }
 
 [data-theme="lavender"] {
-  --color-primary: #A855F7; /* Purple 500 */
-  --color-primary-light: #D8B4FE;
+  --color-primary: #9333EA; /* Royal Purple */
+  --color-primary-light: #C084FC;
   --color-primary-dark: #7E22CE;
-  --color-secondary: #EC4899; /* Pink 500 */
-  --color-bg: #FAF5FF; /* Purple 50 */
+  --color-secondary: #EC4899; /* Pink Accent */
+  --color-bg: #F3E8FF; /* Vivid Purple Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F8FAFC;
-  --color-text: #3B0764; /* Purple 900 */
-  --color-text-light: #C084FC; /* Purple 400 */
-  --color-border: rgba(168, 85, 247, 0.1);
+  --color-surface-hover: #FAF5FF;
+  --color-text: #3B0764;
+  --color-text-light: #7E22CE;
+  --color-border: rgba(147, 51, 234, 0.18);
 }
 
 [data-theme="sunflower"] {
-  --color-primary: #EAB308; /* Yellow 500 */
-  --color-primary-light: #FDE047;
-  --color-primary-dark: #CA8A04;
-  --color-secondary: #F97316; /* Orange 500 */
-  --color-bg: #FEFCE8; /* Yellow 50 */
+  --color-primary: #D97706; /* Warm Amber Sunflower */
+  --color-primary-light: #FBBF24;
+  --color-primary-dark: #B45309;
+  --color-secondary: #EA580C; /* Tangerine Accent */
+  --color-bg: #FEF3C7; /* Vivid Warm Yellow Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F8FAFC;
-  --color-text: #713F12; /* Yellow 900 */
-  --color-text-light: #FACC15; /* Yellow 400 */
-  --color-border: rgba(234, 179, 8, 0.1);
+  --color-surface-hover: #FEFCE8;
+  --color-text: #451A03;
+  --color-text-light: #B45309;
+  --color-border: rgba(217, 119, 6, 0.18);
 }
 
 [data-theme="midnight"] {
-  --color-primary: #6366F1; /* Indigo 500 */
+  --color-primary: #6366F1; /* Neon Indigo */
   --color-primary-light: #818CF8;
   --color-primary-dark: #4F46E5;
-  --color-secondary: #F43F5E; /* Rose 500 */
-  --color-bg: #0F172A; /* Slate 900 */
-  --color-surface: #1E293B; /* Slate 800 */
-  --color-surface-hover: #334155; /* Slate 700 */
-  --color-text: #F8FAFC; /* Slate 50 */
-  --color-text-light: #94A3B8; /* Slate 400 */
-  --color-border: rgba(248, 250, 252, 0.1);
+  --color-secondary: #F43F5E; /* Vibrant Rose Accent */
+  --color-bg: #0B132B; /* Deep Slate Blue */
+  --color-surface: #1C2541;
+  --color-surface-hover: #29324E;
+  --color-text: #F8FAFC;
+  --color-text-light: #94A3B8;
+  --color-border: rgba(99, 102, 241, 0.25);
 }
 
 [data-theme="mocha"] {
-  --color-primary: #A8A29E; /* Stone 400 */
-  --color-primary-light: #D6D3D1;
-  --color-primary-dark: #78716C;
-  --color-secondary: #9A3412; /* Orange 800 */
-  --color-bg: #FAFAF9; /* Stone 50 */
+  --color-primary: #87431D; /* Rich Mocha Brown */
+  --color-primary-light: #B45309;
+  --color-primary-dark: #5C2C14;
+  --color-secondary: #D97706; /* Amber Accent */
+  --color-bg: #F5EBE6; /* Warm Latte Cream Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F5F5F4;
-  --color-text: #292524; /* Stone 900 */
-  --color-text-light: #A8A29E;
-  --color-border: rgba(120, 113, 108, 0.1);
+  --color-surface-hover: #FAFAF9;
+  --color-text: #2C1810;
+  --color-text-light: #78350F;
+  --color-border: rgba(135, 67, 29, 0.18);
 }
 
 [data-theme="sunset"] {
-  --color-primary: #F97316; /* Orange 500 */
-  --color-primary-light: #FDBA74;
+  --color-primary: #EA580C; /* Sunset Orange */
+  --color-primary-light: #FB923C;
   --color-primary-dark: #C2410C;
-  --color-secondary: #E11D48; /* Rose 600 */
-  --color-bg: #FFF7ED; /* Orange 50 */
+  --color-secondary: #E11D48; /* Crimson Accent */
+  --color-bg: #FFEDD5; /* Vivid Peach Orange Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #FFEDD5;
-  --color-text: #7C2D12; /* Orange 900 */
-  --color-text-light: #FB923C;
-  --color-border: rgba(249, 115, 22, 0.1);
+  --color-surface-hover: #FFF7ED;
+  --color-text: #431407;
+  --color-text-light: #C2410C;
+  --color-border: rgba(234, 88, 12, 0.18);
 }
 
 [data-theme="mint"] {
-  --color-primary: #14B8A6; /* Teal 500 */
-  --color-primary-light: #5EEAD4;
+  --color-primary: #0D9488; /* Fresh Mint Teal */
+  --color-primary-light: #2DD4BF;
   --color-primary-dark: #0F766E;
-  --color-secondary: #10B981; /* Emerald 500 */
-  --color-bg: #F0FDFA; /* Teal 50 */
+  --color-secondary: #10B981; /* Emerald Accent */
+  --color-bg: #CCFBF1; /* Vivid Fresh Mint Tint */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #CCFBF1;
-  --color-text: #134E4A; /* Teal 900 */
-  --color-text-light: #2DD4BF;
-  --color-border: rgba(20, 184, 166, 0.1);
+  --color-surface-hover: #F0FDFA;
+  --color-text: #115E59;
+  --color-text-light: #0F766E;
+  --color-border: rgba(13, 148, 136, 0.18);
+}
+
+[data-theme="cherry"] {
+  --color-primary: #E11D48; /* Crimson Cherry Red */
+  --color-primary-light: #FB7185;
+  --color-primary-dark: #BE123C;
+  --color-secondary: #F43F5E;
+  --color-bg: #FFE4E6; /* Vivid Soft Red Tint */
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #FEF2F2;
+  --color-text: #4C0519;
+  --color-text-light: #BE123C;
+  --color-border: rgba(225, 29, 72, 0.18);
 }
 
 [data-theme="cherry"] {
