@@ -105,7 +105,7 @@ const Documentos = () => {
 
       <div className="docs-grid">
         {documentos.map((doc, index) => (
-          <div key={doc.id} className="doc-card" style={{ animationDelay: `${index * 0.1}s` }}>
+          <div key={doc.id} className={`doc-card ${doc.type === 'blood' ? 'blood-card' : ''}`} style={{ animationDelay: `${index * 0.1}s` }}>
             {editandoId !== doc.id && (
               <div className="doc-actions-overlay">
                 <button 
@@ -175,7 +175,7 @@ const Documentos = () => {
               </div>
             ) : (
               <div className="doc-body">
-                <span className="doc-label">Nº Identificação</span>
+                <span className="doc-label">{doc.type === 'blood' ? 'Tipo Sanguíneo' : 'Nº Identificação'}</span>
                 <div className="doc-value-container">
                   {doc.numero ? (
                     <span className="doc-value">{doc.numero}</span>

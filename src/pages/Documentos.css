@@ -179,3 +179,39 @@
     right: 1.5rem;
   }
 }
+
+/* Blood Type Card Special Styling */
+.blood-card {
+  background: linear-gradient(135deg, #fecaca 0%, #ef4444 100%);
+  border-color: #ef4444;
+}
+
+.blood-card::before {
+  display: none;
+}
+
+.blood-card .doc-title, 
+.blood-card .doc-value, 
+.blood-card .doc-label, 
+.blood-card .doc-empty {
+  color: white;
+}
+
+.blood-card .doc-icon {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.blood-card .doc-icon svg {
+  color: white !important;
+}
+
+.blood-card .action-icon-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.blood-card .action-icon-btn:hover {
+  background: white;
+  color: #ef4444;
+}
