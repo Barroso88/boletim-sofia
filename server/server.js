@@ -359,6 +359,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Boletim da Sofia server running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Boletim da Sofia server running on http://0.0.0.0:${PORT}`);
 });
