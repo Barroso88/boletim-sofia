@@ -1,16 +1,35 @@
-# React + Vite
+# 👶 Boletim da Sofia
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web premium e moderna para acompanhamento e registo do desenvolvimento da bebé (marcos, peso, saúde, documentos e vacinas).
 
-Currently, two official plugins are available:
+## 🐳 Docker / Unraid
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+A imagem oficial Docker é construída automaticamente e publicada no GitHub Container Registry (GHCR):
 
-## React Compiler
+```text
+ghcr.io/barroso88/boletim-sofia:latest
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Como Adicionar no Unraid (Docker Container)
 
-## Expanding the ESLint configuration
+1. No Unraid, vá ao separador **Docker** -> **Add Container**.
+2. Preencha os seguintes campos:
+   - **Name**: `boletim-sofia`
+   - **Repository**: `ghcr.io/barroso88/boletim-sofia:latest`
+   - **Network Type**: `bridge`
+   - **Host Port 1**: `8085` (ou outra porta livre) -> **Container Port**: `80`
+3. Clique em **Apply**!
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Docker Compose
+
+```yaml
+version: '3.8'
+
+services:
+  boletim-sofia:
+    image: ghcr.io/barroso88/boletim-sofia:latest
+    container_name: boletim-sofia
+    ports:
+      - "8085:80"
+    restart: unless-stopped
+```
