@@ -1,273 +1,353 @@
-/* Documentos.css */
+/* Documentos.css - Executive Premium Table Design */
 
-.wallet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-  perspective: 1000px;
-}
-
-/* Base Card Style (Credit Card / ID Proportions) */
-.id-card {
-  position: relative;
-  border-radius: 20px;
-  padding: 1.5rem;
-  aspect-ratio: 1.586 / 1; /* Standard credit card ratio */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
-  box-shadow: 
-    0 15px 35px rgba(0,0,0,0.1),
-    0 5px 15px rgba(0,0,0,0.05),
-    inset 0 1px 1px rgba(255,255,255,0.4);
-  color: white;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-  animation: slideUpFade 0.6s ease forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.id-card:hover {
-  transform: translateY(-8px) rotateX(4deg) rotateY(-2deg);
-  box-shadow: 
-    -10px 25px 50px rgba(0,0,0,0.15),
-    0 10px 20px rgba(0,0,0,0.1),
-    inset 0 2px 2px rgba(255,255,255,0.6);
-}
-
-/* Card Themes */
-.card-theme-tax {
-  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-}
-.card-theme-id {
-  background: linear-gradient(135deg, #64748b 0%, #334155 100%);
-}
-.card-theme-health {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-.card-theme-blood {
-  background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
-}
-.card-theme-custom {
-  background: linear-gradient(135deg, #8b5cf6 0%, #5b21b6 100%);
-}
-
-/* Holographic Glare */
-.card-glare {
-  position: absolute;
-  top: 0; left: -100%; right: -100%; bottom: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.4) 30%,
-    transparent 35%
-  );
-  z-index: 1;
-  pointer-events: none;
-  transition: transform 0.6s ease;
-  transform: translateX(-50%);
-}
-
-.id-card:hover .card-glare {
-  transform: translateX(100%);
-}
-
-/* Background Watermark */
-.card-watermark {
-  position: absolute;
-  bottom: -20px;
-  right: -20px;
-  opacity: 0.1;
-  transform: scale(4);
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Header */
-.card-header {
-  position: relative;
-  z-index: 2;
-  align-items: flex-start;
-}
-
-.card-icon-bg {
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(4px);
-  padding: 0.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-/* Actions */
-.card-actions {
-  display: flex;
+.doc-stats-pill {
+  display: inline-flex;
+  align-items: center;
   gap: 0.5rem;
-  background: rgba(0,0,0,0.2);
-  backdrop-filter: blur(8px);
-  padding: 0.4rem;
-  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
-.card-action-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255,255,255,0.7);
-  cursor: pointer;
-  padding: 0.2rem;
+.stats-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.stats-dot.green {
+  background-color: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+}
+
+/* Executive Table Wrapper */
+.executive-table-wrapper {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  margin-bottom: 2rem;
+}
+
+.executive-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.executive-table th {
+  padding: 1.1rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-light);
+  background: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+}
+
+.executive-row {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: tableRowFade 0.5s ease forwards;
+  opacity: 0;
+}
+
+.executive-row:not(:last-child) td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.executive-row:hover {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  transform: scale(1.002);
+}
+
+.editing-row {
+  background-color: rgba(var(--color-primary-rgb), 0.04) !important;
+}
+
+.executive-table td {
+  padding: 1.25rem 1.5rem;
+  vertical-align: middle;
+}
+
+/* Document Name Column */
+.cell-doc {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cell-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
 }
 
-.card-action-btn:hover:not(:disabled) {
-  color: white;
-  transform: scale(1.1);
-}
+.icon-bg-tax { background: #ecfdf5; color: #10b981; }
+.icon-bg-id { background: #f1f5f9; color: #475569; }
+.icon-bg-health { background: #eff6ff; color: #3b82f6; }
+.icon-bg-blood { background: #fef2f2; color: #ef4444; }
+.icon-bg-custom { background: #f5f3ff; color: #8b5cf6; }
 
-.card-action-btn.delete-btn:hover {
-  color: #fca5a5;
-}
-
-.card-action-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-/* Body */
-.card-body {
-  position: relative;
-  z-index: 2;
-  margin-top: 1rem;
-}
-
-.card-title {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 600;
-  opacity: 0.85;
-  margin-bottom: 0.5rem;
-}
-
-.card-value-display {
-  min-height: 40px;
-}
-
-.card-number-wrapper {
-  background: rgba(0,0,0,0.15);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  display: inline-block;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.card-number {
-  font-family: 'Space Grotesk', monospace;
-  font-size: 1.4rem;
+.doc-name {
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.3;
 }
 
-.card-empty {
-  font-size: 0.9rem;
+/* Category Tag */
+.category-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tag-tax { background: #d1fae5; color: #047857; }
+.tag-id { background: #e2e8f0; color: #334155; }
+.tag-health { background: #dbeafe; color: #1e40af; }
+.tag-blood { background: #fee2e2; color: #991b1b; }
+.tag-custom { background: #ede9fe; color: #5b21b6; }
+
+/* Value Display */
+.value-badge-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.mono-number {
+  font-family: 'Space Grotesk', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  color: var(--color-text);
+  background: rgba(0, 0, 0, 0.03);
+  padding: 0.3rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.blood-type-badge {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: white;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  padding: 0.35rem 1.1rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  letter-spacing: 0.05em;
+}
+
+.empty-placeholder {
+  color: #94a3b8;
+  font-size: 0.85rem;
   font-style: italic;
+}
+
+/* Quick Copy Icon Button */
+.quick-copy-icon {
+  background: transparent;
+  border: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
   opacity: 0.6;
 }
 
-/* Edit Mode */
-.card-edit-mode {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  background: rgba(255,255,255,0.95);
-  padding: 0.5rem;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+.quick-copy-icon:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--color-primary);
 }
 
-.card-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  padding: 0.5rem;
-  font-family: 'Space Grotesk', monospace;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-  outline: none;
-  min-width: 0;
-}
-
-.card-save-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.card-save-btn.cancel {
-  background: #fee2e2;
-  color: #ef4444;
-}
-
-.card-save-btn.confirm {
-  background: #d1fae5;
+.quick-copy-icon.copied {
   color: #10b981;
+  opacity: 1;
 }
 
-.card-save-btn:hover {
-  filter: brightness(0.95);
-  transform: scale(1.05);
+/* Inline Edit Controls */
+.inline-edit-box {
+  width: 100%;
+  max-width: 260px;
 }
 
-/* The small chip detail */
-.card-chip {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 35px;
-  height: 45px;
-  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-  border-radius: 6px;
-  opacity: 0.8;
-  z-index: 1;
-  border: 1px solid rgba(255,255,255,0.4);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-}
-.card-chip::after {
-  content: '';
-  position: absolute;
-  top: 20%; bottom: 20%; left: 30%; right: 30%;
-  border: 1px solid rgba(0,0,0,0.2);
-  border-radius: 2px;
+.inline-input, .inline-select {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 2px solid var(--color-primary);
+  outline: none;
+  background: white;
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.15);
 }
 
-@keyframes slideUpFade {
+/* Status Column */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+}
+
+.status-active {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.status-pending {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+/* Action Pill Buttons */
+.action-pill-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--color-text);
+}
+
+.pill-btn:hover {
+  transform: translateY(-1px);
+}
+
+.edit-pill:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+.delete-pill:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.save-pill {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.25);
+}
+
+.save-pill:hover {
+  filter: brightness(1.05);
+}
+
+.cancel-pill:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Add Form Card */
+.executive-add-card {
+  padding: 1.75rem;
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.add-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-submit-row {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+@keyframes tableRowFade {
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.add-btn-pulse {
-  animation: pulse-soft 2s infinite;
+/* Utility Helpers */
+.text-right {
+  text-align: right;
 }
 
-@keyframes pulse-soft {
-  0% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(var(--color-primary-rgb), 0); }
-  100% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0); }
+/* Responsive Table Adjustment */
+@media (max-width: 900px) {
+  .executive-table th:nth-child(2),
+  .executive-table td:nth-child(2) {
+    display: none; /* Hide Category on smaller tablets */
+  }
+}
+
+@media (max-width: 640px) {
+  .executive-table th:nth-child(4),
+  .executive-table td:nth-child(4) {
+    display: none; /* Hide Status on mobile */
+  }
+
+  .executive-table td {
+    padding: 1rem;
+  }
+
+  .doc-name {
+    font-size: 0.85rem;
+  }
+
+  .mono-number {
+    font-size: 0.95rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .add-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pill-btn span {
+    display: none; /* Hide button text, keep icons on mobile */
+  }
+
+  .pill-btn {
+    padding: 0.5rem;
+  }
 }

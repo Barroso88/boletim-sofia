@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Save, Trash2, X, Copy, Check, FileBadge, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet } from 'lucide-react';
+import { Plus, Edit2, Save, Trash2, X, Copy, Check, FileBadge, CreditCard, Stethoscope, Fingerprint, FolderHeart, Droplet, ShieldCheck, AlertCircle } from 'lucide-react';
 import './Documentos.css';
 
 const Documentos = () => {
   const [documentos, setDocumentos] = useState(() => {
     const defaultDocs = [
-      { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax' },
-      { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id' },
-      { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health' },
-      { id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
+      { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax', cat: 'Fiscal' },
+      { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id', cat: 'Identificação' },
+      { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health', cat: 'Saúde' },
+      { id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood', cat: 'Saúde' },
     ];
     
     const saved = localStorage.getItem('sofia_documentos');
     if (saved) {
       let parsed = JSON.parse(saved);
       if (!parsed.find(d => d.id === 4)) {
-        parsed.push({ id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' });
+        parsed.push({ id: 4, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood', cat: 'Saúde' });
       }
       return parsed;
     }
@@ -59,7 +59,8 @@ const Documentos = () => {
       id: Date.now(),
       titulo: novoTitulo,
       numero: novoNumero,
-      type: 'custom'
+      type: 'custom',
+      cat: 'Geral'
     };
     
     setDocumentos([...documentos, novoDoc]);
@@ -84,156 +85,216 @@ const Documentos = () => {
 
   const getDocIcon = (type) => {
     switch (type) {
-      case 'tax': return <FileBadge size={28} opacity={0.8} />;
-      case 'id': return <Fingerprint size={28} opacity={0.8} />;
-      case 'health': return <Stethoscope size={28} opacity={0.8} />;
-      case 'blood': return <Droplet size={28} opacity={0.8} />;
-      case 'custom': return <CreditCard size={28} opacity={0.8} />;
-      default: return <FolderHeart size={28} opacity={0.8} />;
+      case 'tax': return <FileBadge size={18} />;
+      case 'id': return <Fingerprint size={18} />;
+      case 'health': return <Stethoscope size={18} />;
+      case 'blood': return <Droplet size={18} color="#ef4444" />;
+      case 'custom': return <CreditCard size={18} />;
+      default: return <FolderHeart size={18} />;
     }
   };
 
+  const totalPreenchidos = documentos.filter(d => d.numero && d.numero.trim() !== '').length;
+
   return (
     <div className="page-container">
-      <div className="flex-between mb-4">
+      {/* Header with Stats Summary */}
+      <div className="flex-between mb-4 flex-wrap gap-3">
         <div>
-          <h2 className="h2 text-gradient">A Carteira da Sofia</h2>
-          <p style={{ color: 'var(--color-text-light)', fontSize: '0.9rem', marginTop: '4px' }}>
-            Todos os documentos oficiais num formato ultra-premium.
+          <h2 className="h2 text-gradient">Registo Documental</h2>
+          <p style={{ color: 'var(--color-text-light)', fontSize: '0.9rem', marginTop: '2px' }}>
+            Base de dados central de registos oficiais da Sofia
           </p>
         </div>
-        <button className="btn-primary add-btn-pulse" onClick={() => setAdicionandoNovo(true)}>
-          <Plus size={20} />
-          <span className="hide-mobile">Adicionar Cartão</span>
-        </button>
-      </div>
-
-      <div className="wallet-grid">
-        {documentos.map((doc, index) => (
-          <div key={doc.id} className={`id-card card-theme-${doc.type}`} style={{ animationDelay: `${index * 0.15}s` }}>
-            
-            {/* Holographic effect overlay */}
-            <div className="card-glare"></div>
-            <div className="card-watermark">{getDocIcon(doc.type)}</div>
-
-            {/* Top Bar: Icon + Actions */}
-            <div className="card-header flex-between">
-              <div className="card-icon-bg">
-                {getDocIcon(doc.type)}
-              </div>
-              
-              {editandoId !== doc.id && (
-                <div className="card-actions">
-                  <button 
-                    className="card-action-btn" 
-                    onClick={() => copiarParaClipboard(doc.numero, doc.id)}
-                    title="Copiar Número"
-                    disabled={!doc.numero}
-                  >
-                    {copiadoId === doc.id ? <Check size={16} /> : <Copy size={16} />}
-                  </button>
-                  <button className="card-action-btn" onClick={() => iniciarEdicao(doc)} title="Editar">
-                    <Edit2 size={16} />
-                  </button>
-                  {doc.id > 4 && (
-                    <button className="card-action-btn delete-btn" onClick={() => removerDocumento(doc.id)} title="Remover">
-                      <Trash2 size={16} />
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Main Content: Title & Value */}
-            <div className="card-body">
-              <h3 className="card-title">{doc.titulo}</h3>
-              
-              {editandoId === doc.id ? (
-                <div className="card-edit-mode">
-                  {doc.type === 'blood' ? (
-                    <select
-                      className="card-input"
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      autoFocus
-                    >
-                      <option value="">Selecione...</option>
-                      <option value="A+">A+</option>
-                      <option value="A-">A-</option>
-                      <option value="B+">B+</option>
-                      <option value="B-">B-</option>
-                      <option value="AB+">AB+</option>
-                      <option value="AB-">AB-</option>
-                      <option value="O+">O+</option>
-                      <option value="O-">O-</option>
-                    </select>
-                  ) : (
-                    <input
-                      type="text"
-                      className="card-input"
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      placeholder="Introduza o número..."
-                      autoFocus
-                    />
-                  )}
-                  <div className="card-edit-actions">
-                    <button className="card-save-btn cancel" onClick={cancelarEdicao}><X size={18} /></button>
-                    <button className="card-save-btn confirm" onClick={() => guardarEdicao(doc.id)}><Save size={18} /></button>
-                  </div>
-                </div>
-              ) : (
-                <div className="card-value-display">
-                  {doc.numero ? (
-                    <div className="card-number-wrapper">
-                      <span className="card-number">{doc.numero}</span>
-                    </div>
-                  ) : (
-                    <span className="card-empty">Toque em editar para preencher</span>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            {/* Bottom edge chip indicator (just for premium visual flair) */}
-            <div className="card-chip"></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="doc-stats-pill">
+            <span className="stats-dot green"></span>
+            <span><strong>{totalPreenchidos}</strong> de {documentos.length} registados</span>
           </div>
-        ))}
+          <button className="btn-primary" onClick={() => setAdicionandoNovo(true)}>
+            <Plus size={18} />
+            <span className="hide-mobile">Novo Documento</span>
+          </button>
+        </div>
       </div>
 
+      {/* Main Table Container */}
+      <div className="executive-table-wrapper glass-card">
+        <table className="executive-table">
+          <thead>
+            <tr>
+              <th>Documento</th>
+              <th>Categoria</th>
+              <th>Número / Identificador</th>
+              <th>Estado</th>
+              <th className="text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {documentos.map((doc, index) => {
+              const isPreenchido = doc.numero && doc.numero.trim() !== '';
+              const isEditing = editandoId === doc.id;
+
+              return (
+                <tr 
+                  key={doc.id} 
+                  className={`executive-row ${doc.type === 'blood' ? 'blood-type-row' : ''} ${isEditing ? 'editing-row' : ''}`}
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  
+                  {/* Document Title + Icon */}
+                  <td className="cell-doc">
+                    <div className={`cell-icon-badge icon-bg-${doc.type}`}>
+                      {getDocIcon(doc.type)}
+                    </div>
+                    <div className="doc-meta">
+                      <span className="doc-name">{doc.titulo}</span>
+                    </div>
+                  </td>
+
+                  {/* Category Pill */}
+                  <td className="cell-category">
+                    <span className={`category-tag tag-${doc.type}`}>
+                      {doc.cat || 'Geral'}
+                    </span>
+                  </td>
+
+                  {/* Value / Edit Field */}
+                  <td className="cell-value">
+                    {isEditing ? (
+                      <div className="inline-edit-box">
+                        {doc.type === 'blood' ? (
+                          <select
+                            className="inline-select"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            autoFocus
+                          >
+                            <option value="">Selecione...</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            className="inline-input"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            placeholder="Insira o número..."
+                            autoFocus
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      <div className="value-display-wrapper">
+                        {isPreenchido ? (
+                          <div className="value-badge-container">
+                            <span className={doc.type === 'blood' ? 'blood-type-badge' : 'mono-number'}>
+                              {doc.numero}
+                            </span>
+                            <button
+                              className={`quick-copy-icon ${copiadoId === doc.id ? 'copied' : ''}`}
+                              onClick={() => copiarParaClipboard(doc.numero, doc.id)}
+                              title="Copiar rápido"
+                            >
+                              {copiadoId === doc.id ? <Check size={14} /> : <Copy size={14} />}
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="empty-placeholder">Pendente de registo</span>
+                        )}
+                      </div>
+                    )}
+                  </td>
+
+                  {/* Status Badge */}
+                  <td className="cell-status">
+                    {isPreenchido ? (
+                      <span className="status-badge status-active">
+                        <ShieldCheck size={14} /> Válido
+                      </span>
+                    ) : (
+                      <span className="status-badge status-pending">
+                        <AlertCircle size={14} /> Incompleto
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="cell-actions text-right">
+                    {isEditing ? (
+                      <div className="action-pill-group justify-end">
+                        <button className="pill-btn save-pill" onClick={() => guardarEdicao(doc.id)} title="Guardar">
+                          <Save size={15} /> <span>Guardar</span>
+                        </button>
+                        <button className="pill-btn cancel-pill" onClick={cancelarEdicao} title="Cancelar">
+                          <X size={15} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="action-pill-group justify-end">
+                        <button className="pill-btn edit-pill" onClick={() => iniciarEdicao(doc)} title="Editar">
+                          <Edit2 size={15} /> <span>Editar</span>
+                        </button>
+                        {doc.id > 4 && (
+                          <button className="pill-btn delete-pill" onClick={() => removerDocumento(doc.id)} title="Remover">
+                            <Trash2 size={15} />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </td>
+
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Add Document Modal/Card */}
       {adicionandoNovo && (
-        <div className="add-doc-panel animate-fade-in glass-card" style={{ marginTop: '3rem', borderTop: '4px solid var(--color-primary)' }}>
-          <div className="flex-between mb-4">
-            <h3 className="h3">Criar Novo Cartão</h3>
+        <div className="executive-add-card glass-card animate-fade-in">
+          <div className="flex-between mb-3">
+            <h3 className="h3">Novo Registo Oficial</h3>
             <button className="btn-icon" onClick={() => setAdicionandoNovo(false)}><X size={20} /></button>
           </div>
-          <form onSubmit={adicionarNovoDocumento} style={{ display: 'grid', gap: '1rem' }}>
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div className="input-group">
-                <label className="input-label">Título do Cartão</label>
-                <input
-                  type="text"
-                  className="input-field"
-                  value={novoTitulo}
-                  onChange={(e) => setNovoTitulo(e.target.value)}
-                  required
-                  placeholder="Ex: Passaporte"
-                />
-              </div>
-              <div className="input-group">
-                <label className="input-label">Número / Registo</label>
-                <input
-                  type="text"
-                  className="input-field"
-                  value={novoNumero}
-                  onChange={(e) => setNovoNumero(e.target.value)}
-                  placeholder="Ex: 123456789"
-                />
-              </div>
+          <form onSubmit={adicionarNovoDocumento} className="add-form-grid">
+            <div className="input-group">
+              <label className="input-label">Nome do Documento</label>
+              <input
+                type="text"
+                className="input-field"
+                value={novoTitulo}
+                onChange={(e) => setNovoTitulo(e.target.value)}
+                required
+                placeholder="Ex: Passaporte / Cartão de Seguro"
+              />
             </div>
-            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '0.5rem', padding: '1rem' }}>
-              Emitir Cartão
-            </button>
+            <div className="input-group">
+              <label className="input-label">Número de Registo</label>
+              <input
+                type="text"
+                className="input-field"
+                value={novoNumero}
+                onChange={(e) => setNovoNumero(e.target.value)}
+                placeholder="Ex: N12345678"
+              />
+            </div>
+            <div className="form-submit-row">
+              <button type="button" className="btn-outline" onClick={() => setAdicionandoNovo(false)}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn-primary">
+                Gravar Registo
+              </button>
+            </div>
           </form>
         </div>
       )}
