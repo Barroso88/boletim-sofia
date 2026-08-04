@@ -7,6 +7,7 @@ import Marcos from './pages/Marcos';
 import Documentos from './pages/Documentos';
 import Peso from './pages/Peso';
 import Vacinas from './pages/Vacinas';
+import Leite from './pages/Leite';
 import Definicoes from './pages/Definicoes';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/documentos" element={<Documentos />} />
           <Route path="/peso" element={<Peso />} />
           <Route path="/vacinas" element={<Vacinas />} />
+          <Route path="/leite" element={<Leite />} />
           <Route path="/definicoes" element={<Definicoes />} />
         </Routes>
       </Layout>

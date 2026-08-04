@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings } from 'lucide-react';
+import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, Milk } from 'lucide-react';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -12,6 +12,7 @@ const Layout = ({ children }) => {
     { path: '/documentos', label: 'Documentos', icon: <FileText size={20} /> },
     { path: '/peso', label: 'Peso', icon: <Scale size={20} /> },
     { path: '/vacinas', label: 'Vacinas', icon: <Syringe size={20} /> },
+    { path: '/leite', label: 'Leite', icon: <Milk size={20} /> },
   ];
 
   return (

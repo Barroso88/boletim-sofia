@@ -129,6 +129,13 @@ async function setupTables() {
         numero TEXT,
         type TEXT
       );
+
+      CREATE TABLE IF NOT EXISTS leite (
+        id BIGINT PRIMARY KEY,
+        data TEXT NOT NULL,
+        hora TEXT NOT NULL,
+        quantidade_ml INTEGER NOT NULL
+      );
     `);
 
     client.release();
@@ -345,6 +352,38 @@ app.put('/api/documentos/:id', async (req, res) => {
 app.delete('/api/documentos/:id', async (req, res) => {
   try {
     await pool.query('DELETE FROM documentos WHERE id = $1', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- LEITE ---
+app.get('/api/leite', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM leite ORDER BY hora DESC, id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/leite', async (req, res) => {
+  const { id, data, hora, quantidade_ml } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO leite (id, data, hora, quantidade_ml) VALUES ($1, $2, $3, $4)',
+      [id, data, hora, quantidade_ml]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/leite/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM leite WHERE id = $1', [req.params.id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

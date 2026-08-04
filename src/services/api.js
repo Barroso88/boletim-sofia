@@ -202,5 +202,40 @@ export const api = {
   async deleteDocumento(id, novaLista, localKey = 'sofia_documentos') {
     localStorage.setItem(localKey, JSON.stringify(novaLista));
     fetchWithFallback(`${API_BASE}/documentos/${id}`, { method: 'DELETE' });
+  },
+
+  // --- LEITE ---
+  async getLeite(localKey = 'sofia_leite') {
+    const remote = await fetchWithFallback(`${API_BASE}/leite`);
+    if (remote && Array.isArray(remote)) {
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  async saveLeite(registo, localKey = 'sofia_leite') {
+    const saved = localStorage.getItem(localKey);
+    let list = saved ? JSON.parse(saved) : [];
+    list.push(registo);
+    // Sort by time descending
+    list.sort((a, b) => b.hora.localeCompare(a.hora));
+    localStorage.setItem(localKey, JSON.stringify(list));
+
+    fetchWithFallback(`${API_BASE}/leite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registo)
+    });
+  },
+
+  async deleteLeite(id, localKey = 'sofia_leite') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(r => r.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/leite/${id}`, { method: 'DELETE' });
   }
 };
