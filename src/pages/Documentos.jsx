@@ -84,12 +84,12 @@ const Documentos = () => {
 
   const getDocIcon = (type) => {
     switch (type) {
-      case 'tax': return <FileBadge size={24} />;
-      case 'id': return <Fingerprint size={24} />;
-      case 'health': return <Stethoscope size={24} />;
-      case 'blood': return <Droplet size={24} color="#ef4444" />;
-      case 'custom': return <CreditCard size={24} />;
-      default: return <FolderHeart size={24} />;
+      case 'tax': return <FileBadge size={20} />;
+      case 'id': return <Fingerprint size={20} />;
+      case 'health': return <Stethoscope size={20} />;
+      case 'blood': return <Droplet size={20} color="#ef4444" />;
+      case 'custom': return <CreditCard size={20} />;
+      default: return <FolderHeart size={20} />;
     }
   };
 
@@ -99,127 +99,152 @@ const Documentos = () => {
         <h2 className="h2 text-gradient">Documentos Oficiais</h2>
         <button className="btn-primary" onClick={() => setAdicionandoNovo(true)}>
           <Plus size={20} />
-          <span className="hide-mobile">Adicionar Documento</span>
+          <span className="hide-mobile">Adicionar</span>
         </button>
       </div>
 
-      <div className="docs-grid">
-        {documentos.map((doc, index) => (
-          <div key={doc.id} className={`doc-card ${doc.type === 'blood' ? 'blood-card' : ''}`} style={{ animationDelay: `${index * 0.1}s` }}>
-            {editandoId !== doc.id && (
-              <div className="doc-actions-overlay">
-                <button 
-                  className="action-icon-btn" 
-                  onClick={() => copiarParaClipboard(doc.numero, doc.id)}
-                  title="Copiar Número"
-                  disabled={!doc.numero}
-                  style={{ opacity: !doc.numero ? 0.5 : 1 }}
-                >
-                  {copiadoId === doc.id ? <Check size={18} color="var(--color-primary)" /> : <Copy size={18} />}
-                </button>
-                <button className="action-icon-btn" onClick={() => iniciarEdicao(doc)} title="Editar">
-                  <Edit2 size={18} />
-                </button>
-                {doc.id > 3 && (
-                  <button className="action-icon-btn" onClick={() => removerDocumento(doc.id)} title="Remover">
-                    <Trash2 size={18} />
-                  </button>
-                )}
-              </div>
-            )}
+      <div className="docs-table-container glass-card">
+        <table className="docs-table">
+          <thead>
+            <tr>
+              <th>Documento</th>
+              <th>Número / Registo</th>
+              <th className="actions-col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {documentos.map((doc, index) => (
+              <tr key={doc.id} className={doc.type === 'blood' ? 'blood-row' : ''} style={{ animationDelay: `${index * 0.05}s` }}>
+                
+                {/* COL 1: Icon and Title */}
+                <td className="doc-title-cell">
+                  <div className="doc-icon-wrapper">
+                    {getDocIcon(doc.type)}
+                  </div>
+                  <span className="doc-title-text">{doc.titulo}</span>
+                </td>
 
-            <div className="doc-header">
-              <div className="doc-icon">
-                {getDocIcon(doc.type)}
-              </div>
-              <h3 className="doc-title">{doc.titulo}</h3>
-            </div>
-            
-            {editandoId === doc.id ? (
-              <div className="doc-edit-mode">
-                {doc.type === 'blood' ? (
-                  <select
-                    className="input-field"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    autoFocus
-                  >
-                    <option value="">Selecione...</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    className="input-field"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    placeholder="Introduza o número..."
-                    autoFocus
-                  />
-                )}
-                <div className="doc-edit-actions">
-                  <button className="btn-outline" onClick={cancelarEdicao} style={{ padding: '0.5rem' }}>
-                    <X size={18} /> Cancelar
-                  </button>
-                  <button className="btn-primary" onClick={() => guardarEdicao(doc.id)} style={{ padding: '0.5rem' }}>
-                    <Save size={18} /> Guardar
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="doc-body">
-                <span className="doc-label">{doc.type === 'blood' ? 'Tipo Sanguíneo' : 'Nº Identificação'}</span>
-                <div className="doc-value-container">
-                  {doc.numero ? (
-                    <span className="doc-value">{doc.numero}</span>
+                {/* COL 2: Value or Edit Input */}
+                <td className="doc-value-cell">
+                  {editandoId === doc.id ? (
+                    <div className="table-edit-mode">
+                      {doc.type === 'blood' ? (
+                        <select
+                          className="input-field compact-input"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          autoFocus
+                        >
+                          <option value="">Selecione...</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          className="input-field compact-input"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          placeholder="Introduza o número..."
+                          autoFocus
+                        />
+                      )}
+                    </div>
                   ) : (
-                    <span className="doc-empty">Não preenchido</span>
+                    <div className="doc-value-display">
+                      {doc.numero ? (
+                        <span className={doc.type === 'blood' ? 'blood-badge' : 'doc-number'}>
+                          {doc.numero}
+                        </span>
+                      ) : (
+                        <span className="doc-empty-state">Não preenchido</span>
+                      )}
+                    </div>
                   )}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+                </td>
+
+                {/* COL 3: Actions */}
+                <td className="doc-actions-cell">
+                  {editandoId === doc.id ? (
+                    <div className="table-action-btns">
+                       <button className="action-btn cancel-btn" onClick={cancelarEdicao} title="Cancelar">
+                         <X size={16} />
+                       </button>
+                       <button className="action-btn save-btn" onClick={() => guardarEdicao(doc.id)} title="Guardar">
+                         <Save size={16} />
+                       </button>
+                    </div>
+                  ) : (
+                    <div className="table-action-btns">
+                      <button 
+                        className="action-btn copy-btn" 
+                        onClick={() => copiarParaClipboard(doc.numero, doc.id)}
+                        title="Copiar"
+                        disabled={!doc.numero}
+                        style={{ opacity: !doc.numero ? 0.3 : 1 }}
+                      >
+                        {copiadoId === doc.id ? <Check size={16} color="#10b981" /> : <Copy size={16} />}
+                      </button>
+                      <button className="action-btn edit-btn" onClick={() => iniciarEdicao(doc)} title="Editar">
+                        <Edit2 size={16} />
+                      </button>
+                      {doc.id > 3 ? (
+                        <button className="action-btn delete-btn" onClick={() => removerDocumento(doc.id)} title="Remover">
+                          <Trash2 size={16} />
+                        </button>
+                      ) : (
+                        <div style={{ width: '28px' }}></div> /* spacer to align icons if no delete button */
+                      )}
+                    </div>
+                  )}
+                </td>
+
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
+      {/* Add new document modal/panel */}
       {adicionandoNovo && (
-        <div className="add-doc-panel">
+        <div className="add-doc-panel animate-fade-in glass-card">
           <div className="flex-between mb-4">
-            <h3 className="h3">Novo Documento</h3>
-            <button className="btn-icon" onClick={() => setAdicionandoNovo(false)}><X size={24} /></button>
+            <h3 className="h3">Adicionar Novo Documento</h3>
+            <button className="btn-icon" onClick={() => setAdicionandoNovo(false)}><X size={20} /></button>
           </div>
-          <form onSubmit={adicionarNovoDocumento}>
-            <div className="input-group">
-              <label className="input-label">Tipo de Documento (Ex: Passaporte, Seguro)</label>
-              <input
-                type="text"
-                className="input-field"
-                value={novoTitulo}
-                onChange={(e) => setNovoTitulo(e.target.value)}
-                required
-                placeholder="Insira o nome do documento"
-              />
+          <form onSubmit={adicionarNovoDocumento} style={{ display: 'grid', gap: '1rem' }}>
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="input-group">
+                <label className="input-label">Tipo de Documento</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={novoTitulo}
+                  onChange={(e) => setNovoTitulo(e.target.value)}
+                  required
+                  placeholder="Ex: Passaporte"
+                />
+              </div>
+              <div className="input-group">
+                <label className="input-label">Número / Registo</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={novoNumero}
+                  onChange={(e) => setNovoNumero(e.target.value)}
+                  placeholder="Ex: 123456789"
+                />
+              </div>
             </div>
-            <div className="input-group">
-              <label className="input-label">Número / Identificador</label>
-              <input
-                type="text"
-                className="input-field"
-                value={novoNumero}
-                onChange={(e) => setNovoNumero(e.target.value)}
-                placeholder="Insira o número de identificação"
-              />
-            </div>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-              <button type="submit" className="btn-primary" style={{ flex: 1 }}>Gravar Documento</button>
-            </div>
+            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '0.5rem' }}>
+              Gravar Documento
+            </button>
           </form>
         </div>
       )}

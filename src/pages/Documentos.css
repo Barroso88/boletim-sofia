@@ -1,233 +1,236 @@
-/* Premium Wallet Cards Styling */
+/* Documentos.css */
 
-.docs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.doc-card {
-  position: relative;
-  border-radius: 1.5rem;
-  padding: 1.5rem;
+.docs-table-container {
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 160px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-normal);
-  animation: fadeIn 0.4s ease-out both;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0;
 }
 
-.doc-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  opacity: 0.8;
+.docs-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
 }
 
-.doc-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--color-primary-light);
-}
-
-.doc-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.doc-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(var(--color-primary-rgb), 0.1);
-  color: var(--color-primary);
-}
-
-.doc-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--color-text);
-  line-height: 1.2;
-}
-
-.doc-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.doc-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.docs-table th {
+  padding: 1rem 1.5rem;
   font-weight: 600;
   color: var(--color-text-light);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
-.doc-value-container {
+.docs-table td {
+  padding: 1.25rem 1.5rem;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.docs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.docs-table tbody tr {
+  transition: background-color 0.2s ease;
+  animation: slideUpFade 0.4s ease forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.docs-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Row specifically for Blood Type */
+.blood-row {
+  background-image: linear-gradient(to right, rgba(239, 68, 68, 0.03), transparent);
+}
+
+/* Col 1: Title & Icon */
+.doc-title-cell {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
 }
 
-.doc-value {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  color: var(--color-primary-dark);
-}
-
-.doc-empty {
-  font-size: 1rem;
-  font-style: italic;
-  color: var(--color-text-light);
-  font-weight: 400;
-}
-
-/* Edit Mode styling inside the card */
-.doc-edit-mode {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.doc-edit-actions {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-/* Hover Actions (Edit, Delete, Copy) */
-.doc-actions-overlay {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  gap: 0.5rem;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.doc-card:hover .doc-actions-overlay {
-  opacity: 1;
-}
-
-.action-icon-btn {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
+.doc-icon-wrapper {
+  background: var(--gradient-primary);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-light);
+  box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.blood-row .doc-icon-wrapper {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+.doc-title-text {
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+/* Col 2: Value */
+.doc-number {
+  font-family: 'Space Grotesk', monospace;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+}
+
+.doc-empty-state {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.blood-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+  font-weight: 800;
+  font-size: 1.2rem;
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.compact-input {
+  padding: 0.5rem 1rem;
+  margin: 0;
+  width: 100%;
+  max-width: 250px;
+}
+
+/* Col 3: Actions */
+.actions-col {
+  width: 120px;
+  text-align: right;
+}
+
+.doc-actions-cell {
+  text-align: right;
+}
+
+.table-action-btns {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
+  color: var(--color-text-light);
 }
 
-.action-icon-btn:hover {
-  background: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
-  transform: scale(1.1);
+.action-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--color-text);
+  transform: translateY(-1px);
 }
 
-/* Add New Panel */
+.action-btn:disabled {
+  cursor: not-allowed;
+}
+
+.action-btn.copy-btn:hover:not(:disabled) { color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.1); }
+.action-btn.edit-btn:hover { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+.action-btn.delete-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+.action-btn.save-btn { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+.action-btn.save-btn:hover { background: rgba(16, 185, 129, 0.2); }
+.action-btn.cancel-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+
+/* Add Panel */
 .add-doc-panel {
-  margin-top: 2.5rem;
-  border-radius: 1.5rem;
   padding: 2rem;
-  background: linear-gradient(to bottom right, var(--color-surface), var(--color-bg));
-  border: 1px solid var(--color-primary-light);
-  box-shadow: var(--shadow-md);
-  animation: slideUp 0.3s ease-out forwards;
+  margin-top: 2rem;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes slideUpFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* Responsive */
 @media (max-width: 768px) {
-  .docs-grid {
-    grid-template-columns: 1fr;
+  .docs-table th, .docs-table td {
+    padding: 1rem;
   }
   
-  .doc-actions-overlay {
-    opacity: 1; /* Always visible on mobile */
-    top: auto;
-    bottom: 1.5rem;
-    right: 1.5rem;
+  .doc-title-text {
+    font-size: 0.9rem;
+  }
+  
+  .doc-number {
+    font-size: 1rem;
+  }
+  
+  .doc-title-cell {
+    gap: 0.5rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr !important;
   }
 }
 
-/* Blood Type Card Special Styling */
-.blood-card {
-  background: linear-gradient(135deg, #fecaca 0%, #ef4444 100%);
-  border-color: #ef4444;
-}
-
-.blood-card::before {
-  display: none;
-}
-
-.blood-card .doc-title, 
-.blood-card .doc-value, 
-.blood-card .doc-label, 
-.blood-card .doc-empty {
-  color: white;
-}
-
-.blood-card .doc-icon {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.blood-card .doc-icon svg {
-  color: white !important;
-}
-
-.blood-card .action-icon-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.blood-card .action-icon-btn:hover {
-  background: white;
-  color: #ef4444;
-}
-
-.blood-card .doc-body {
-  align-items: center;
-  text-align: center;
-}
-
-.blood-card .doc-value-container {
-  justify-content: center;
-}
-
-.blood-card .doc-value {
-  font-size: 3rem;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4);
-  line-height: 1;
-  margin-top: 0.5rem;
+@media (max-width: 500px) {
+  /* On very small screens, hide headers and stack cells */
+  .docs-table thead {
+    display: none;
+  }
+  
+  .docs-table, .docs-table tbody, .docs-table tr, .docs-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .docs-table tr {
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+  
+  .docs-table td {
+    padding: 0.5rem 0;
+    border: none;
+    text-align: left;
+  }
+  
+  .doc-actions-cell {
+    margin-top: 0.5rem;
+    padding-top: 1rem !important;
+    border-top: 1px solid rgba(0,0,0,0.05) !important;
+  }
+  
+  .table-action-btns {
+    justify-content: flex-start;
+  }
 }
