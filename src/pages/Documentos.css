@@ -104,6 +104,13 @@
 .icon-bg-blood { background: #fef2f2; color: #ef4444; }
 .icon-bg-custom { background: #f5f3ff; color: #8b5cf6; }
 
+.doc-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
 .doc-name {
   font-weight: 700;
   font-size: 0.95rem;

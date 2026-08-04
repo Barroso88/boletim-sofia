@@ -148,14 +148,12 @@ const Documentos = () => {
       <div className="executive-table-wrapper glass-card">
         <table className="executive-table">
           <colgroup>
-            <col style={{ width: '42%' }} />   {/* Document name */}
-            <col style={{ width: '38%' }} />   {/* Number */}
-            <col style={{ width: '20%' }} />   {/* Actions */}
+            <col style={{ width: '75%' }} />   {/* Document name & number */}
+            <col style={{ width: '25%' }} />   {/* Actions */}
           </colgroup>
           <thead>
             <tr>
               <th>Documento</th>
-              <th className="col-number">Número</th>
               <th className="text-right col-actions">Ações</th>
             </tr>
           </thead>
@@ -164,26 +162,24 @@ const Documentos = () => {
               const isPreenchido = doc.numero && doc.numero.trim() !== '';
               return (
                 <tr key={doc.id} className="executive-row" style={{ animationDelay: `${index * 0.05}s` }}>
-                  {/* Doc name + icon */}
+                  {/* Doc name + icon + number below */}
                   <td className="cell-doc">
                     <div className={`cell-icon-badge icon-bg-${getDocType(doc)}`}>
                       {getDocIcon(doc)}
                     </div>
-                    <span className="doc-name">{doc.titulo}</span>
-                  </td>
-
-                  {/* Number */}
-                  <td className="cell-value col-number">
-                    {isPreenchido ? (
-                      <div className="value-badge-container">
-                        <span className={isBlood(doc) ? 'blood-type-badge' : 'mono-number'}>{doc.numero}</span>
-                        <button className={`quick-copy-icon ${copiadoId === doc.id ? 'copied' : ''}`} onClick={() => copiarParaClipboard(doc.numero, doc.id)} title="Copiar">
-                          {copiadoId === doc.id ? <Check size={13} /> : <Copy size={13} />}
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="empty-placeholder">—</span>
-                    )}
+                    <div className="doc-meta">
+                      <span className="doc-name">{doc.titulo}</span>
+                      {isPreenchido ? (
+                        <div className="value-badge-container" style={{ marginTop: '0.25rem' }}>
+                          <span className={isBlood(doc) ? 'blood-type-badge' : 'mono-number'}>{doc.numero}</span>
+                          <button className={`quick-copy-icon ${copiadoId === doc.id ? 'copied' : ''}`} onClick={() => copiarParaClipboard(doc.numero, doc.id)} title="Copiar">
+                            {copiadoId === doc.id ? <Check size={13} /> : <Copy size={13} />}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="empty-placeholder" style={{ marginTop: '0.2rem', display: 'block' }}>Não preenchido</span>
+                      )}
+                    </div>
                   </td>
 
                   {/* Actions */}
