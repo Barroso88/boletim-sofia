@@ -85,29 +85,29 @@
   opacity: 1;
 }
 
-/* Coordinates for the 20 teeth (Top Arch) */
-.pos-t1 { top: 38%; left: 16%; }
-.pos-t2 { top: 30%; left: 21%; }
-.pos-t3 { top: 22%; left: 29%; }
-.pos-t4 { top: 17%; left: 38%; }
-.pos-t5 { top: 15%; left: 46%; }
-.pos-t6 { top: 15%; left: 54%; }
-.pos-t7 { top: 17%; left: 62%; }
-.pos-t8 { top: 22%; left: 71%; }
-.pos-t9 { top: 30%; left: 79%; }
-.pos-t10 { top: 38%; left: 84%; }
+/* Coordinates for the 10 teeth (Top Arch — visible upper gum ~18-40% from top) */
+.pos-t1 { top: 36%; left: 18%; }
+.pos-t2 { top: 27%; left: 24%; }
+.pos-t3 { top: 21%; left: 32%; }
+.pos-t4 { top: 18%; left: 41%; }
+.pos-t5 { top: 17%; left: 50%; }
+.pos-t6 { top: 18%; left: 58%; }
+.pos-t7 { top: 21%; left: 67%; }
+.pos-t8 { top: 27%; left: 75%; }
+.pos-t9 { top: 35%; left: 80%; }
+.pos-t10 { top: 40%; left: 84%; }
 
-/* Coordinates for the 20 teeth (Bottom Arch) */
-.pos-b1 { top: 62%; left: 16%; }
-.pos-b2 { top: 70%; left: 21%; }
-.pos-b3 { top: 78%; left: 29%; }
-.pos-b4 { top: 83%; left: 38%; }
-.pos-b5 { top: 85%; left: 46%; }
-.pos-b6 { top: 85%; left: 54%; }
-.pos-b7 { top: 83%; left: 62%; }
-.pos-b8 { top: 78%; left: 71%; }
-.pos-b9 { top: 70%; left: 79%; }
-.pos-b10 { top: 62%; left: 84%; }
+/* Coordinates for the 10 teeth (Bottom Arch — visible lower gum ~58-82% from top) */
+.pos-b1 { top: 72%; left: 16%; }
+.pos-b2 { top: 78%; left: 22%; }
+.pos-b3 { top: 82%; left: 30%; }
+.pos-b4 { top: 84%; left: 40%; }
+.pos-b5 { top: 85%; left: 49%; }
+.pos-b6 { top: 85%; left: 57%; }
+.pos-b7 { top: 83%; left: 65%; }
+.pos-b8 { top: 80%; left: 73%; }
+.pos-b9 { top: 76%; left: 79%; }
+.pos-b10 { top: 70%; left: 83%; }
 
 /* Modal overlay */
 .tooth-modal-overlay {
