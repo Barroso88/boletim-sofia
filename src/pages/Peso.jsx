@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Plus, Scale, Trash2, TrendingUp, Minus } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import WeightChart from '../components/WeightChart';
 import './Peso.css';
 
 const Peso = () => {
@@ -60,9 +60,11 @@ const Peso = () => {
     })
     .reverse(); // Newest first
 
+  // Chart data: chronological order (ascending), includes ganhoDia for tooltip
   const chartData = [...processedRegistos].reverse().map(r => ({
     dataFormato: format(new Date(r.data), 'dd MMM', { locale: ptBR }),
-    peso: r.peso
+    peso: r.peso,
+    ganhoDia: r.ganhoDia,
   }));
 
   return (
@@ -115,46 +117,19 @@ const Peso = () => {
         </div>
       )}
 
-      {registos.length > 0 && (
-        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '2rem 1.5rem', height: '350px' }}>
-          <h3 className="h3 mb-4" style={{ fontSize: '1.2rem', color: 'var(--color-primary-dark)', textAlign: 'center' }}>Evolução de Peso</h3>
-          <ResponsiveContainer width="99%" height="100%">
-            <LineChart data={chartData} margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
-              <XAxis 
-                dataKey="dataFormato" 
-                stroke="var(--color-text-light)" 
-                fontSize={12} 
-                tickLine={false} 
-                axisLine={false} 
-                dy={15} 
-              />
-              <YAxis 
-                stroke="var(--color-text-light)" 
-                fontSize={12} 
-                tickLine={false} 
-                axisLine={false} 
-                domain={['dataMin - 0.5', 'dataMax + 0.5']} 
-                tickFormatter={(value) => `${parseFloat(value).toFixed(1)}kg`} 
-                dx={-10} 
-              />
-              <Tooltip 
-                contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--color-surface)', boxShadow: 'var(--shadow-md)', padding: '10px 15px' }}
-                itemStyle={{ color: 'var(--color-primary-dark)', fontWeight: 'bold', fontSize: '1.1rem' }}
-                formatter={(value) => [`${value} kg`, 'Peso']}
-                labelStyle={{ color: 'var(--color-text-light)', marginBottom: '5px', fontSize: '0.8rem', textTransform: 'uppercase' }}
-                cursor={{ stroke: 'var(--color-primary-light)', strokeWidth: 1, strokeDasharray: '4 4' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="peso" 
-                stroke="var(--color-primary)" 
-                strokeWidth={3}
-                dot={{ r: 4, fill: '#fff', stroke: 'var(--color-primary)', strokeWidth: 2 }}
-                activeDot={{ r: 7, fill: 'var(--color-primary)', stroke: '#fff', strokeWidth: 2, style: { filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' } }} 
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      {registos.length >= 2 && (
+        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '1.5rem 1rem 1rem', position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', padding: '0 0.5rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Evolução de Peso</h3>
+              <p style={{ fontSize: '0.8rem', color: 'var(--color-text-light)', margin: '2px 0 0' }}>{processedRegistos.length} pesagens registadas</p>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-text-light)', margin: 0 }}>Máximo</p>
+              <p style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>{Math.max(...registos.map(r => r.peso)).toFixed(3)} kg</p>
+            </div>
+          </div>
+          <WeightChart chartData={chartData} />
         </div>
       )}
 
