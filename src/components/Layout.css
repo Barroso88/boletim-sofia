@@ -81,9 +81,12 @@
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem;
-    margin: 1rem;
-    position: static; /* Let it scroll naturally at the top */
+    margin: 0.5rem;
+    position: static;
     justify-content: center;
+    border: none;
+    box-shadow: none;
+    background: transparent;
   }
   
   .nav-links {
@@ -91,36 +94,55 @@
     bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
-    width: calc(100% - 3rem);
-    max-width: 400px;
+    width: calc(100% - 2rem);
+    max-width: 450px;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.85); /* Fallback */
-    background: var(--color-surface);
-    opacity: 0.95;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--color-border);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
     z-index: 1000;
     padding: 0.5rem;
+    border-radius: 2rem;
   }
   
-  /* Make sure the main content doesn't get hidden behind the bottom bar */
+  /* Se tiver tema escuro ativado, o fundo da barra precisa de outro tom */
+  [data-theme="midnight"] .nav-links {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .main-content {
-    padding-bottom: 6rem;
+    padding-bottom: 7rem;
   }
   
   .nav-item {
     flex-direction: column;
     gap: 0.25rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0.25rem;
     width: 100%;
     justify-content: center;
+    border-radius: 1.25rem;
+    color: var(--color-text-light);
   }
   
   .nav-item span {
     display: block;
-    font-size: 0.65rem;
-    font-weight: 700;
+    font-size: 0.6rem;
+    font-weight: 600;
+    opacity: 0.8;
+  }
+
+  .nav-item.active {
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    box-shadow: none;
+  }
+  
+  .nav-item.active span {
+    opacity: 1;
+    font-weight: 800;
   }
 }
+
