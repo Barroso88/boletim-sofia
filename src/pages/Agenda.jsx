@@ -147,7 +147,7 @@ const Agenda = () => {
                 />
               </div>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-grid-2col">
                 <div className="input-group">
                   <label className="input-label">Hora</label>
                   <input

@@ -92,7 +92,7 @@ const Peso = () => {
         <div className="glass-card mb-4 animate-fade-in" style={{ padding: '2rem' }}>
           <h3 className="h3 mb-4">Adicionar Nova Pesagem</h3>
           <form onSubmit={adicionarRegisto}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }} className="form-grid-2col">
               <div className="input-group">
                 <label className="input-label">Data da Pesagem</label>
                 <input
@@ -208,7 +208,7 @@ const Peso = () => {
       {/* Delete Confirmation Modal */}
       {confirmarDelete && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2147483647 }}
           onClick={() => setConfirmarDelete(null)}
         >
           <div

@@ -270,6 +270,16 @@ button {
   padding: 2rem;
 }
 
+/* Page container used inside each tab/page */
+.page-container {
+  padding-bottom: 2rem;
+}
+
+/* Mobile utility */
+.hide-mobile {
+  display: inline;
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -349,5 +359,20 @@ button {
   .btn-primary, .btn-outline {
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
+  }
+
+  /* Ensure page content is never hidden under the fixed bottom nav bar */
+  .page-container {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Hide extra text labels on mobile buttons */
+  .hide-mobile {
+    display: none;
+  }
+
+  /* Inline forms: single column on mobile */
+  .form-grid-2col {
+    grid-template-columns: 1fr !important;
   }
 }

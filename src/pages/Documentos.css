@@ -352,27 +352,55 @@
   }
 
   .executive-table td {
-    padding: 1rem;
+    padding: 0.75rem 0.6rem;
   }
 
   .doc-name {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  .cell-icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    flex-shrink: 0;
   }
 
   .mono-number {
-    font-size: 0.95rem;
-    padding: 0.2rem 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.15rem 0.4rem;
+    letter-spacing: 0.04em;
+  }
+
+  .blood-type-badge {
+    font-size: 0.9rem;
+    padding: 0.25rem 0.7rem;
   }
 
   .add-form-grid {
     grid-template-columns: 1fr;
   }
 
+  /* Icon-only pill buttons on narrow screens */
   .pill-btn span {
-    display: none; /* Hide button text, keep icons on mobile */
+    display: none;
   }
 
   .pill-btn {
-    padding: 0.5rem;
+    padding: 0.45rem 0.55rem;
+    border-radius: 50%;
+    min-width: 36px;
+    min-height: 36px;
+    justify-content: center;
+  }
+
+  /* Inline edit input should be full width */
+  .inline-edit-box {
+    max-width: 100%;
+  }
+
+  /* Make executive-add-card scroll into view properly */
+  .executive-add-card {
+    margin-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
   }
 }

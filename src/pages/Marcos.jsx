@@ -76,7 +76,7 @@ const Marcos = () => {
                 <button className="btn-icon" onClick={() => setAdicionando(false)}><X size={22} /></button>
               </div>
               <form onSubmit={adicionarMarco}>
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }} className="form-grid-2col">
                   <div className="input-group">
                     <label className="input-label">Título do Momento</label>
                     <input
