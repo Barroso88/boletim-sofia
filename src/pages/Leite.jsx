@@ -5,7 +5,7 @@ import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, C
 import { api } from '../services/api';
 import './Leite.css';
 
-const PRESET_AMOUNTS = [60, 90, 120, 150, 180, 210, 240];
+const PRESET_AMOUNTS = [30, 60, 90, 120, 150, 180, 210, 240];
 
 const Leite = () => {
   const [registos, setRegistos] = useState([]);
@@ -94,7 +94,7 @@ const Leite = () => {
       {/* Header */}
       <header className="page-header" style={{ marginBottom: '0.5rem' }}>
         <h1 className="h1 flex-center" style={{ gap: '0.6rem', justifyContent: 'flex-start' }}>
-          <span>Leite & Mamadas</span>
+          <span>Leite</span>
           <Sparkles size={24} style={{ color: 'var(--color-secondary)' }} />
         </h1>
         <p className="text-secondary">Acompanhamento diário de nutrição da Sofia</p>
@@ -161,8 +161,8 @@ const Leite = () => {
             <div className="substat-lbl">Mamadas</div>
           </div>
           <div className="substat-card">
-            <div className="substat-val">{mediaMl} ml</div>
-            <div className="substat-lbl">Média / mamada</div>
+            <div className="substat-val">{totalMlDoDia} ml</div>
+            <div className="substat-lbl">Total diário</div>
           </div>
           <div className="substat-card">
             <div className="substat-val">{tempoUltimaStr ? tempoUltimaStr.replace('há ', '') : '--'}</div>
@@ -239,21 +239,6 @@ const Leite = () => {
 
           {/* Time Picker */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <div className="form-section-title">Hora da Mamada</div>
-            <div className="time-quick-row">
-              <button type="button" className="time-chip" onClick={() => definirHoraRelativa(0)}>
-                Agora
-              </button>
-              <button type="button" className="time-chip" onClick={() => definirHoraRelativa(15)}>
-                -15m
-              </button>
-              <button type="button" className="time-chip" onClick={() => definirHoraRelativa(30)}>
-                -30m
-              </button>
-              <button type="button" className="time-chip" onClick={() => definirHoraRelativa(60)}>
-                -1h
-              </button>
-            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.75rem 1rem', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
               <Clock size={18} className="text-secondary" />
