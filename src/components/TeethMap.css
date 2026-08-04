@@ -113,23 +113,22 @@
   display: block;
 }
 
-.tooth-order-number {
+.tooth-order-badge {
   position: absolute;
+  transform: translate(-50%, -50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #3b7d6a;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 800;
-  font-size: 1.1rem;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-/* Numbers go on the "inside" of the arch */
-.upper-number {
-  top: 30px;
-  left: -5px;
-}
-
-.lower-number {
-  top: -45px;
-  left: -5px;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* ─── Legend ─────────────────────────────────────────────────────────────── */

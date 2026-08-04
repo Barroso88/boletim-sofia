@@ -37,7 +37,6 @@ const ToothSVG = ({ type, hasCross }) => {
   return null;
 };
 
-// Data based on the reference image order
 const LEGEND = [
   { num: 1, months: '6-10 meses' },
   { num: 2, months: '7-12 meses' },
@@ -52,29 +51,29 @@ const LEGEND = [
 ];
 
 const TEETH = [
-  // Upper
-  { id: 't1',  type: 'molar',         label: '2º Molar Sup. Dir.',      order: 10, top: 70, left: 10, rot: -40, cross: true },
-  { id: 't2',  type: 'molar',         label: '1º Molar Sup. Dir.',      order: 6,  top: 50, left: 14, rot: -20, cross: false },
-  { id: 't3',  type: 'canine',        label: 'Canino Sup. Dir.',        order: 7,  top: 30, left: 24, rot: -10, cross: false },
-  { id: 't4',  type: 'incisor-lat',   label: 'Incisivo Lat. Sup. Dir.', order: 3,  top: 15, left: 35, rot: -5,  cross: false },
-  { id: 't5',  type: 'incisor-front', label: 'Incisivo Cent. Sup. Dir.',order: 2,  top: 10, left: 45, rot: 0,   cross: false },
-  { id: 't6',  type: 'incisor-front', label: 'Incisivo Cent. Sup. Esq.',order: 2,  top: 10, left: 55, rot: 0,   cross: false },
-  { id: 't7',  type: 'incisor-lat',   label: 'Incisivo Lat. Sup. Esq.', order: 3,  top: 15, left: 65, rot: 5,   cross: false },
-  { id: 't8',  type: 'canine',        label: 'Canino Sup. Esq.',        order: 7,  top: 30, left: 76, rot: 10,  cross: false },
-  { id: 't9',  type: 'molar',         label: '1º Molar Sup. Esq.',      order: 6,  top: 50, left: 86, rot: 20,  cross: false },
-  { id: 't10', type: 'molar',         label: '2º Molar Sup. Esq.',      order: 10, top: 70, left: 90, rot: 40,  cross: true },
+  // Upper Arch (Upper Gum)
+  { id: 't1',  type: 'molar',         label: '2º Molar Sup. Dir.',      order: 10, top: 68, left: 14, rot: -40, cross: true,  numTop: 55, numLeft: 27 },
+  { id: 't2',  type: 'molar',         label: '1º Molar Sup. Dir.',      order: 6,  top: 48, left: 20, rot: -25, cross: false, numTop: 42, numLeft: 32 },
+  { id: 't3',  type: 'canine',        label: 'Canino Sup. Dir.',        order: 7,  top: 30, left: 28, rot: -15, cross: false, numTop: 32, numLeft: 38 },
+  { id: 't4',  type: 'incisor-lat',   label: 'Incisivo Lat. Sup. Dir.', order: 3,  top: 18, left: 38, rot: -8,  cross: false, numTop: 31, numLeft: 44 },
+  { id: 't5',  type: 'incisor-front', label: 'Incisivo Cent. Sup. Dir.',order: 2,  top: 14, left: 46, rot: 0,   cross: false, numTop: 31, numLeft: 47 },
+  { id: 't6',  type: 'incisor-front', label: 'Incisivo Cent. Sup. Esq.',order: 2,  top: 14, left: 54, rot: 0,   cross: false, numTop: 31, numLeft: 53 },
+  { id: 't7',  type: 'incisor-lat',   label: 'Incisivo Lat. Sup. Esq.', order: 3,  top: 18, left: 62, rot: 8,   cross: false, numTop: 31, numLeft: 56 },
+  { id: 't8',  type: 'canine',        label: 'Canino Sup. Esq.',        order: 7,  top: 30, left: 72, rot: 15,  cross: false, numTop: 32, numLeft: 62 },
+  { id: 't9',  type: 'molar',         label: '1º Molar Sup. Esq.',      order: 6,  top: 48, left: 80, rot: 25,  cross: false, numTop: 42, numLeft: 68 },
+  { id: 't10', type: 'molar',         label: '2º Molar Sup. Esq.',      order: 10, top: 68, left: 86, rot: 40,  cross: true,  numTop: 55, numLeft: 73 },
   
-  // Lower
-  { id: 'b1',  type: 'molar',         label: '2º Molar Inf. Dir.',      order: 9,  top: 30, left: 10, rot: -140, cross: true },
-  { id: 'b2',  type: 'molar',         label: '1º Molar Inf. Dir.',      order: 5,  top: 50, left: 14, rot: -160, cross: true },
-  { id: 'b3',  type: 'canine',        label: 'Canino Inf. Dir.',        order: 8,  top: 70, left: 24, rot: -170, cross: false },
-  { id: 'b4',  type: 'incisor-lat',   label: 'Incisivo Lat. Inf. Dir.', order: 4,  top: 85, left: 35, rot: -175, cross: false },
-  { id: 'b5',  type: 'incisor-front', label: 'Incisivo Cent. Inf. Dir.',order: 1,  top: 90, left: 45, rot: 180,  cross: false },
-  { id: 'b6',  type: 'incisor-front', label: 'Incisivo Cent. Inf. Esq.',order: 1,  top: 90, left: 55, rot: 180,  cross: false },
-  { id: 'b7',  type: 'incisor-lat',   label: 'Incisivo Lat. Inf. Esq.', order: 4,  top: 85, left: 65, rot: 175,  cross: false },
-  { id: 'b8',  type: 'canine',        label: 'Canino Inf. Esq.',        order: 8,  top: 70, left: 76, rot: 170,  cross: false },
-  { id: 'b9',  type: 'molar',         label: '1º Molar Inf. Esq.',      order: 5,  top: 50, left: 86, rot: 160,  cross: true },
-  { id: 'b10', type: 'molar',         label: '2º Molar Inf. Esq.',      order: 9,  top: 30, left: 90, rot: 140,  cross: true },
+  // Lower Arch (Lower Gum)
+  { id: 'b1',  type: 'molar',         label: '2º Molar Inf. Dir.',      order: 9,  top: 32, left: 14, rot: -140, cross: true,  numTop: 45, numLeft: 27 },
+  { id: 'b2',  type: 'molar',         label: '1º Molar Inf. Dir.',      order: 5,  top: 52, left: 20, rot: -155, cross: true,  numTop: 58, numLeft: 32 },
+  { id: 'b3',  type: 'canine',        label: 'Canino Inf. Dir.',        order: 8,  top: 70, left: 28, rot: -165, cross: false, numTop: 68, numLeft: 38 },
+  { id: 'b4',  type: 'incisor-lat',   label: 'Incisivo Lat. Inf. Dir.', order: 4,  top: 82, left: 38, rot: -172, cross: false, numTop: 69, numLeft: 44 },
+  { id: 'b5',  type: 'incisor-front', label: 'Incisivo Cent. Inf. Dir.',order: 1,  top: 86, left: 46, rot: 180,  cross: false, numTop: 69, numLeft: 47 },
+  { id: 'b6',  type: 'incisor-front', label: 'Incisivo Cent. Inf. Esq.',order: 1,  top: 86, left: 54, rot: 180,  cross: false, numTop: 69, numLeft: 53 },
+  { id: 'b7',  type: 'incisor-lat',   label: 'Incisivo Lat. Inf. Esq.', order: 4,  top: 82, left: 62, rot: 172,  cross: false, numTop: 69, numLeft: 56 },
+  { id: 'b8',  type: 'canine',        label: 'Canino Inf. Esq.',        order: 8,  top: 70, left: 72, rot: 165,  cross: false, numTop: 68, numLeft: 62 },
+  { id: 'b9',  type: 'molar',         label: '1º Molar Inf. Esq.',      order: 5,  top: 52, left: 80, rot: 155,  cross: true,  numTop: 58, numLeft: 68 },
+  { id: 'b10', type: 'molar',         label: '2º Molar Inf. Esq.',      order: 9,  top: 32, left: 86, rot: 140,  cross: true,  numTop: 45, numLeft: 73 },
 ];
 
 const TeethMap = () => {
@@ -124,17 +123,19 @@ const TeethMap = () => {
              {TEETH.slice(0, 10).map(tooth => {
                const isErupted = !!teethingData[tooth.id];
                return (
-                 <div key={tooth.id} className="tooth-container" style={{ top: `${tooth.top}%`, left: `${tooth.left}%` }}>
-                   <div className="tooth-order-number upper-number">{tooth.order}</div>
+                 <div key={tooth.id}>
                    <div 
                       className={`tooth-svg-wrapper ${isErupted ? 'erupted' : 'unerupted'}`}
-                      style={{ transform: `translate(-50%, -50%) rotate(${tooth.rot}deg)` }}
+                      style={{ top: `${tooth.top}%`, left: `${tooth.left}%`, transform: `translate(-50%, -50%) rotate(${tooth.rot}deg)` }}
                       onClick={() => openModal(tooth)}
                    >
                      <ToothSVG type={tooth.type} hasCross={tooth.cross} />
                    </div>
+                   <div className="tooth-order-badge" style={{ top: `${tooth.numTop}%`, left: `${tooth.numLeft}%` }}>
+                     {tooth.order}
+                   </div>
                  </div>
-               )
+               );
              })}
           </div>
 
@@ -145,17 +146,19 @@ const TeethMap = () => {
              {TEETH.slice(10, 20).map(tooth => {
                const isErupted = !!teethingData[tooth.id];
                return (
-                 <div key={tooth.id} className="tooth-container" style={{ top: `${tooth.top}%`, left: `${tooth.left}%` }}>
-                   <div className="tooth-order-number lower-number">{tooth.order}</div>
+                 <div key={tooth.id}>
                    <div 
                       className={`tooth-svg-wrapper ${isErupted ? 'erupted' : 'unerupted'}`}
-                      style={{ transform: `translate(-50%, -50%) rotate(${tooth.rot}deg)` }}
+                      style={{ top: `${tooth.top}%`, left: `${tooth.left}%`, transform: `translate(-50%, -50%) rotate(${tooth.rot}deg)` }}
                       onClick={() => openModal(tooth)}
                    >
                      <ToothSVG type={tooth.type} hasCross={tooth.cross} />
                    </div>
+                   <div className="tooth-order-badge" style={{ top: `${tooth.numTop}%`, left: `${tooth.numLeft}%` }}>
+                     {tooth.order}
+                   </div>
                  </div>
-               )
+               );
              })}
           </div>
 
