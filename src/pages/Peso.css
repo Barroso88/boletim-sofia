@@ -1,74 +1,85 @@
 /* Premium Peso Tracker Styles */
 
-.peso-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1rem;
+.peso-table-container {
+  overflow-x: auto;
+  padding: 1rem;
 }
 
-.peso-item {
-  padding: 1.5rem 2rem;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  position: relative;
-  overflow: hidden;
+.premium-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+  text-align: left;
+  min-width: 600px;
 }
 
-.peso-date-block {
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
-  padding: 1rem 1.5rem;
-  border-radius: var(--radius-md);
-  text-align: center;
-  min-width: 100px;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
-}
-
-.peso-day {
-  font-size: 2rem;
-  line-height: 1;
-  margin-bottom: 0.25rem;
-  color: white;
-  text-shadow: 0 2px 4px rgba(225, 29, 72, 0.2);
-}
-
-.peso-month {
+.premium-table th {
+  color: var(--color-text-light);
   font-size: 0.85rem;
   text-transform: uppercase;
-  color: var(--color-primary-dark);
-  font-weight: 800;
   letter-spacing: 0.05em;
+  font-weight: 700;
+  padding: 0 1.5rem 0.5rem;
+  border-bottom: 2px solid rgba(255,255,255,0.4);
 }
 
-.peso-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.75rem;
+.premium-table td {
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255,255,255,0.8);
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  transition: all var(--transition-fast);
+  vertical-align: middle;
 }
 
-.peso-value {
-  font-size: 2.5rem;
+.premium-table tr:hover td {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.01);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  z-index: 10;
+  position: relative;
+}
+
+.premium-table tr td:first-child {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-left: 1px solid rgba(255,255,255,0.8);
+}
+
+.premium-table tr td:last-child {
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-right: 1px solid rgba(255,255,255,0.3);
+}
+
+.td-date {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  font-size: 1.1rem;
+}
+
+.td-weight {
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--color-text);
-  line-height: 1;
-  margin: 0;
   display: flex;
   align-items: baseline;
   gap: 0.25rem;
 }
 
-.peso-unit {
-  font-size: 1.2rem;
-  font-weight: 600;
+.td-weight span {
+  font-size: 0.9rem;
   color: var(--color-text-light);
+  font-weight: 600;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .ganho-badge {
@@ -82,25 +93,28 @@
 }
 
 .ganho-badge.gain {
-  background: rgba(34, 197, 94, 0.1);
-  color: #16a34a; /* Green */
+  background: rgba(34, 197, 94, 0.15);
+  color: #16a34a;
 }
 
 .ganho-badge.loss {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626; /* Red */
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
 }
 
 .ganho-badge.neutral {
-  background: rgba(100, 116, 139, 0.1);
-  color: var(--color-text-light); /* Gray */
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--color-text-light);
 }
 
 .btn-delete {
   color: var(--color-text-light);
-  padding: 0.75rem;
+  padding: 0.5rem;
   border-radius: var(--radius-full);
   transition: all var(--transition-fast);
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-delete:hover {
@@ -109,32 +123,26 @@
 }
 
 @media (max-width: 768px) {
-  .peso-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1.5rem;
+  .peso-table-container {
+    padding: 0.5rem;
   }
-  
-  .peso-date-block {
-    width: 100%;
-    flex-direction: row;
-    align-items: baseline;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
+  .premium-table {
+    min-width: 100%;
   }
-  
-  .peso-day {
-    font-size: 1.5rem;
+  .premium-table th, .premium-table td {
+    padding: 1rem 0.75rem;
   }
-  
-  .peso-value {
-    font-size: 2rem;
+  .td-date {
+    font-size: 0.9rem;
   }
-  
+  .td-weight {
+    font-size: 1.2rem;
+  }
+  .ganho-badge {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
   .btn-delete {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+    padding: 0.3rem;
   }
 }

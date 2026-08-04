@@ -109,50 +109,61 @@ const Peso = () => {
         </div>
       )}
 
-      <div className="peso-list">
+      <div className="peso-table-container glass-card">
         {processedRegistos.length === 0 ? (
-          <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-light)' }}>
+          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-light)' }}>
             <Scale size={64} style={{ margin: '0 auto 1rem', opacity: 0.2 }} />
             <p>Ainda não foram registados pesos.</p>
           </div>
         ) : (
-          processedRegistos.map((registo, index) => {
-            const dateObj = new Date(registo.data);
-            const isGain = registo.ganhoDia !== null && registo.ganhoDia > 0;
-            const isLoss = registo.ganhoDia !== null && registo.ganhoDia < 0;
-            const isNeutral = registo.ganhoDia === 0;
+          <table className="premium-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Peso</th>
+                <th>Evolução Diária</th>
+                <th className="text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {processedRegistos.map((registo, index) => {
+                const dateObj = new Date(registo.data);
+                const isGain = registo.ganhoDia !== null && registo.ganhoDia > 0;
+                const isLoss = registo.ganhoDia !== null && registo.ganhoDia < 0;
+                const isNeutral = registo.ganhoDia === 0;
 
-            return (
-              <div key={registo.id} className="glass-card peso-item animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
-                <div className="peso-date-block">
-                  <div className="peso-day">{format(dateObj, 'dd')}</div>
-                  <div className="peso-month">{format(dateObj, 'MMM, yyyy', { locale: ptBR })}</div>
-                </div>
-                
-                <div className="peso-details">
-                  <h3 className="peso-value">{registo.peso.toFixed(3)} <span className="peso-unit">kg</span></h3>
-                  
-                  {registo.ganhoDia !== null && (
-                    <div className={`ganho-badge ${isGain ? 'gain' : isLoss ? 'loss' : 'neutral'}`}>
-                      {isGain ? <TrendingUp size={16} /> : isLoss ? <TrendingUp size={16} style={{ transform: 'scaleY(-1)' }} /> : <Minus size={16} />}
-                      <span>
-                        {registo.ganhoDia > 0 ? '+' : ''}{registo.ganhoDia} g / dia
-                      </span>
-                    </div>
-                  )}
-                  {registo.ganhoDia === null && (
-                    <div className="ganho-badge neutral">
-                      <span>Primeiro Registo</span>
-                    </div>
-                  )}
-                </div>
-
-                <button className="btn-delete" onClick={() => removerRegisto(registo.id)} title="Remover registo">
-                  <Trash2 size={20} />
-                </button>
-              </div>
-            );
-          })
+                return (
+                  <tr key={registo.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
+                    <td>
+                      <div className="td-date">{format(dateObj, "dd MMM, yyyy", { locale: ptBR })}</div>
+                    </td>
+                    <td>
+                      <div className="td-weight">{registo.peso.toFixed(3)} <span>kg</span></div>
+                    </td>
+                    <td>
+                      {registo.ganhoDia !== null ? (
+                        <div className={`ganho-badge ${isGain ? 'gain' : isLoss ? 'loss' : 'neutral'}`}>
+                          {isGain ? <TrendingUp size={16} /> : isLoss ? <TrendingUp size={16} style={{ transform: 'scaleY(-1)' }} /> : <Minus size={16} />}
+                          <span>
+                            {registo.ganhoDia > 0 ? '+' : ''}{registo.ganhoDia} g/dia
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="ganho-badge neutral">
+                          <span>Primeiro Registo</span>
+                        </div>
+                      )}
+                    </td>
+                    <td className="text-right">
+                      <button className="btn-delete" onClick={() => removerRegisto(registo.id)} title="Remover registo">
+                        <Trash2 size={20} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </div>
     </div>
