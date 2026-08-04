@@ -113,11 +113,10 @@
     justify-content: space-around;
     align-items: center;
     gap: 0;
-    background: var(--color-surface); /* Cor sólida do tema em vez de transparente */
+    background: var(--color-primary); /* Pink tone */
     border: none;
-    border-top: 1px solid var(--color-border);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08); /* Sombra um pouco mais forte para destacar */
-    z-index: 2147483647;
+    box-shadow: 0 -4px 24px rgba(244, 63, 94, 0.3); /* Pink shadow */
+    z-index: 2147483647; /* Maximum possible z-index to guarantee top layer */
     padding: 0.5rem 0.5rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
     border-radius: 0;
     touch-action: manipulation;
@@ -126,8 +125,8 @@
   
   /* Se tiver tema escuro ativado */
   [data-theme="midnight"] .nav-links {
-    background: var(--color-surface); /* Already solid, but just reinforcing */
-    border-top: 1px solid var(--color-border);
+    background: var(--color-primary); 
+    box-shadow: 0 -4px 24px rgba(99, 102, 241, 0.3);
   }
 
   .main-content {
@@ -143,7 +142,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 1.25rem;
-    color: var(--color-text-light);
+    color: rgba(255, 255, 255, 0.65); /* Faded white for inactive */
     flex-shrink: 1;
     text-align: center;
     cursor: pointer;
@@ -167,8 +166,8 @@
   }
 
   .nav-item.active {
-    background: var(--color-primary-light);
-    color: var(--color-primary-dark);
+    background: rgba(255, 255, 255, 0.2); /* Highlight capsule */
+    color: #ffffff; /* Solid white for active */
     box-shadow: none;
   }
   
