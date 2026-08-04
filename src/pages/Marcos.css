@@ -1,0 +1,241 @@
+/* ─── Marcos Premium Styles ─────────────────────────────────────── */
+
+/* Tab navigation */
+.marcos-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(0,0,0,0.04);
+  padding: 0.4rem;
+  border-radius: 1rem;
+  margin-bottom: 2.5rem;
+  width: fit-content;
+}
+
+.marcos-tab {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-text-light);
+  transition: all var(--transition-fast);
+}
+
+.marcos-tab.active {
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ─── Add Marco Form ─────────────────────────────────────────────── */
+.marco-form-card {
+  background: var(--color-surface);
+  border-radius: 1.5rem;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  border: 2px solid var(--color-primary-light);
+  box-shadow: 0 8px 32px rgba(244, 63, 94, 0.08);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.emoji-picker {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.emoji-btn {
+  font-size: 1.4rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  border: 2px solid transparent;
+  background: rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-btn:hover {
+  background: var(--color-primary-light);
+  transform: scale(1.1);
+}
+
+.emoji-btn.selected {
+  background: rgba(244,63,94,0.1);
+  border-color: var(--color-primary);
+  transform: scale(1.12);
+}
+
+/* ─── Timeline ───────────────────────────────────────────────────── */
+.timeline-container {
+  position: relative;
+  padding-left: 3.5rem;
+}
+
+/* Vertical line */
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  left: 1.2rem;
+  top: 2rem;
+  bottom: 2rem;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+  border-radius: 2px;
+  opacity: 0.3;
+}
+
+/* ─── Single Marco Item ──────────────────────────────────────────── */
+.marco-item {
+  position: relative;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Dot on timeline */
+.marco-dot {
+  position: absolute;
+  left: -3.5rem;
+  top: 1.25rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: white;
+  border: 2.5px solid var(--color-primary-light);
+  box-shadow: 0 0 0 4px rgba(244,63,94,0.08), 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  z-index: 2;
+}
+
+.marco-item:hover .marco-dot {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 6px rgba(244,63,94,0.12), 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* Card */
+.marco-card {
+  background: var(--color-surface);
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.marco-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+  border-radius: 4px 0 0 4px;
+}
+
+.marco-item:hover .marco-card {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.marco-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary-dark);
+  background: rgba(244,63,94,0.08);
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.marco-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0 0 0.5rem;
+  line-height: 1.3;
+}
+
+.marco-desc {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.marco-delete-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+  color: var(--color-text-light);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: all var(--transition-fast);
+}
+
+.marco-item:hover .marco-delete-btn {
+  opacity: 1;
+}
+
+.marco-delete-btn:hover {
+  background: rgba(239,68,68,0.1);
+  color: #dc2626;
+}
+
+/* ─── Empty State ────────────────────────────────────────────────── */
+.marcos-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-light);
+}
+
+.marcos-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .timeline-container {
+    padding-left: 2.75rem;
+  }
+  .marco-dot {
+    left: -2.75rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1rem;
+  }
+  .marco-delete-btn {
+    opacity: 1;
+  }
+}
