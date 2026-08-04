@@ -82,9 +82,20 @@ const Documentos = () => {
     });
   };
 
-  const getDocIcon = (type) => {
-    switch (type) {
-      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />;
+  const getDocType = (doc) => {
+    if (doc.type && doc.type !== 'custom') return doc.type;
+    const title = (doc.titulo || '').toLowerCase();
+    if (title.includes('nif') || title.includes('fiscal')) return 'tax';
+    if (title.includes('civil') || title.includes('cc')) return 'id';
+    if (title.includes('saúde') || title.includes('utente')) return 'health';
+    if (title.includes('sanguíneo') || title.includes('sangue')) return 'blood';
+    return doc.type || 'custom';
+  };
+
+  const getDocIcon = (doc) => {
+    const docType = getDocType(doc);
+    switch (docType) {
+      case 'tax': return <img src="/nif_logo.png" alt="Finanças NIF" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />;
       case 'id': return <Fingerprint size={18} />;
       case 'health': return <Stethoscope size={18} />;
       case 'blood': return <Droplet size={18} color="#ef4444" />;
@@ -135,14 +146,14 @@ const Documentos = () => {
               return (
                 <tr 
                   key={doc.id} 
-                  className={`executive-row ${doc.type === 'blood' ? 'blood-type-row' : ''} ${isEditing ? 'editing-row' : ''}`}
+                  className={`executive-row ${getDocType(doc) === 'blood' ? 'blood-type-row' : ''} ${isEditing ? 'editing-row' : ''}`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   
                   {/* Document Title + Icon */}
                   <td className="cell-doc">
-                    <div className={`cell-icon-badge icon-bg-${doc.type}`}>
-                      {getDocIcon(doc.type)}
+                    <div className={`cell-icon-badge icon-bg-${getDocType(doc)}`}>
+                      {getDocIcon(doc)}
                     </div>
                     <div className="doc-meta">
                       <span className="doc-name">{doc.titulo}</span>
@@ -153,7 +164,7 @@ const Documentos = () => {
                   <td className="cell-value">
                     {isEditing ? (
                       <div className="inline-edit-box">
-                        {doc.type === 'blood' ? (
+                        {getDocType(doc) === 'blood' ? (
                           <select
                             className="inline-select"
                             value={editValue}
@@ -185,7 +196,7 @@ const Documentos = () => {
                       <div className="value-display-wrapper">
                         {isPreenchido ? (
                           <div className="value-badge-container">
-                            <span className={doc.type === 'blood' ? 'blood-type-badge' : 'mono-number'}>
+                            <span className={getDocType(doc) === 'blood' ? 'blood-type-badge' : 'mono-number'}>
                               {doc.numero}
                             </span>
                             <button
