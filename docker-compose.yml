@@ -7,5 +7,5 @@ services:
       dockerfile: Dockerfile
     container_name: boletim-sofia
     ports:
-      - "8085:80"
+      - "1307:80"
     restart: unless-stopped

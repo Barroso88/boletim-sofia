@@ -17,7 +17,7 @@ ghcr.io/barroso88/boletim-sofia:latest
    - **Name**: `boletim-sofia`
    - **Repository**: `ghcr.io/barroso88/boletim-sofia:latest`
    - **Network Type**: `bridge`
-   - **Host Port 1**: `8085` (ou outra porta livre) -> **Container Port**: `80`
+   - **Host Port 1**: `1307` (dia do nascimento da Sofia!) -> **Container Port**: `80`
 3. Clique em **Apply**!
 
 ### Docker Compose
@@ -30,6 +30,6 @@ services:
     image: ghcr.io/barroso88/boletim-sofia:latest
     container_name: boletim-sofia
     ports:
-      - "8085:80"
+      - "1307:80"
     restart: unless-stopped
 ```
