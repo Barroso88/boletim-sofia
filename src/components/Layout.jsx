@@ -6,13 +6,13 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   const navItems = [
-    { path: '/', label: 'Início', icon: <Baby size={24} /> },
-    { path: '/agenda', label: 'Agenda', icon: <Calendar size={24} /> },
-    { path: '/marcos', label: 'Marcos', icon: <Image size={24} /> },
-    { path: '/documentos', label: 'Documentos', icon: <FileText size={24} /> },
-    { path: '/peso', label: 'Peso', icon: <Scale size={24} /> },
-    { path: '/vacinas', label: 'Vacinas', icon: <Syringe size={24} /> },
-    { path: '/definicoes', label: 'Definições', icon: <Settings size={24} /> },
+    { path: '/', label: 'Início', icon: <Baby size={20} /> },
+    { path: '/agenda', label: 'Agenda', icon: <Calendar size={20} /> },
+    { path: '/marcos', label: 'Marcos', icon: <Image size={20} /> },
+    { path: '/documentos', label: 'Documentos', icon: <FileText size={20} /> },
+    { path: '/peso', label: 'Peso', icon: <Scale size={20} /> },
+    { path: '/vacinas', label: 'Vacinas', icon: <Syringe size={20} /> },
+    { path: '/definicoes', label: 'Definições', icon: <Settings size={20} /> },
   ];
 
   return (
