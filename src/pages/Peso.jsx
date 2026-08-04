@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Plus, Scale, Trash2, TrendingUp, Minus } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './Peso.css';
 
 const Peso = () => {
@@ -59,6 +60,11 @@ const Peso = () => {
     })
     .reverse(); // Newest first
 
+  const chartData = [...processedRegistos].reverse().map(r => ({
+    dataFormato: format(new Date(r.data), 'dd MMM', { locale: ptBR }),
+    peso: r.peso
+  }));
+
   return (
     <div className="page-container">
       <div className="flex-between mb-4">
@@ -106,6 +112,39 @@ const Peso = () => {
               <button type="button" className="btn-outline" onClick={() => setAdicionando(false)}>Cancelar</button>
             </div>
           </form>
+        </div>
+      )}
+
+      {registos.length > 0 && (
+        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '1.5rem', height: '350px' }}>
+          <h3 className="h3 mb-4" style={{ fontSize: '1.1rem', color: 'var(--color-text-light)' }}>Curva de Crescimento</h3>
+          <ResponsiveContainer width="100%" height="85%">
+            <LineChart data={chartData} margin={{ top: 10, right: 10, bottom: 5, left: -20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.3)" vertical={false} />
+              <XAxis dataKey="dataFormato" stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+              <YAxis stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} domain={['auto', 'auto']} tickFormatter={(value) => `${value}kg`} dx={-10} />
+              <Tooltip 
+                contentStyle={{ borderRadius: '12px', border: 'none', background: 'rgba(255,255,255,0.95)', boxShadow: '0 8px 30px rgba(0,0,0,0.12)' }}
+                itemStyle={{ color: 'var(--color-primary-dark)', fontWeight: 'bold' }}
+                formatter={(value) => [`${value} kg`, 'Peso']}
+                labelStyle={{ color: 'var(--color-text-light)', marginBottom: '4px' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="peso" 
+                stroke="url(#colorWeight)" 
+                strokeWidth={5} 
+                activeDot={{ r: 8, fill: 'var(--color-primary)', stroke: 'white', strokeWidth: 3 }} 
+                dot={{ r: 5, fill: 'white', stroke: 'var(--color-primary)', strokeWidth: 2 }} 
+              />
+              <defs>
+                <linearGradient id="colorWeight" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#fecaca" />
+                  <stop offset="100%" stopColor="#ef4444" />
+                </linearGradient>
+              </defs>
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       )}
 
