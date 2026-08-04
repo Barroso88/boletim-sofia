@@ -22,7 +22,8 @@ const Layout = ({ children }) => {
           <div className="avatar">S</div>
           <span className="h3 text-gradient">Boletim da Sofia</span>
         </div>
-        <div className="nav-links">
+        {/* On desktop, this hidden class can be applied, or we handle via CSS */}
+        <div className="nav-links desktop-only">
           {navItems.map((item) => (
             <Link
               key={item.path}
@@ -35,9 +36,24 @@ const Layout = ({ children }) => {
           ))}
         </div>
       </nav>
+      
       <main className="main-content container animate-fade-in">
         {children}
       </main>
+
+      {/* On mobile, this standalone nav-links sits at the very root of the layout avoiding ALL stacking context traps */}
+      <div className="nav-links mobile-only">
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

@@ -78,7 +78,20 @@
   padding-bottom: 4rem; /* Extra padding for bottom */
 }
 
+/* Display variants */
+.mobile-only {
+  display: none !important;
+}
+
 @media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: flex !important;
+  }
+
   .navbar {
     padding: 0.75rem 1rem;
     margin: 0.5rem;
@@ -106,7 +119,7 @@
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.6);
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14), 0 2px 10px rgba(0, 0, 0, 0.08);
-    z-index: 10000;
+    z-index: 2147483647; /* Maximum possible z-index to guarantee top layer */
     padding: 0.35rem 0.25rem;
     border-radius: 2rem;
     touch-action: manipulation;
@@ -135,6 +148,8 @@
     color: var(--color-text-light);
     flex-shrink: 1;
     text-align: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
   
   .nav-item svg {
