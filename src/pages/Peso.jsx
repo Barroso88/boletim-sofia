@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Plus, Scale, Trash2, TrendingUp, Minus } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './Peso.css';
 
 const Peso = () => {
@@ -119,31 +119,33 @@ const Peso = () => {
         <div className="glass-card mb-4 animate-fade-in" style={{ padding: '1.5rem', height: '350px' }}>
           <h3 className="h3 mb-4" style={{ fontSize: '1.1rem', color: 'var(--color-text-light)' }}>Curva de Crescimento</h3>
           <ResponsiveContainer width="100%" height="85%">
-            <LineChart data={chartData} margin={{ top: 10, right: 10, bottom: 5, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.3)" vertical={false} />
-              <XAxis dataKey="dataFormato" stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
-              <YAxis stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} domain={['auto', 'auto']} tickFormatter={(value) => `${value}kg`} dx={-10} />
-              <Tooltip 
-                contentStyle={{ borderRadius: '12px', border: 'none', background: 'rgba(255,255,255,0.95)', boxShadow: '0 8px 30px rgba(0,0,0,0.12)' }}
-                itemStyle={{ color: 'var(--color-primary-dark)', fontWeight: 'bold' }}
-                formatter={(value) => [`${value} kg`, 'Peso']}
-                labelStyle={{ color: 'var(--color-text-light)', marginBottom: '4px' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="peso" 
-                stroke="url(#colorWeight)" 
-                strokeWidth={5} 
-                activeDot={{ r: 8, fill: 'var(--color-primary)', stroke: 'white', strokeWidth: 3 }} 
-                dot={{ r: 5, fill: 'white', stroke: 'var(--color-primary)', strokeWidth: 2 }} 
-              />
+            <AreaChart data={chartData} margin={{ top: 15, right: 10, bottom: 0, left: -20 }}>
               <defs>
-                <linearGradient id="colorWeight" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#fecaca" />
-                  <stop offset="100%" stopColor="#ef4444" />
+                <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.6}/>
+                  <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-            </LineChart>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.25)" vertical={false} />
+              <XAxis dataKey="dataFormato" stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+              <YAxis stroke="var(--color-text-light)" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - 0.2', 'dataMax + 0.2']} tickFormatter={(value) => `${parseFloat(value).toFixed(1)}kg`} dx={-10} />
+              <Tooltip 
+                contentStyle={{ borderRadius: '16px', border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.85)', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', backdropFilter: 'blur(12px)' }}
+                itemStyle={{ color: 'var(--color-primary-dark)', fontWeight: '800', fontSize: '1.2rem' }}
+                formatter={(value) => [`${value} kg`, 'Peso']}
+                labelStyle={{ color: 'var(--color-text-light)', marginBottom: '4px', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.05em', fontWeight: 'bold' }}
+                cursor={{ stroke: 'rgba(255,255,255,0.6)', strokeWidth: 2, strokeDasharray: '5 5' }}
+              />
+              <Area 
+                type="monotone" 
+                dataKey="peso" 
+                stroke="var(--color-primary)" 
+                strokeWidth={4}
+                fillOpacity={1}
+                fill="url(#colorWeight)"
+                activeDot={{ r: 6, fill: 'var(--color-primary)', stroke: 'white', strokeWidth: 3, style: { filter: 'drop-shadow(0 0 10px rgba(225,29,72,0.8))' } }} 
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       )}
