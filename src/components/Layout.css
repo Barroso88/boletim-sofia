@@ -113,12 +113,10 @@
     justify-content: space-around;
     align-items: center;
     gap: 0;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: var(--color-surface); /* Cor sólida do tema em vez de transparente */
     border: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08); /* Sombra um pouco mais forte para destacar */
     z-index: 2147483647;
     padding: 0.5rem 0.5rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
     border-radius: 0;
@@ -128,8 +126,8 @@
   
   /* Se tiver tema escuro ativado */
   [data-theme="midnight"] .nav-links {
-    background: rgba(15, 23, 42, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--color-surface); /* Already solid, but just reinforcing */
+    border-top: 1px solid var(--color-border);
   }
 
   .main-content {
