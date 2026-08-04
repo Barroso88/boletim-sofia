@@ -215,3 +215,12 @@
   background: white;
   color: #ef4444;
 }
+
+.blood-card .doc-body {
+  align-items: center;
+  text-align: center;
+}
+
+.blood-card .doc-value-container {
+  justify-content: center;
+}
