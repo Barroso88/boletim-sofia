@@ -156,7 +156,7 @@ export const api = {
       fetchWithFallback(`${API_BASE}/vacinas/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tomada: target.tomada })
+        body: JSON.stringify({ tomada: target.tomada, dataAdministrada: target.dataAdministrada })
       });
     }
   },

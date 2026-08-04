@@ -120,8 +120,11 @@ async function setupTables() {
         nome TEXT NOT NULL,
         data_recomendada TEXT NOT NULL,
         tomada BOOLEAN DEFAULT FALSE,
-        grupo TEXT NOT NULL
+        grupo TEXT NOT NULL,
+        data_administrada TEXT
       );
+      ALTER TABLE vacinas ADD COLUMN IF NOT EXISTS data_administrada TEXT;
+
 
       CREATE TABLE IF NOT EXISTS documentos (
         id BIGINT PRIMARY KEY,
@@ -269,7 +272,7 @@ app.delete('/api/peso/:id', async (req, res) => {
 // --- VACINAS ---
 app.get('/api/vacinas', async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, nome, data_recomendada AS "dataRecomendada", tomada, grupo FROM vacinas ORDER BY id ASC');
+    const result = await pool.query('SELECT id, nome, data_recomendada AS "dataRecomendada", tomada, grupo, data_administrada AS "dataAdministrada" FROM vacinas ORDER BY id ASC');
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -284,8 +287,8 @@ app.post('/api/vacinas/bulk', async (req, res) => {
       await client.query('BEGIN');
       for (const v of vacinasList) {
         await client.query(
-          'INSERT INTO vacinas (id, nome, data_recomendada, tomada, grupo) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET tomada = $4',
-          [v.id, v.nome, v.dataRecomendada || v.data_recomendada, v.tomada, v.grupo]
+          'INSERT INTO vacinas (id, nome, data_recomendada, tomada, grupo, data_administrada) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (id) DO UPDATE SET tomada = $4, data_administrada = $6',
+          [v.id, v.nome, v.dataRecomendada || v.data_recomendada, v.tomada, v.grupo, v.dataAdministrada || v.data_administrada || null]
         );
       }
       await client.query('COMMIT');
@@ -302,9 +305,9 @@ app.post('/api/vacinas/bulk', async (req, res) => {
 });
 
 app.put('/api/vacinas/:id', async (req, res) => {
-  const { tomada } = req.body;
+  const { tomada, dataAdministrada } = req.body;
   try {
-    await pool.query('UPDATE vacinas SET tomada = $1 WHERE id = $2', [tomada, req.params.id]);
+    await pool.query('UPDATE vacinas SET tomada = $1, data_administrada = $2 WHERE id = $3', [tomada, dataAdministrada || null, req.params.id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
