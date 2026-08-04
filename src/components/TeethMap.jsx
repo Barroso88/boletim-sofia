@@ -4,33 +4,31 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import './TeethMap.css';
 
-// 10 top teeth, 10 bottom teeth. Types: molar, canine, incisor
-const TEETH_LAYOUT = {
-  top: [
-    { id: 't1', type: 'molar', label: '2º Molar Superior Dir.', pos: 't-1' },
-    { id: 't2', type: 'molar', label: '1º Molar Superior Dir.', pos: 't-2' },
-    { id: 't3', type: 'canine', label: 'Canino Superior Dir.', pos: 't-3' },
-    { id: 't4', type: 'incisor', label: 'Incisivo Lat. Superior Dir.', pos: 't-4' },
-    { id: 't5', type: 'incisor', label: 'Incisivo Cent. Superior Dir.', pos: 't-5' },
-    { id: 't6', type: 'incisor', label: 'Incisivo Cent. Superior Esq.', pos: 't-6' },
-    { id: 't7', type: 'incisor', label: 'Incisivo Lat. Superior Esq.', pos: 't-7' },
-    { id: 't8', type: 'canine', label: 'Canino Superior Esq.', pos: 't-8' },
-    { id: 't9', type: 'molar', label: '1º Molar Superior Esq.', pos: 't-9' },
-    { id: 't10', type: 'molar', label: '2º Molar Superior Esq.', pos: 't-10' },
-  ],
-  bottom: [
-    { id: 'b1', type: 'molar', label: '2º Molar Inferior Dir.', pos: 't-1' },
-    { id: 'b2', type: 'molar', label: '1º Molar Inferior Dir.', pos: 't-2' },
-    { id: 'b3', type: 'canine', label: 'Canino Inferior Dir.', pos: 't-3' },
-    { id: 'b4', type: 'incisor', label: 'Incisivo Lat. Inferior Dir.', pos: 't-4' },
-    { id: 'b5', type: 'incisor', label: 'Incisivo Cent. Inferior Dir.', pos: 't-5' },
-    { id: 'b6', type: 'incisor', label: 'Incisivo Cent. Inferior Esq.', pos: 't-6' },
-    { id: 'b7', type: 'incisor', label: 'Incisivo Lat. Inferior Esq.', pos: 't-7' },
-    { id: 'b8', type: 'canine', label: 'Canino Inferior Esq.', pos: 't-8' },
-    { id: 'b9', type: 'molar', label: '1º Molar Inferior Esq.', pos: 't-9' },
-    { id: 'b10', type: 'molar', label: '2º Molar Inferior Esq.', pos: 't-10' },
-  ]
-};
+// 20 Primary Teeth layout
+const TEETH_DATA = [
+  // Top Arch
+  { id: 't1', label: '2º Molar Superior Dir.', pos: 'pos-t1' },
+  { id: 't2', label: '1º Molar Superior Dir.', pos: 'pos-t2' },
+  { id: 't3', label: 'Canino Superior Dir.', pos: 'pos-t3' },
+  { id: 't4', label: 'Incisivo Lat. Superior Dir.', pos: 'pos-t4' },
+  { id: 't5', label: 'Incisivo Cent. Superior Dir.', pos: 'pos-t5' },
+  { id: 't6', label: 'Incisivo Cent. Superior Esq.', pos: 'pos-t6' },
+  { id: 't7', label: 'Incisivo Lat. Superior Esq.', pos: 'pos-t7' },
+  { id: 't8', label: 'Canino Superior Esq.', pos: 'pos-t8' },
+  { id: 't9', label: '1º Molar Superior Esq.', pos: 'pos-t9' },
+  { id: 't10', label: '2º Molar Superior Esq.', pos: 'pos-t10' },
+  // Bottom Arch
+  { id: 'b1', label: '2º Molar Inferior Dir.', pos: 'pos-b1' },
+  { id: 'b2', label: '1º Molar Inferior Dir.', pos: 'pos-b2' },
+  { id: 'b3', label: 'Canino Inferior Dir.', pos: 'pos-b3' },
+  { id: 'b4', label: 'Incisivo Lat. Inferior Dir.', pos: 'pos-b4' },
+  { id: 'b5', label: 'Incisivo Cent. Inferior Dir.', pos: 'pos-b5' },
+  { id: 'b6', label: 'Incisivo Cent. Inferior Esq.', pos: 'pos-b6' },
+  { id: 'b7', label: 'Incisivo Lat. Inferior Esq.', pos: 'pos-b7' },
+  { id: 'b8', label: 'Canino Inferior Esq.', pos: 'pos-b8' },
+  { id: 'b9', label: '1º Molar Inferior Esq.', pos: 'pos-b9' },
+  { id: 'b10', label: '2º Molar Inferior Esq.', pos: 'pos-b10' },
+];
 
 const TeethMap = () => {
   const [teethingData, setTeethingData] = useState(() => {
@@ -75,38 +73,30 @@ const TeethMap = () => {
     closeModal();
   };
 
-  const renderTooth = (tooth) => {
+  const renderToothSpot = (tooth) => {
     const isErupted = !!teethingData[tooth.id];
-    const dateStr = isErupted ? format(new Date(teethingData[tooth.id]), "MMM yy", { locale: ptBR }) : '';
+    const dateStr = isErupted ? format(new Date(teethingData[tooth.id]), "MMM yy", { locale: ptBR }) : 'Registar';
 
     return (
       <div 
         key={tooth.id} 
-        className={`tooth-wrapper tooth-${tooth.type} ${isErupted ? 'tooth-erupted' : ''} ${tooth.pos}`}
+        className={`tooth-spot ${isErupted ? 'erupted' : ''} ${tooth.pos}`}
         onClick={() => openModal(tooth)}
         title={tooth.label}
       >
-        {!isErupted && <span className="tooth-date">Registar</span>}
-        <div className="tooth-icon"></div>
-        {isErupted && <span className="tooth-date">{dateStr}</span>}
+        <span className="spot-date">{dateStr}</span>
       </div>
     );
   };
 
   return (
     <div className="teeth-map-container">
-      <div className="arch-section">
-        <h3 className="arch-title">Arcada Superior</h3>
-        <div className="jaw-arch arch-top">
-          {TEETH_LAYOUT.top.map(renderTooth)}
-        </div>
-      </div>
+      <p className="text-body text-light mb-4 text-center">
+        Toque num espaço da gengiva para registar o nascimento do dente.
+      </p>
 
-      <div className="arch-section">
-        <div className="jaw-arch arch-bottom">
-          {TEETH_LAYOUT.bottom.map(renderTooth)}
-        </div>
-        <h3 className="arch-title" style={{ marginTop: '1.5rem', marginBottom: 0 }}>Arcada Inferior</h3>
+      <div className="realistic-mouth-wrapper">
+        {TEETH_DATA.map(renderToothSpot)}
       </div>
 
       {/* Modal */}
