@@ -1,173 +1,258 @@
 /* Documentos.css */
 
-.docs-table-container {
-  overflow: hidden;
+.wallet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 0;
+  perspective: 1000px;
 }
 
-.docs-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.docs-table th {
-  padding: 1rem 1.5rem;
-  font-weight: 600;
-  color: var(--color-text-light);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.docs-table td {
-  padding: 1.25rem 1.5rem;
-  vertical-align: middle;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.docs-table tr:last-child td {
-  border-bottom: none;
-}
-
-.docs-table tbody tr {
-  transition: background-color 0.2s ease;
-  animation: slideUpFade 0.4s ease forwards;
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.docs-table tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-
-/* Row specifically for Blood Type */
-.blood-row {
-  background-image: linear-gradient(to right, rgba(239, 68, 68, 0.03), transparent);
-}
-
-/* Col 1: Title & Icon */
-.doc-title-cell {
+/* Base Card Style (Credit Card / ID Proportions) */
+.id-card {
+  position: relative;
+  border-radius: 20px;
+  padding: 1.5rem;
+  aspect-ratio: 1.586 / 1; /* Standard credit card ratio */
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.1),
+    0 5px 15px rgba(0,0,0,0.05),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+  color: white;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  animation: slideUpFade 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-.doc-icon-wrapper {
-  background: var(--gradient-primary);
-  color: white;
+.id-card:hover {
+  transform: translateY(-8px) rotateX(4deg) rotateY(-2deg);
+  box-shadow: 
+    -10px 25px 50px rgba(0,0,0,0.15),
+    0 10px 20px rgba(0,0,0,0.1),
+    inset 0 2px 2px rgba(255,255,255,0.6);
+}
+
+/* Card Themes */
+.card-theme-tax {
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+}
+.card-theme-id {
+  background: linear-gradient(135deg, #64748b 0%, #334155 100%);
+}
+.card-theme-health {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+.card-theme-blood {
+  background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+}
+.card-theme-custom {
+  background: linear-gradient(135deg, #8b5cf6 0%, #5b21b6 100%);
+}
+
+/* Holographic Glare */
+.card-glare {
+  position: absolute;
+  top: 0; left: -100%; right: -100%; bottom: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.4) 30%,
+    transparent 35%
+  );
+  z-index: 1;
+  pointer-events: none;
+  transition: transform 0.6s ease;
+  transform: translateX(-50%);
+}
+
+.id-card:hover .card-glare {
+  transform: translateX(100%);
+}
+
+/* Background Watermark */
+.card-watermark {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  opacity: 0.1;
+  transform: scale(4);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Header */
+.card-header {
+  position: relative;
+  z-index: 2;
+  align-items: flex-start;
+}
+
+.card-icon-bg {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
   padding: 0.5rem;
   border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Actions */
+.card-actions {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.2);
-}
-
-.blood-row .doc-icon-wrapper {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
-}
-
-.doc-title-text {
-  font-weight: 700;
-  color: var(--color-text);
-  font-size: 1rem;
-}
-
-/* Col 2: Value */
-.doc-number {
-  font-family: 'Space Grotesk', monospace;
-  font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 0.05em;
-  color: var(--color-text);
-}
-
-.doc-empty-state {
-  color: #94a3b8;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-.blood-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-  color: white;
-  font-weight: 800;
-  font-size: 1.2rem;
-  padding: 0.25rem 1rem;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.compact-input {
-  padding: 0.5rem 1rem;
-  margin: 0;
-  width: 100%;
-  max-width: 250px;
-}
-
-/* Col 3: Actions */
-.actions-col {
-  width: 120px;
-  text-align: right;
-}
-
-.doc-actions-cell {
-  text-align: right;
-}
-
-.table-action-btns {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
   gap: 0.5rem;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(8px);
+  padding: 0.4rem;
+  border-radius: 20px;
 }
 
-.action-btn {
+.card-action-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  padding: 0.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--color-text-light);
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
-.action-btn:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--color-text);
-  transform: translateY(-1px);
+.card-action-btn:hover:not(:disabled) {
+  color: white;
+  transform: scale(1.1);
 }
 
-.action-btn:disabled {
+.card-action-btn.delete-btn:hover {
+  color: #fca5a5;
+}
+
+.card-action-btn:disabled {
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
-.action-btn.copy-btn:hover:not(:disabled) { color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.1); }
-.action-btn.edit-btn:hover { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
-.action-btn.delete-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-.action-btn.save-btn { color: #10b981; background: rgba(16, 185, 129, 0.1); }
-.action-btn.save-btn:hover { background: rgba(16, 185, 129, 0.2); }
-.action-btn.cancel-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+/* Body */
+.card-body {
+  position: relative;
+  z-index: 2;
+  margin-top: 1rem;
+}
 
-/* Add Panel */
-.add-doc-panel {
-  padding: 2rem;
-  margin-top: 2rem;
+.card-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-bottom: 0.5rem;
+}
+
+.card-value-display {
+  min-height: 40px;
+}
+
+.card-number-wrapper {
+  background: rgba(0,0,0,0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: inline-block;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card-number {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.card-empty {
+  font-size: 0.9rem;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Edit Mode */
+.card-edit-mode {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background: rgba(255,255,255,0.95);
+  padding: 0.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.card-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  outline: none;
+  min-width: 0;
+}
+
+.card-save-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.card-save-btn.cancel {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.card-save-btn.confirm {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.card-save-btn:hover {
+  filter: brightness(0.95);
+  transform: scale(1.05);
+}
+
+/* The small chip detail */
+.card-chip {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 35px;
+  height: 45px;
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+  border-radius: 6px;
+  opacity: 0.8;
+  z-index: 1;
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+}
+.card-chip::after {
+  content: '';
+  position: absolute;
+  top: 20%; bottom: 20%; left: 30%; right: 30%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 2px;
 }
 
 @keyframes slideUpFade {
@@ -177,60 +262,12 @@
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .docs-table th, .docs-table td {
-    padding: 1rem;
-  }
-  
-  .doc-title-text {
-    font-size: 0.9rem;
-  }
-  
-  .doc-number {
-    font-size: 1rem;
-  }
-  
-  .doc-title-cell {
-    gap: 0.5rem;
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr !important;
-  }
+.add-btn-pulse {
+  animation: pulse-soft 2s infinite;
 }
 
-@media (max-width: 500px) {
-  /* On very small screens, hide headers and stack cells */
-  .docs-table thead {
-    display: none;
-  }
-  
-  .docs-table, .docs-table tbody, .docs-table tr, .docs-table td {
-    display: block;
-    width: 100%;
-  }
-  
-  .docs-table tr {
-    margin-bottom: 1rem;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 1rem;
-  }
-  
-  .docs-table td {
-    padding: 0.5rem 0;
-    border: none;
-    text-align: left;
-  }
-  
-  .doc-actions-cell {
-    margin-top: 0.5rem;
-    padding-top: 1rem !important;
-    border-top: 1px solid rgba(0,0,0,0.05) !important;
-  }
-  
-  .table-action-btns {
-    justify-content: flex-start;
-  }
+@keyframes pulse-soft {
+  0% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(var(--color-primary-rgb), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0); }
 }
