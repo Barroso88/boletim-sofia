@@ -238,4 +238,15 @@
   .marco-delete-btn {
     opacity: 1;
   }
+  .marcos-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  .marcos-tab {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
 }
