@@ -26,7 +26,9 @@ const Layout = ({ children }) => {
             <Settings size={20} />
           </Link>
           <div className="navbar-brand">
-            <div className="avatar">S</div>
+            <div className="avatar" style={{ padding: '3px', background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
+              <img src="/favicon.png" alt="Sofia" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
+            </div>
             <span className="h3 text-gradient">Boletim da Sofia</span>
           </div>
         </div>

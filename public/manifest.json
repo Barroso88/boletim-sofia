@@ -1,0 +1,20 @@
+{
+  "short_name": "Boletim Sofia",
+  "name": "Boletim da Sofia",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FFF5F7",
+  "theme_color": "#F43F5E",
+  "display": "standalone"
+}
