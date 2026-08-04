@@ -227,11 +227,11 @@
   color: #d97706;
 }
 
-/* Action Pill Buttons */
+/* Action Pill Buttons - Ultra Premium Stylized */
 .action-pill-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .justify-end {
@@ -241,44 +241,67 @@
 .pill-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 10px;
-  border: none;
-  font-size: 0.8rem;
+  gap: 0.4rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(0, 0, 0, 0.04);
-  color: var(--color-text);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.01em;
 }
 
-.pill-btn:hover {
-  transform: translateY(-1px);
+.edit-pill {
+  background: rgba(59, 130, 246, 0.08);
+  color: #2563eb;
+  border-color: rgba(59, 130, 246, 0.2);
 }
 
 .edit-pill:hover {
-  background: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transform: translateY(-2px);
+}
+
+.delete-pill {
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.2);
 }
 
 .delete-pill:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+  transform: translateY(-2px);
 }
 
 .save-pill {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
   color: white;
-  box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.25);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .save-pill:hover {
-  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.cancel-pill {
+  background: rgba(100, 116, 139, 0.08);
+  color: #475569;
+  border-color: rgba(100, 116, 139, 0.2);
 }
 
 .cancel-pill:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: #64748b;
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
 }
 
 /* Add Form Card */

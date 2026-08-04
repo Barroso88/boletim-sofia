@@ -224,7 +224,7 @@ const Documentos = () => {
                           <Save size={15} /> <span>Guardar</span>
                         </button>
                         <button className="pill-btn cancel-pill" onClick={cancelarEdicao} title="Cancelar">
-                          <X size={15} />
+                          <X size={15} /> <span>Cancelar</span>
                         </button>
                       </div>
                     ) : (
@@ -232,11 +232,9 @@ const Documentos = () => {
                         <button className="pill-btn edit-pill" onClick={() => iniciarEdicao(doc)} title="Editar">
                           <Edit2 size={15} /> <span>Editar</span>
                         </button>
-                        {doc.id > 4 && (
-                          <button className="pill-btn delete-pill" onClick={() => removerDocumento(doc.id)} title="Remover">
-                            <Trash2 size={15} />
-                          </button>
-                        )}
+                        <button className="pill-btn delete-pill" onClick={() => removerDocumento(doc.id)} title="Apagar">
+                          <Trash2 size={15} /> <span>Apagar</span>
+                        </button>
                       </div>
                     )}
                   </td>
