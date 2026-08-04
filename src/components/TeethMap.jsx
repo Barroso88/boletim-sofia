@@ -1,41 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Calendar as CalendarIcon, Trash2 } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import './TeethMap.css';
-
-// ─── Simple Tooth SVGs to match the flat illustration style ───────────────
-
-const ToothSVG = ({ type, hasCross }) => {
-  if (type === 'incisor-front') return (
-    <svg viewBox="0 0 40 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 2C30 2 38 10 38 25C38 35 32 43 20 43C8 43 2 35 2 25C2 10 10 2 20 2Z" fill="white" stroke="#e0e0e0" strokeWidth="2"/>
-    </svg>
-  );
-
-  if (type === 'incisor-lat') return (
-    <svg viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.5 2C26 2 33 8 33 22C33 32 28 38 17.5 38C7 38 2 32 2 22C2 8 9 2 17.5 2Z" fill="white" stroke="#e0e0e0" strokeWidth="2"/>
-    </svg>
-  );
-
-  if (type === 'canine') return (
-    <svg viewBox="0 0 35 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.5 2C28 2 33 15 33 25C33 35 25 43 17.5 43C10 43 2 35 2 25C2 15 7 2 17.5 2Z" fill="white" stroke="#e0e0e0" strokeWidth="2"/>
-    </svg>
-  );
-
-  if (type === 'molar') return (
-    <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M25 2C38 2 48 10 48 25C48 40 38 48 25 48C12 48 2 40 2 25C2 10 12 2 25 2Z" fill="white" stroke="#e0e0e0" strokeWidth="2"/>
-      {hasCross && (
-        <path d="M15 15L35 35M35 15L15 35" stroke="#e0e0e0" strokeWidth="1.5" strokeLinecap="round"/>
-      )}
-    </svg>
-  );
-
-  return null;
-};
 
 const LEGEND = [
   { num: 1, months: '6-10 meses' },
@@ -50,31 +15,101 @@ const LEGEND = [
   { num: 10, months: '25-33 meses' },
 ];
 
-const TEETH = [
-  // Upper Arch (Upper Gum)
-  { id: 't1',  type: 'molar',         label: '2º Molar Sup. Dir.',      order: 10, top: 68, left: 14, rot: -40, cross: true,  numTop: 55, numLeft: 27 },
-  { id: 't2',  type: 'molar',         label: '1º Molar Sup. Dir.',      order: 6,  top: 48, left: 20, rot: -25, cross: false, numTop: 42, numLeft: 32 },
-  { id: 't3',  type: 'canine',        label: 'Canino Sup. Dir.',        order: 7,  top: 30, left: 28, rot: -15, cross: false, numTop: 32, numLeft: 38 },
-  { id: 't4',  type: 'incisor-lat',   label: 'Incisivo Lat. Sup. Dir.', order: 3,  top: 18, left: 38, rot: -8,  cross: false, numTop: 31, numLeft: 44 },
-  { id: 't5',  type: 'incisor-front', label: 'Incisivo Cent. Sup. Dir.',order: 2,  top: 14, left: 46, rot: 0,   cross: false, numTop: 31, numLeft: 47 },
-  { id: 't6',  type: 'incisor-front', label: 'Incisivo Cent. Sup. Esq.',order: 2,  top: 14, left: 54, rot: 0,   cross: false, numTop: 31, numLeft: 53 },
-  { id: 't7',  type: 'incisor-lat',   label: 'Incisivo Lat. Sup. Esq.', order: 3,  top: 18, left: 62, rot: 8,   cross: false, numTop: 31, numLeft: 56 },
-  { id: 't8',  type: 'canine',        label: 'Canino Sup. Esq.',        order: 7,  top: 30, left: 72, rot: 15,  cross: false, numTop: 32, numLeft: 62 },
-  { id: 't9',  type: 'molar',         label: '1º Molar Sup. Esq.',      order: 6,  top: 48, left: 80, rot: 25,  cross: false, numTop: 42, numLeft: 68 },
-  { id: 't10', type: 'molar',         label: '2º Molar Sup. Esq.',      order: 10, top: 68, left: 86, rot: 40,  cross: true,  numTop: 55, numLeft: 73 },
-  
-  // Lower Arch (Lower Gum)
-  { id: 'b1',  type: 'molar',         label: '2º Molar Inf. Dir.',      order: 9,  top: 32, left: 14, rot: -140, cross: true,  numTop: 45, numLeft: 27 },
-  { id: 'b2',  type: 'molar',         label: '1º Molar Inf. Dir.',      order: 5,  top: 52, left: 20, rot: -155, cross: true,  numTop: 58, numLeft: 32 },
-  { id: 'b3',  type: 'canine',        label: 'Canino Inf. Dir.',        order: 8,  top: 70, left: 28, rot: -165, cross: false, numTop: 68, numLeft: 38 },
-  { id: 'b4',  type: 'incisor-lat',   label: 'Incisivo Lat. Inf. Dir.', order: 4,  top: 82, left: 38, rot: -172, cross: false, numTop: 69, numLeft: 44 },
-  { id: 'b5',  type: 'incisor-front', label: 'Incisivo Cent. Inf. Dir.',order: 1,  top: 86, left: 46, rot: 180,  cross: false, numTop: 69, numLeft: 47 },
-  { id: 'b6',  type: 'incisor-front', label: 'Incisivo Cent. Inf. Esq.',order: 1,  top: 86, left: 54, rot: 180,  cross: false, numTop: 69, numLeft: 53 },
-  { id: 'b7',  type: 'incisor-lat',   label: 'Incisivo Lat. Inf. Esq.', order: 4,  top: 82, left: 62, rot: 172,  cross: false, numTop: 69, numLeft: 56 },
-  { id: 'b8',  type: 'canine',        label: 'Canino Inf. Esq.',        order: 8,  top: 70, left: 72, rot: 165,  cross: false, numTop: 68, numLeft: 62 },
-  { id: 'b9',  type: 'molar',         label: '1º Molar Inf. Esq.',      order: 5,  top: 52, left: 80, rot: 155,  cross: true,  numTop: 58, numLeft: 68 },
-  { id: 'b10', type: 'molar',         label: '2º Molar Inf. Esq.',      order: 9,  top: 32, left: 86, rot: 140,  cross: true,  numTop: 45, numLeft: 73 },
-];
+// SVG canvas: 400 x 420
+// Upper arch center: (200, 210), radius 155
+// Lower arch center: (200, 210), radius 155
+// Teeth are placed along an ellipse arc
+
+// Upper teeth: angles from 200° to 340° (left to right from viewer's perspective)
+// Lower teeth: angles from 20° to 160°
+
+function toothPosition(cx, cy, rx, ry, angleDeg) {
+  const rad = (angleDeg * Math.PI) / 180;
+  return {
+    x: cx + rx * Math.cos(rad),
+    y: cy + ry * Math.sin(rad),
+  };
+}
+
+// Upper arch: 10 teeth, spread from 215° to 325°
+const upperAngles = [215, 228, 242, 257, 271, 289, 303, 318, 332, 345];
+// Lower arch: 10 teeth, spread from 35° to 145°
+const lowerAngles = [35, 48, 57, 71, 89, 107, 121, 135, 148, 161];
+
+const CX = 200, CY_UP = 185, CY_LOW = 235;
+const RX = 155, RY = 110;
+// Number badge offset inward from the tooth (toward center)
+const NUM_RX = 125, NUM_RY = 82;
+
+const UPPER_TEETH = [
+  { id: 't1',  label: '2º Molar Sup. Dir.',       order: 10, size: 'molar',   cross: true  },
+  { id: 't2',  label: '1º Molar Sup. Dir.',        order: 6,  size: 'molar',   cross: false },
+  { id: 't3',  label: 'Canino Sup. Dir.',          order: 7,  size: 'canine',  cross: false },
+  { id: 't4',  label: 'Incisivo Lat. Sup. Dir.',   order: 3,  size: 'incisor', cross: false },
+  { id: 't5',  label: 'Incisivo Cent. Sup. Dir.',  order: 2,  size: 'incisor', cross: false },
+  { id: 't6',  label: 'Incisivo Cent. Sup. Esq.',  order: 2,  size: 'incisor', cross: false },
+  { id: 't7',  label: 'Incisivo Lat. Sup. Esq.',   order: 3,  size: 'incisor', cross: false },
+  { id: 't8',  label: 'Canino Sup. Esq.',          order: 7,  size: 'canine',  cross: false },
+  { id: 't9',  label: '1º Molar Sup. Esq.',        order: 6,  size: 'molar',   cross: false },
+  { id: 't10', label: '2º Molar Sup. Esq.',        order: 10, size: 'molar',   cross: true  },
+].map((t, i) => ({
+  ...t,
+  ...toothPosition(CX, CY_UP, RX, RY, upperAngles[i]),
+  angle: upperAngles[i],
+  numPos: toothPosition(CX, CY_UP, NUM_RX, NUM_RY, upperAngles[i]),
+}));
+
+const LOWER_TEETH = [
+  { id: 'b1',  label: '2º Molar Inf. Dir.',        order: 9,  size: 'molar',   cross: true  },
+  { id: 'b2',  label: '1º Molar Inf. Dir.',        order: 5,  size: 'molar',   cross: true  },
+  { id: 'b3',  label: 'Canino Inf. Dir.',          order: 8,  size: 'canine',  cross: false },
+  { id: 'b4',  label: 'Incisivo Lat. Inf. Dir.',   order: 4,  size: 'incisor', cross: false },
+  { id: 'b5',  label: 'Incisivo Cent. Inf. Dir.',  order: 1,  size: 'incisor', cross: false },
+  { id: 'b6',  label: 'Incisivo Cent. Inf. Esq.',  order: 1,  size: 'incisor', cross: false },
+  { id: 'b7',  label: 'Incisivo Lat. Inf. Esq.',   order: 4,  size: 'incisor', cross: false },
+  { id: 'b8',  label: 'Canino Inf. Esq.',          order: 8,  size: 'canine',  cross: false },
+  { id: 'b9',  label: '1º Molar Inf. Esq.',        order: 5,  size: 'molar',   cross: true  },
+  { id: 'b10', label: '2º Molar Inf. Esq.',        order: 9,  size: 'molar',   cross: true  },
+].map((t, i) => ({
+  ...t,
+  ...toothPosition(CX, CY_LOW, RX, RY, lowerAngles[i]),
+  angle: lowerAngles[i],
+  numPos: toothPosition(CX, CY_LOW, NUM_RX, NUM_RY, lowerAngles[i]),
+}));
+
+function ToothShape({ size, cross, erupted, onClick, cx, cy, angle }) {
+  const toothAngle = angle + 90; // teeth point inward
+  const sizes = { molar: 22, canine: 16, incisor: 13 };
+  const r = sizes[size] || 14;
+
+  const fill = erupted ? '#fff9c4' : 'white';
+  const stroke = erupted ? '#f9a825' : '#ccc';
+
+  return (
+    <g
+      transform={`translate(${cx},${cy}) rotate(${toothAngle})`}
+      onClick={onClick}
+      style={{ cursor: 'pointer' }}
+    >
+      {size === 'molar' ? (
+        <rect x={-r} y={-r * 0.65} width={r * 2} height={r * 1.3} rx={r * 0.5} fill={fill} stroke={stroke} strokeWidth="1.5" />
+      ) : size === 'canine' ? (
+        <ellipse cx={0} cy={0} rx={r * 0.7} ry={r} fill={fill} stroke={stroke} strokeWidth="1.5" />
+      ) : (
+        <rect x={-r * 0.75} y={-r * 0.6} width={r * 1.5} height={r * 1.2} rx={r * 0.4} fill={fill} stroke={stroke} strokeWidth="1.5" />
+      )}
+      {cross && (
+        <>
+          <line x1={-r * 0.5} y1={-r * 0.4} x2={r * 0.5} y2={r * 0.4} stroke={stroke} strokeWidth="1" />
+          <line x1={r * 0.5} y1={-r * 0.4} x2={-r * 0.5} y2={r * 0.4} stroke={stroke} strokeWidth="1" />
+        </>
+      )}
+      {erupted && (
+        <circle cx={0} cy={0} r={r * 0.25} fill="#f9a825" opacity="0.6" />
+      )}
+    </g>
+  );
+}
 
 const TeethMap = () => {
   const [teethingData, setTeethingData] = useState(() => {
@@ -89,7 +124,10 @@ const TeethMap = () => {
     localStorage.setItem('sofia_denticao', JSON.stringify(teethingData));
   }, [teethingData]);
 
-  const openModal = (tooth) => { setSelectedTooth(tooth); setEruptionDate(teethingData[tooth.id] || ''); };
+  const openModal = (tooth) => {
+    setSelectedTooth(tooth);
+    setEruptionDate(teethingData[tooth.id] || '');
+  };
   const closeModal = () => { setSelectedTooth(null); setEruptionDate(''); };
 
   const saveToothDate = (e) => {
@@ -104,64 +142,95 @@ const TeethMap = () => {
     closeModal();
   };
 
+  const allTeeth = [...UPPER_TEETH, ...LOWER_TEETH];
+
   return (
     <div className="teething-illustration-layout">
-      
-      {/* Title Area */}
+
       <div className="teething-header">
         <h2 className="teething-title">ORDEM DE NASCIMENTO</h2>
         <p className="teething-subtitle">Toque num dente para registar!</p>
       </div>
 
       <div className="teething-main-content">
-        
-        {/* Mouth Graphic */}
-        <div className="teething-mouth-graphic">
-          
-          {/* Upper Gum */}
-          <div className="gum-arch upper-gum">
-             {TEETH.slice(0, 10).map(tooth => {
-               const isErupted = !!teethingData[tooth.id];
-               return (
-                 <div key={tooth.id}>
-                   <div 
-                      className={`tooth-svg-wrapper ${isErupted ? 'erupted' : 'unerupted'}`}
-                      style={{ top: `${tooth.top}%`, left: `${tooth.left}%`, transform: `translate(-50%, -50%) rotate(${tooth.rot}deg)` }}
-                      onClick={() => openModal(tooth)}
-                   >
-                     <ToothSVG type={tooth.type} hasCross={tooth.cross} />
-                   </div>
-                   <div className="tooth-order-badge" style={{ top: `${tooth.numTop}%`, left: `${tooth.numLeft}%` }}>
-                     {tooth.order}
-                   </div>
-                 </div>
-               );
-             })}
-          </div>
 
-          <div className="gum-divider">DENTINHOS DA SOFIA</div>
+        {/* SVG Mouth Map */}
+        <div className="teething-svg-wrap">
+          <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg" className="teething-svg">
 
-          {/* Lower Gum */}
-          <div className="gum-arch lower-gum">
-             {TEETH.slice(10, 20).map(tooth => {
-               const isErupted = !!teethingData[tooth.id];
-               return (
-                 <div key={tooth.id}>
-                   <div 
-                      className={`tooth-svg-wrapper ${isErupted ? 'erupted' : 'unerupted'}`}
-                      style={{ top: `${tooth.top}%`, left: `${tooth.left}%`, transform: `translate(-50%, -50%) rotate(${tooth.rot}deg)` }}
-                      onClick={() => openModal(tooth)}
-                   >
-                     <ToothSVG type={tooth.type} hasCross={tooth.cross} />
-                   </div>
-                   <div className="tooth-order-badge" style={{ top: `${tooth.numTop}%`, left: `${tooth.numLeft}%` }}>
-                     {tooth.order}
-                   </div>
-                 </div>
-               );
-             })}
-          </div>
+            {/* Upper gum arch */}
+            <ellipse cx={CX} cy={CY_UP} rx={RX + 28} ry={RY + 28} fill="#d68787" opacity="0.9" />
+            <ellipse cx={CX} cy={CY_UP} rx={RX - 30} ry={RY - 35} fill="#c97474" />
 
+            {/* Lower gum arch */}
+            <ellipse cx={CX} cy={CY_LOW} rx={RX + 28} ry={RY + 28} fill="#d68787" opacity="0.9" />
+            <ellipse cx={CX} cy={CY_LOW} rx={RX - 30} ry={RY - 35} fill="#c97474" />
+
+            {/* Center divider label */}
+            <text x={CX} y={212} textAnchor="middle" fontSize="11" fontWeight="700" fill="#d68787" letterSpacing="2">DENTINHOS DA SOFIA</text>
+
+            {/* Upper Teeth */}
+            {UPPER_TEETH.map(tooth => (
+              <ToothShape
+                key={tooth.id}
+                size={tooth.size}
+                cross={tooth.cross}
+                erupted={!!teethingData[tooth.id]}
+                onClick={() => openModal(tooth)}
+                cx={tooth.x}
+                cy={tooth.y}
+                angle={tooth.angle}
+              />
+            ))}
+
+            {/* Lower Teeth */}
+            {LOWER_TEETH.map(tooth => (
+              <ToothShape
+                key={tooth.id}
+                size={tooth.size}
+                cross={tooth.cross}
+                erupted={!!teethingData[tooth.id]}
+                onClick={() => openModal(tooth)}
+                cx={tooth.x}
+                cy={tooth.y}
+                angle={tooth.angle}
+              />
+            ))}
+
+            {/* Upper number badges */}
+            {UPPER_TEETH.map(tooth => (
+              <g key={`num-${tooth.id}`} style={{ pointerEvents: 'none' }}>
+                <circle cx={tooth.numPos.x} cy={tooth.numPos.y} r={11} fill="#3b7d6a" />
+                <text
+                  x={tooth.numPos.x}
+                  y={tooth.numPos.y + 4}
+                  textAnchor="middle"
+                  fontSize="10"
+                  fontWeight="800"
+                  fill="white"
+                >
+                  {tooth.order}
+                </text>
+              </g>
+            ))}
+
+            {/* Lower number badges */}
+            {LOWER_TEETH.map(tooth => (
+              <g key={`num-${tooth.id}`} style={{ pointerEvents: 'none' }}>
+                <circle cx={tooth.numPos.x} cy={tooth.numPos.y} r={11} fill="#3b7d6a" />
+                <text
+                  x={tooth.numPos.x}
+                  y={tooth.numPos.y + 4}
+                  textAnchor="middle"
+                  fontSize="10"
+                  fontWeight="800"
+                  fill="white"
+                >
+                  {tooth.order}
+                </text>
+              </g>
+            ))}
+          </svg>
         </div>
 
         {/* Legend */}
@@ -192,8 +261,8 @@ const TeethMap = () => {
               <button className="btn-icon" onClick={closeModal}><X size={24} /></button>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-              <div style={{ width: '40px' }}>
-                <ToothSVG type={selectedTooth.type} hasCross={selectedTooth.cross} />
+              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#3b7d6a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ color: 'white', fontWeight: 800, fontSize: '1.1rem' }}>{selectedTooth.order}</span>
               </div>
               <div>
                 <p style={{ fontWeight: 700, margin: 0 }}>{selectedTooth.label}</p>
