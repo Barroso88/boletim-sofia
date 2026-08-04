@@ -1,132 +1,196 @@
-/* Realistic Teeth Map Styling */
+.teething-illustration-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  background-color: #fcf6f2; /* Light cream background from reference */
+  border-radius: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
 
-.teeth-map-container {
+.teething-header {
+  text-align: center;
+}
+
+.teething-title {
+  color: #3b7d6a; /* Dark green from reference */
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.teething-subtitle {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+}
+
+.teething-main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 0;
-  width: 100%;
+  gap: 2rem;
 }
 
-.realistic-mouth-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  aspect-ratio: 1 / 1;
-  background-image: url('/realistic_gums.png');
-  background-size: cover;
-  background-position: center;
-  border-radius: 24px;
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
+@media (min-width: 768px) {
+  .teething-main-content {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4rem;
+  }
 }
 
-/* Individual Tooth Spot Overlay */
-.tooth-spot {
-  position: absolute;
-  width: 6%;
-  height: 6%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
+/* ─── Mouth Graphic ──────────────────────────────────────────────────────── */
+
+.teething-mouth-graphic {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 1rem;
+  width: 300px;
 }
 
-/* Un-erupted state - subtle pulse to indicate interactivity */
-.tooth-spot:not(.erupted) {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px dashed rgba(255, 255, 255, 0.4);
+.gum-arch {
+  width: 100%;
+  height: 200px;
+  background-color: #d68787; /* Soft pink/red gum color */
+  position: relative;
 }
 
-.tooth-spot:not(.erupted):hover {
-  background: rgba(255, 255, 255, 0.4);
-  transform: translate(-50%, -50%) scale(1.2);
+.upper-gum {
+  border-radius: 150px 150px 20px 20px;
 }
 
-/* Erupted state - looks like a little white tooth emerging */
-.tooth-spot.erupted {
-  background: radial-gradient(circle at center, #ffffff 30%, #f0f0f0 70%, transparent 100%);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), inset 0 -2px 4px rgba(0,0,0,0.2);
-  border: none;
-  border-radius: 40% 40% 60% 60%; /* Slight tooth shape */
-  transform: translate(-50%, -50%) scale(1.1);
+.lower-gum {
+  border-radius: 20px 20px 150px 150px;
 }
 
-.tooth-spot.erupted:hover {
-  transform: translate(-50%, -50%) scale(1.3);
-  box-shadow: 0 0 15px var(--color-primary);
-}
-
-/* Date label shown on hover or when erupted */
-.spot-date {
-  position: absolute;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-surface);
-  color: var(--color-primary-dark);
-  font-size: 0.65rem;
+.gum-divider {
+  color: #d68787;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 10px;
-  white-space: nowrap;
-  box-shadow: var(--shadow-sm);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 20;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
 }
 
-.tooth-spot:hover .spot-date {
+/* ─── Teeth ──────────────────────────────────────────────────────────────── */
+
+.tooth-container {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.tooth-svg-wrapper {
+  position: absolute;
+  width: 35px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tooth-svg-wrapper.unerupted {
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+.tooth-svg-wrapper.erupted {
+  opacity: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.tooth-svg-wrapper:hover {
+  transform: translate(-50%, -50%) scale(1.1) !important;
   opacity: 1;
 }
 
-/* Coordinates for the 10 teeth (Top Arch — visible upper gum ~18-40% from top) */
-.pos-t1 { top: 36%; left: 18%; }
-.pos-t2 { top: 27%; left: 24%; }
-.pos-t3 { top: 21%; left: 32%; }
-.pos-t4 { top: 18%; left: 41%; }
-.pos-t5 { top: 17%; left: 50%; }
-.pos-t6 { top: 18%; left: 58%; }
-.pos-t7 { top: 21%; left: 67%; }
-.pos-t8 { top: 27%; left: 75%; }
-.pos-t9 { top: 35%; left: 80%; }
-.pos-t10 { top: 40%; left: 84%; }
+/* Specific size overrides */
+.tooth-svg-wrapper svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
-/* Coordinates for the 10 teeth (Bottom Arch — visible lower gum ~58-82% from top) */
-.pos-b1 { top: 72%; left: 16%; }
-.pos-b2 { top: 78%; left: 22%; }
-.pos-b3 { top: 82%; left: 30%; }
-.pos-b4 { top: 84%; left: 40%; }
-.pos-b5 { top: 85%; left: 49%; }
-.pos-b6 { top: 85%; left: 57%; }
-.pos-b7 { top: 83%; left: 65%; }
-.pos-b8 { top: 80%; left: 73%; }
-.pos-b9 { top: 76%; left: 79%; }
-.pos-b10 { top: 70%; left: 83%; }
+.tooth-order-number {
+  position: absolute;
+  color: white;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
 
-/* Modal overlay */
-.tooth-modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
+/* Numbers go on the "inside" of the arch */
+.upper-number {
+  top: 30px;
+  left: -5px;
+}
+
+.lower-number {
+  top: -45px;
+  left: -5px;
+}
+
+/* ─── Legend ─────────────────────────────────────────────────────────────── */
+
+.teething-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 200px;
+  border-left: 2px solid #3b7d6a;
+  padding-left: 1.5rem;
+}
+
+.legend-title {
+  color: #d68787;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: white;
+  padding: 0.4rem 1rem 0.4rem 0.4rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.legend-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #3b7d6a;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
-  animation: fadeIn 0.2s ease-out;
+  font-weight: 800;
+  font-size: 0.9rem;
 }
 
-.tooth-modal {
-  background: var(--color-surface);
-  padding: 2rem;
-  border-radius: 1.5rem;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: var(--shadow-lg);
+.legend-text {
+  color: #3b7d6a;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+
+.teething-footer {
+  text-align: center;
+  color: #a0a0a0;
+  font-size: 0.85rem;
+  margin-top: 1rem;
 }
