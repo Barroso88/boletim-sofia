@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Save, Trash2, X } from 'lucide-react';
+import { Plus, Edit2, Save, Trash2, X, Copy, Check, FileBadge, CreditCard, Stethoscope, Fingerprint, FolderHeart } from 'lucide-react';
+import './Documentos.css';
 
 const Documentos = () => {
   const [documentos, setDocumentos] = useState(() => {
     const saved = localStorage.getItem('sofia_documentos');
     if (saved) return JSON.parse(saved);
     return [
-      { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '' },
-      { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '' },
-      { id: 3, titulo: 'Nº Utente de Saúde', numero: '' },
+      { id: 1, titulo: 'NIF (Número de Identificação Fiscal)', numero: '', type: 'tax' },
+      { id: 2, titulo: 'Nº Identificação Civil (CC)', numero: '', type: 'id' },
+      { id: 3, titulo: 'Nº Utente de Saúde', numero: '', type: 'health' },
     ];
   });
 
@@ -18,6 +19,8 @@ const Documentos = () => {
   const [adicionandoNovo, setAdicionandoNovo] = useState(false);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novoNumero, setNovoNumero] = useState('');
+  
+  const [copiadoId, setCopiadoId] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('sofia_documentos', JSON.stringify(documentos));
@@ -46,7 +49,8 @@ const Documentos = () => {
     const novoDoc = {
       id: Date.now(),
       titulo: novoTitulo,
-      numero: novoNumero
+      numero: novoNumero,
+      type: 'custom'
     };
     
     setDocumentos([...documentos, novoDoc]);
@@ -61,56 +65,95 @@ const Documentos = () => {
     }
   };
 
+  const copiarParaClipboard = (numero, id) => {
+    if (!numero) return;
+    navigator.clipboard.writeText(numero).then(() => {
+      setCopiadoId(id);
+      setTimeout(() => setCopiadoId(null), 2000);
+    });
+  };
+
+  const getDocIcon = (type) => {
+    switch (type) {
+      case 'tax': return <FileBadge size={24} />;
+      case 'id': return <Fingerprint size={24} />;
+      case 'health': return <Stethoscope size={24} />;
+      case 'custom': return <CreditCard size={24} />;
+      default: return <FolderHeart size={24} />;
+    }
+  };
+
   return (
     <div className="page-container">
       <div className="flex-between mb-4">
-        <h2 className="h2 text-gradient">Documentos da Sofia</h2>
+        <h2 className="h2 text-gradient">Documentos Oficiais</h2>
         <button className="btn-primary" onClick={() => setAdicionandoNovo(true)}>
           <Plus size={20} />
-          Adicionar Novo
+          <span className="hide-mobile">Adicionar Documento</span>
         </button>
       </div>
 
-      <div className="document-list" style={{ display: 'grid', gap: '1rem' }}>
-        {documentos.map(doc => (
-          <div key={doc.id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div className="doc-info" style={{ flex: 1 }}>
-              <h3 className="h3" style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>{doc.titulo}</h3>
-              
-              {editandoId === doc.id ? (
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                  <input
-                    type="text"
-                    className="input-field"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    placeholder="Introduza o número..."
-                    autoFocus
-                  />
-                  <button onClick={() => guardarEdicao(doc.id)} style={{ color: 'var(--color-primary-dark)' }}>
-                    <Save size={20} />
-                  </button>
-                  <button onClick={cancelarEdicao} style={{ color: 'var(--color-text-light)' }}>
-                    <X size={20} />
-                  </button>
-                </div>
-              ) : (
-                <p className="text-body" style={{ fontSize: '1.2rem', fontWeight: 600, letterSpacing: '1px' }}>
-                  {doc.numero || 'Não registado'}
-                </p>
-              )}
-            </div>
-
+      <div className="docs-grid">
+        {documentos.map((doc, index) => (
+          <div key={doc.id} className="doc-card" style={{ animationDelay: `${index * 0.1}s` }}>
             {editandoId !== doc.id && (
-              <div className="doc-actions" style={{ display: 'flex', gap: '1rem' }}>
-                <button onClick={() => iniciarEdicao(doc)} style={{ color: 'var(--color-text)' }}>
-                  <Edit2 size={20} />
+              <div className="doc-actions-overlay">
+                <button 
+                  className="action-icon-btn" 
+                  onClick={() => copiarParaClipboard(doc.numero, doc.id)}
+                  title="Copiar Número"
+                  disabled={!doc.numero}
+                  style={{ opacity: !doc.numero ? 0.5 : 1 }}
+                >
+                  {copiadoId === doc.id ? <Check size={18} color="var(--color-primary)" /> : <Copy size={18} />}
                 </button>
-                {doc.id > 3 && ( // Permite apagar apenas os adicionados manualmente
-                  <button onClick={() => removerDocumento(doc.id)} style={{ color: 'var(--color-text-light)' }}>
-                    <Trash2 size={20} />
+                <button className="action-icon-btn" onClick={() => iniciarEdicao(doc)} title="Editar">
+                  <Edit2 size={18} />
+                </button>
+                {doc.id > 3 && (
+                  <button className="action-icon-btn" onClick={() => removerDocumento(doc.id)} title="Remover">
+                    <Trash2 size={18} />
                   </button>
                 )}
+              </div>
+            )}
+
+            <div className="doc-header">
+              <div className="doc-icon">
+                {getDocIcon(doc.type)}
+              </div>
+              <h3 className="doc-title">{doc.titulo}</h3>
+            </div>
+            
+            {editandoId === doc.id ? (
+              <div className="doc-edit-mode">
+                <input
+                  type="text"
+                  className="input-field"
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  placeholder="Introduza o número..."
+                  autoFocus
+                />
+                <div className="doc-edit-actions">
+                  <button className="btn-outline" onClick={cancelarEdicao} style={{ padding: '0.5rem' }}>
+                    <X size={18} /> Cancelar
+                  </button>
+                  <button className="btn-primary" onClick={() => guardarEdicao(doc.id)} style={{ padding: '0.5rem' }}>
+                    <Save size={18} /> Guardar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="doc-body">
+                <span className="doc-label">Nº Identificação</span>
+                <div className="doc-value-container">
+                  {doc.numero ? (
+                    <span className="doc-value">{doc.numero}</span>
+                  ) : (
+                    <span className="doc-empty">Não preenchido</span>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -118,31 +161,35 @@ const Documentos = () => {
       </div>
 
       {adicionandoNovo && (
-        <div className="glass-card" style={{ padding: '1.5rem', marginTop: '2rem', border: '2px dashed var(--color-primary)' }}>
-          <h3 className="h3 mb-4">Adicionar Novo Documento</h3>
+        <div className="add-doc-panel">
+          <div className="flex-between mb-4">
+            <h3 className="h3">Novo Documento</h3>
+            <button className="btn-icon" onClick={() => setAdicionandoNovo(false)}><X size={24} /></button>
+          </div>
           <form onSubmit={adicionarNovoDocumento}>
             <div className="input-group">
-              <label className="input-label">Nome do Documento (Ex: Passaporte)</label>
+              <label className="input-label">Tipo de Documento (Ex: Passaporte, Seguro)</label>
               <input
                 type="text"
                 className="input-field"
                 value={novoTitulo}
                 onChange={(e) => setNovoTitulo(e.target.value)}
                 required
+                placeholder="Insira o nome do documento"
               />
             </div>
             <div className="input-group">
-              <label className="input-label">Número</label>
+              <label className="input-label">Número / Identificador</label>
               <input
                 type="text"
                 className="input-field"
                 value={novoNumero}
                 onChange={(e) => setNovoNumero(e.target.value)}
+                placeholder="Insira o número de identificação"
               />
             </div>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <button type="submit" className="btn-primary">Guardar Documento</button>
-              <button type="button" className="btn-outline" onClick={() => setAdicionandoNovo(false)}>Cancelar</button>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+              <button type="submit" className="btn-primary" style={{ flex: 1 }}>Gravar Documento</button>
             </div>
           </form>
         </div>
