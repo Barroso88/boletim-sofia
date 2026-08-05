@@ -554,10 +554,10 @@ button, input, select, textarea {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 2147483647;
-  padding: 1rem;
+  padding: 1.25rem;
   overflow-y: auto;
   animation: fadeIn 0.25s ease-out forwards;
 }
@@ -565,8 +565,7 @@ button, input, select, textarea {
 .modal-card {
   width: 100%;
   max-width: 480px;
-  margin-top: clamp(16px, 8vh, 60px);
-  margin-bottom: 24px;
+  margin: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 24px;
@@ -576,7 +575,7 @@ button, input, select, textarea {
   flex-direction: column;
   gap: 1.25rem;
   animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 2.5rem);
   overflow-y: auto;
 }
 
