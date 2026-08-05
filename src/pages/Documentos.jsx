@@ -26,17 +26,30 @@ const Documentos = () => {
 
   useEffect(() => {
     api.getDocumentos(defaultDocs).then(data => {
-      const seen = new Set();
+      const seenTypes = new Set();
       const clean = [];
       (data || []).forEach(doc => {
-        const key = (doc.type && doc.type !== 'custom') ? doc.type : (doc.titulo || '').toLowerCase().trim();
-        if (!seen.has(key) || doc.type === 'custom') {
-          if (doc.type && doc.type !== 'custom') seen.add(key);
-          clean.push(doc);
+        const docType = getDocType(doc);
+        const typeKey = (docType && docType !== 'custom') ? docType : (doc.titulo || '').toLowerCase().trim();
+        
+        const normalizedDoc = { ...doc, type: docType };
+        if (docType === 'insurance') normalizedDoc.titulo = 'Cartão de Seguro';
+        if (docType === 'blood') normalizedDoc.titulo = 'Grupo Sanguíneo';
+
+        if (!seenTypes.has(typeKey) || docType === 'custom') {
+          if (docType && docType !== 'custom') seenTypes.add(typeKey);
+          clean.push(normalizedDoc);
         }
       });
+
+      // Ensure Cartão de Seguro exists
+      if (!seenTypes.has('insurance')) {
+        clean.push({ id: Date.now(), titulo: 'Cartão de Seguro', numero: '', type: 'insurance' });
+      }
+
       setDocumentos(clean);
       localStorage.setItem('sofia_documentos', JSON.stringify(clean));
+      api.saveDocumentos(clean);
     });
   }, []);
 
@@ -141,7 +154,7 @@ const Documentos = () => {
       case 'id':        return <img src="/cc_logo.png" alt="CC" className="doc-icon-img" />;
       case 'health':    return <img src="/sns_logo.png" alt="SNS" className="doc-icon-img" />;
       case 'social':    return <img src="/seg_social_logo.png" alt="NISS" className="doc-icon-img" />;
-      case 'insurance': return <img src="/seguro_logo.png" alt="Seguro" className="doc-icon-img" style={{ borderRadius: '4px', objectFit: 'contain' }} />;
+      case 'insurance': return <img src="/seguro_logo.png" alt="Cartão de Seguro" className="doc-icon-img-insurance" />;
       case 'blood':     return <Droplet size={22} color="#ef4444" />;
       case 'passport':  return <img src="/passport_logo.png" alt="Passaporte" className="doc-icon-img" style={{ borderRadius: '4px' }} />;
       case 'custom':    return <CreditCard size={22} />;

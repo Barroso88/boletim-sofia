@@ -398,6 +398,12 @@
   object-fit: contain;
 }
 
+.doc-icon-img-insurance {
+  width: 44px;
+  height: 32px;
+  object-fit: contain;
+}
+
 /* ─── Responsive Table ─── */
 @media (max-width: 640px) {
   /* Compact table padding on mobile */
@@ -417,6 +423,11 @@
   .doc-icon-img {
     width: 26px;
     height: 26px;
+  }
+
+  .doc-icon-img-insurance {
+    width: 30px;
+    height: 22px;
   }
 
   /* Truncate long doc names */
