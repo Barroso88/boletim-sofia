@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil } from 'lucide-react';
+import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X } from 'lucide-react';
 import { api } from '../services/api';
 import './Leite.css';
 
@@ -85,9 +85,19 @@ const Leite = () => {
     setEditandoIdLeite(null);
   };
 
-  const apagarRegistoLeite = (id) => {
-    setRegistosLeite(prev => prev.filter(r => r.id !== id));
-    api.deleteLeite(id);
+  const [confirmarDelete, setConfirmarDelete] = useState(null); // { id, type }
+
+  const apagarRegistoConfirmado = () => {
+    if (!confirmarDelete) return;
+    const { id, type } = confirmarDelete;
+    if (type === 'leite') {
+      setRegistosLeite(prev => prev.filter(r => r.id !== id));
+      api.deleteLeite(id);
+    } else if (type === 'fralda') {
+      setRegistosFraldas(prev => prev.filter(f => f.id !== id));
+      api.deleteFralda(id);
+    }
+    setConfirmarDelete(null);
   };
 
   // --- FRALDAS CALCULATIONS ---
@@ -422,7 +432,7 @@ const Leite = () => {
 
                     <button
                       className="btn-action-delete"
-                      onClick={() => apagarRegistoLeite(reg.id)}
+                      onClick={() => setConfirmarDelete({ id: reg.id, type: 'leite' })}
                       title="Apagar registo"
                     >
                       <Trash2 size={17} />
@@ -608,7 +618,7 @@ const Leite = () => {
 
                       <button
                         className="btn-action-delete"
-                        onClick={() => apagarRegistoFralda(reg.id)}
+                        onClick={() => setConfirmarDelete({ id: reg.id, type: 'fralda' })}
                         title="Apagar registo"
                       >
                         <Trash2 size={17} />
@@ -620,6 +630,37 @@ const Leite = () => {
             )}
           </div>
         </>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {confirmarDelete && (
+        <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
+          <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
+              <AlertTriangle size={26} color="#ef4444" />
+            </div>
+            <div>
+              <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>
+                Remover {confirmarDelete.type === 'leite' ? 'Registo de Leite' : 'Registo de Fralda'}?
+              </h3>
+              <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
+                Este registo será apagado permanentemente.
+              </p>
+            </div>
+            <div className="form-actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn-outline" onClick={() => setConfirmarDelete(null)}>
+                <X size={16} /> Cancelar
+              </button>
+              <button
+                className="btn-primary"
+                style={{ background: '#ef4444', borderColor: '#ef4444', boxShadow: '0 4px 14px rgba(239,68,68,0.35)' }}
+                onClick={apagarRegistoConfirmado}
+              >
+                <Trash2 size={16} /> Remover
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

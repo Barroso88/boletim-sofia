@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight, Pencil, X } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight, Pencil, X, AlertTriangle } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { api } from '../services/api';
@@ -75,11 +75,14 @@ const Agenda = () => {
     setNovaHora('09:00');
   };
 
-  const removerEvento = (id) => {
-    if (window.confirm('Tem a certeza que deseja remover este evento?')) {
-      setEventos(eventos.filter(e => e.id !== id));
-      api.deleteEvento(id);
-    }
+  const [confirmarDelete, setConfirmarDelete] = useState(null);
+
+  const removerEventoConfirmado = () => {
+    if (!confirmarDelete) return;
+    const id = confirmarDelete;
+    setEventos(eventos.filter(e => e.id !== id));
+    api.deleteEvento(id);
+    setConfirmarDelete(null);
   };
 
   return (
@@ -244,7 +247,7 @@ const Agenda = () => {
                       <button className="btn-action-edit" onClick={() => abrirEdicao(evento)} title="Editar evento">
                         <Pencil size={17} />
                       </button>
-                      <button className="btn-action-delete" onClick={() => removerEvento(evento.id)} title="Remover evento">
+                      <button className="btn-action-delete" onClick={() => setConfirmarDelete(evento.id)} title="Remover evento">
                         <Trash2 size={17} />
                       </button>
                     </div>
@@ -254,7 +257,36 @@ const Agenda = () => {
             )}
           </div>
         </div>
-      </div>
+
+      {/* Delete Confirmation Modal */}
+      {confirmarDelete && (
+        <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
+          <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
+              <AlertTriangle size={26} color="#ef4444" />
+            </div>
+            <div>
+              <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>Remover Evento?</h3>
+              <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
+                Este agendamento será removido permanentemente da agenda.
+              </p>
+            </div>
+            <div className="form-actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn-outline" onClick={() => setConfirmarDelete(null)}>
+                <X size={16} /> Cancelar
+              </button>
+              <button
+                className="btn-primary"
+                style={{ background: '#ef4444', borderColor: '#ef4444', boxShadow: '0 4px 14px rgba(239,68,68,0.35)' }}
+                onClick={removerEventoConfirmado}
+              >
+                <Trash2 size={16} /> Remover
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

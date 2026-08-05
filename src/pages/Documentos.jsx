@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet } from 'lucide-react';
+import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle } from 'lucide-react';
 import { api } from '../services/api';
 import './Documentos.css';
 
@@ -53,12 +53,15 @@ const Documentos = () => {
     setNovoNumero('');
   };
 
-  const removerDocumento = (id) => {
-    if (window.confirm('Tem a certeza que deseja remover este documento?')) {
-      const novaLista = documentos.filter(doc => doc.id !== id);
-      setDocumentos(novaLista);
-      api.deleteDocumento(id, novaLista);
-    }
+  const [confirmarDelete, setConfirmarDelete] = useState(null);
+
+  const removerDocumentoConfirmado = () => {
+    if (!confirmarDelete) return;
+    const id = confirmarDelete;
+    const novaLista = documentos.filter(doc => doc.id !== id);
+    setDocumentos(novaLista);
+    api.deleteDocumento(id, novaLista);
+    setConfirmarDelete(null);
   };
 
   const copiarParaClipboard = (numero, id) => {
@@ -164,7 +167,7 @@ const Documentos = () => {
                       <button className="btn-action-edit" onClick={() => abrirEdicao(doc)} title="Editar documento">
                         <Pencil size={17} />
                       </button>
-                      <button className="btn-action-delete" onClick={() => removerDocumento(doc.id)} title="Remover documento">
+                      <button className="btn-action-delete" onClick={() => setConfirmarDelete(doc.id)} title="Remover documento">
                         <Trash2 size={17} />
                       </button>
                     </div>
@@ -296,6 +299,34 @@ const Documentos = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {confirmarDelete && (
+        <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
+          <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
+              <AlertTriangle size={26} color="#ef4444" />
+            </div>
+            <div>
+              <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>Remover Documento?</h3>
+              <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
+                Este documento será removido do registo da Sofia.
+              </p>
+            </div>
+            <div className="form-actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn-outline" onClick={() => setConfirmarDelete(null)}>
+                <X size={16} /> Cancelar
+              </button>
+              <button
+                className="btn-primary"
+                style={{ background: '#ef4444', borderColor: '#ef4444', boxShadow: '0 4px 14px rgba(239,68,68,0.35)' }}
+                onClick={removerDocumentoConfirmado}
+              >
+                <Trash2 size={16} /> Remover
+              </button>
+            </div>
           </div>
         </div>
       )}
