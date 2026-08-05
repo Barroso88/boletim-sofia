@@ -121,8 +121,9 @@ const Documentos = () => {
     const novaLista = [...documentos];
     const [movedItem] = novaLista.splice(dragIndex, 1);
     novaLista.splice(dropIndex, 0, movedItem);
-    setDocumentos(novaLista);
-    api.saveDocumentos(novaLista);
+    const listWithOrder = novaLista.map((doc, idx) => ({ ...doc, ordem: idx }));
+    setDocumentos(listWithOrder);
+    api.saveDocumentos(listWithOrder);
     setDraggedIndex(null);
   };
 

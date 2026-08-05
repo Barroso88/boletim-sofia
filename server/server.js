@@ -132,6 +132,7 @@ async function setupTables() {
         numero TEXT,
         type TEXT
       );
+      ALTER TABLE documentos ADD COLUMN IF NOT EXISTS ordem INT DEFAULT 0;
 
       CREATE TABLE IF NOT EXISTS leite (
         id BIGINT PRIMARY KEY,
@@ -317,7 +318,7 @@ app.put('/api/vacinas/:id', async (req, res) => {
 // --- DOCUMENTOS ---
 app.get('/api/documentos', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM documentos ORDER BY id ASC');
+    const result = await pool.query('SELECT * FROM documentos ORDER BY ordem ASC, id ASC');
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -330,10 +331,12 @@ app.post('/api/documentos/bulk', async (req, res) => {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      for (const d of docsList) {
+      for (let i = 0; i < docsList.length; i++) {
+        const d = docsList[i];
+        const ordem = d.ordem !== undefined ? d.ordem : i;
         await client.query(
-          'INSERT INTO documentos (id, titulo, numero, type) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET titulo = $2, numero = $3, type = $4',
-          [d.id, d.titulo, d.numero || '', d.type || 'custom']
+          'INSERT INTO documentos (id, titulo, numero, type, ordem) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET titulo = $2, numero = $3, type = $4, ordem = $5',
+          [d.id, d.titulo, d.numero || '', d.type || 'custom', ordem]
         );
       }
       await client.query('COMMIT');

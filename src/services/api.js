@@ -257,11 +257,12 @@ export const api = {
   },
 
   async saveDocumentos(novaLista, localKey = 'sofia_documentos') {
-    localStorage.setItem(localKey, JSON.stringify(novaLista));
+    const listWithOrder = (novaLista || []).map((doc, idx) => ({ ...doc, ordem: idx }));
+    localStorage.setItem(localKey, JSON.stringify(listWithOrder));
     fetchWithFallback(`${API_BASE}/documentos/bulk`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(novaLista)
+      body: JSON.stringify(listWithOrder)
     });
   },
 
