@@ -198,7 +198,7 @@ const Peso = () => {
                 return (
                   <tr key={registo.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
                     <td>
-                      <div className="td-date">{format(dateObj, "dd MMM, yyyy", { locale: ptBR })}</div>
+                      <div className="td-date">{format(dateObj, "dd/MM/yyyy")}</div>
                     </td>
                     <td>
                       <div className="td-weight">{registo.peso.toFixed(3)} <span>kg</span></div>
@@ -206,11 +206,15 @@ const Peso = () => {
                     <td>
                       {registo.ganhoDia !== null ? (
                         <div className={`ganho-badge ${isGain ? 'gain' : isLoss ? 'loss' : 'neutral'}`}>
-                          {isGain ? <TrendingUp size={13} /> : isLoss ? <TrendingDown size={13} /> : <Minus size={13} />}
-                          <span>{registo.ganhoDia > 0 ? '+' : ''}{registo.ganhoDia} g/dia</span>
+                          {isGain ? <TrendingUp size={12} /> : isLoss ? <TrendingDown size={12} /> : <Minus size={12} />}
+                          <span className="badge-text-full">{registo.ganhoDia > 0 ? '+' : ''}{registo.ganhoDia} g/dia</span>
+                          <span className="badge-text-short">{registo.ganhoDia > 0 ? '+' : ''}{registo.ganhoDia}g/d</span>
                         </div>
                       ) : (
-                        <div className="ganho-badge neutral"><span>— Início</span></div>
+                        <div className="ganho-badge neutral">
+                          <span className="badge-text-full">— Início</span>
+                          <span className="badge-text-short">—</span>
+                        </div>
                       )}
                     </td>
                     <td className="col-total">
