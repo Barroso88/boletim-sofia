@@ -223,29 +223,31 @@
 /* Quick Add Button */
 .btn-quick-add {
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   border-radius: 20px;
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: #ffffff;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1.02rem;
+  font-weight: 800;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  box-shadow: 0 8px 25px rgba(244, 63, 94, 0.35);
-  transition: all 0.25deg ease;
+  box-shadow: 0 8px 25px rgba(244, 63, 94, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.01em;
 }
 
 .btn-quick-add:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.45);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  filter: brightness(1.04);
 }
 
 .btn-quick-add:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.99);
 }
 
 /* Add Form Drawer Card */

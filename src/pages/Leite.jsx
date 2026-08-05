@@ -163,14 +163,14 @@ const Leite = () => {
   };
 
   return (
-    <div className="leite-container">
+    <div className="page-container leite-container">
       {/* Header */}
-      <header className="page-header" style={{ marginBottom: '0.5rem' }}>
-        <h1 className="h1 flex-center" style={{ gap: '0.6rem', justifyContent: 'flex-start' }}>
+      <header className="page-header mb-2">
+        <h1 className="h1" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <span>Leite & Fraldas</span>
           <Sparkles size={24} style={{ color: 'var(--color-secondary)' }} />
         </h1>
-        <p className="text-secondary">Acompanhamento diário da Sofia</p>
+        <p className="text-secondary" style={{ marginTop: '0.2rem' }}>Acompanhamento diário da Sofia</p>
       </header>
 
       {/* Sub Tabs Switcher */}

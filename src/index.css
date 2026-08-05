@@ -335,36 +335,65 @@ button, input, select, textarea {
   font-size: 0.875rem;
 }
 
-/* Buttons */
-.btn {
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+/* Base — shared by all .btn-* and .btn */
+.btn,
+.btn-primary,
+.btn-outline,
+.btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 1.25rem;
   border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
   border: none;
+  white-space: nowrap;
   transition: all var(--transition-fast);
+  text-decoration: none;
+  line-height: 1;
 }
 
+/* Primary — gradient fill with glass shine */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   color: white;
-  box-shadow: 0 4px 14px 0 rgba(244, 63, 94, 0.35);
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.01em;
+  position: relative;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px 0 rgba(244, 63, 94, 0.45);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  filter: brightness(1.04);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
+/* Outline — clean border, glass hover */
+.btn-outline {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.btn-outline:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Secondary */
 .btn-secondary {
   background: var(--color-surface);
   color: var(--color-primary-dark);
@@ -377,9 +406,22 @@ button, input, select, textarea {
   transform: translateY(-1px);
 }
 
+/* Size modifiers */
+.btn-sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+  border-radius: 20px;
+}
+
+.btn-lg {
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+}
+
+/* Icon button */
 .btn-icon {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
@@ -389,11 +431,26 @@ button, input, select, textarea {
   color: var(--color-text);
   cursor: pointer;
   transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .btn-icon:hover {
   background: var(--color-surface-hover);
-  transform: scale(1.05);
+  transform: scale(1.06);
+  border-color: var(--color-primary-light);
+}
+
+/* Page header — used on Leite, Vacinas, etc. */
+.page-header {
+  padding-bottom: 0.25rem;
+}
+
+.page-header h1 {
+  margin: 0 0 0.2rem;
+}
+
+.page-header p {
+  margin: 0;
 }
 
 /* Layout Utilities */
