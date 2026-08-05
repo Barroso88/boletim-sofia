@@ -154,7 +154,7 @@ const Documentos = () => {
       case 'id':        return <img src="/cc_logo.png" alt="CC" className="doc-icon-img" />;
       case 'health':    return <img src="/sns_logo.png" alt="SNS" className="doc-icon-img" />;
       case 'social':    return <img src="/seg_social_logo.png" alt="NISS" className="doc-icon-img" />;
-      case 'insurance': return <img src="/seguro_logo.png" alt="Cartão de Seguro" className="doc-icon-img-insurance" />;
+      case 'insurance': return <img src="/seguro_lion.png?v=4" alt="Cartão de Seguro" className="doc-icon-img-insurance" />;
       case 'blood':     return <Droplet size={22} color="#ef4444" />;
       case 'passport':  return <img src="/passport_logo.png" alt="Passaporte" className="doc-icon-img" style={{ borderRadius: '4px' }} />;
       case 'custom':    return <CreditCard size={22} />;
