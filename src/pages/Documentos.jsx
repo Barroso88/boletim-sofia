@@ -215,8 +215,8 @@ const Documentos = () => {
                 >
                   {/* Doc name + drag handle + icon + number */}
                   <td className="cell-doc">
-                    <div className="drag-handle-icon" title="Arraste para reordenar">
-                      <GripVertical size={16} color="var(--color-border)" />
+                    <div className="drag-handle-badge" title="Arraste para reordenar">
+                      <GripVertical size={18} />
                     </div>
                     <div className={`cell-icon-badge icon-bg-${getDocType(doc)}`}>
                       {getDocIcon(doc)}
@@ -239,27 +239,11 @@ const Documentos = () => {
                   {/* Actions */}
                   <td className="cell-actions text-right col-actions">
                     <div className="btn-action-group">
-                      <button
-                        className="btn-action-move"
-                        onClick={() => moverDoc(index, -1)}
-                        disabled={index === 0}
-                        title="Mover para cima"
-                      >
-                        <ChevronUp size={16} />
-                      </button>
-                      <button
-                        className="btn-action-move"
-                        onClick={() => moverDoc(index, 1)}
-                        disabled={index === documentos.length - 1}
-                        title="Mover para baixo"
-                      >
-                        <ChevronDown size={16} />
-                      </button>
                       <button className="btn-action-edit" onClick={() => abrirEdicao(doc)} title="Editar documento">
-                        <Pencil size={16} />
+                        <Pencil size={17} />
                       </button>
                       <button className="btn-action-delete" onClick={() => setConfirmarDelete(doc.id)} title="Remover documento">
-                        <Trash2 size={16} />
+                        <Trash2 size={17} />
                       </button>
                     </div>
                   </td>

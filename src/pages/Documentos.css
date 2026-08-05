@@ -105,49 +105,40 @@
 .icon-bg-blood { background: #fef2f2; color: #ef4444; }
 .icon-bg-custom { background: #f5f3ff; color: #8b5cf6; }
 
-.drag-handle-icon {
+.drag-handle-badge {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--color-text-light);
   cursor: grab;
-  padding: 0.2rem 0.1rem;
-  opacity: 0.5;
-  transition: opacity var(--transition-fast);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
-.drag-handle-icon:hover {
-  opacity: 1;
+.drag-handle-badge:hover {
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  border-color: rgba(244, 63, 94, 0.35);
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.16);
+  transform: translateY(-1px);
+}
+
+.drag-handle-badge:active {
+  cursor: grabbing;
+  transform: scale(0.96);
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--color-primary);
 }
 
 .executive-row.dragging {
   opacity: 0.45;
   background: rgba(244, 63, 94, 0.08) !important;
-}
-
-.btn-action-move {
-  background: rgba(100, 116, 139, 0.08);
-  color: var(--color-text-light);
-  border: none;
-  border-radius: 10px;
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  padding: 0;
-}
-
-.btn-action-move:hover:not(:disabled) {
-  background: rgba(139, 92, 246, 0.18);
-  color: var(--color-primary-dark);
-  transform: translateY(-1px);
-}
-
-.btn-action-move:disabled {
-  opacity: 0.2;
-  cursor: not-allowed;
 }
 
 .doc-meta {
