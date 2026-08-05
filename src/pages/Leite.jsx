@@ -53,7 +53,18 @@ const Leite = () => {
     if (!ultimaMamada) return null;
     try {
       const dataHoraStr = `${ultimaMamada.data}T${ultimaMamada.hora}:00`;
-      return formatDistanceToNow(parseISO(dataHoraStr), { addSuffix: true, locale: ptBR });
+      const past = new Date(dataHoraStr);
+      const now = new Date();
+      const diffMs = now - past;
+      if (isNaN(diffMs) || diffMs < 0) return '0 min';
+
+      const totalMinutes = Math.floor(diffMs / (1000 * 60));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      if (hours === 0) return `${minutes} min`;
+      if (minutes === 0) return `${hours}h`;
+      return `${hours}h ${minutes}min`;
     } catch (e) {
       return null;
     }
@@ -120,7 +131,18 @@ const Leite = () => {
     if (!ultimaFralda) return null;
     try {
       const dataHoraStr = `${ultimaFralda.data}T${ultimaFralda.hora}:00`;
-      return formatDistanceToNow(parseISO(dataHoraStr), { addSuffix: true, locale: ptBR });
+      const past = new Date(dataHoraStr);
+      const now = new Date();
+      const diffMs = now - past;
+      if (isNaN(diffMs) || diffMs < 0) return '0 min';
+
+      const totalMinutes = Math.floor(diffMs / (1000 * 60));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      if (hours === 0) return `${minutes} min`;
+      if (minutes === 0) return `${hours}h`;
+      return `${hours}h ${minutes}min`;
     } catch (e) {
       return null;
     }

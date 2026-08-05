@@ -1,7 +1,6 @@
-/* Sub-tabs bar */
 .subtabs-container {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -15,8 +14,9 @@
 .subtab-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.25rem;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
   border-radius: var(--radius-full);
   border: none;
   background: transparent;
@@ -37,6 +37,18 @@
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: #fff !important;
   box-shadow: 0 4px 14px rgba(244, 63, 94, 0.28);
+}
+
+@media (max-width: 640px) {
+  .subtabs-container {
+    width: 100%;
+  }
+
+  .subtab-btn {
+    flex: 1;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.82rem;
+  }
 }
 
 .peso-table-container {

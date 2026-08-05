@@ -176,14 +176,14 @@ const Documentos = () => {
             Documentos oficiais da Sofia
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div className="doc-header-actions">
           <div className="doc-stats-pill">
             <span className="stats-dot green"></span>
             <span><strong>{totalPreenchidos}</strong> de {documentos.length} registados</span>
           </div>
-          <button className="btn-primary" onClick={() => setAdicionandoNovo(true)}>
+          <button className="btn-primary doc-add-btn" onClick={() => setAdicionandoNovo(true)}>
             <Plus size={18} />
-            <span className="hide-mobile">Novo Documento</span>
+            <span>Novo Documento</span>
           </button>
         </div>
       </div>

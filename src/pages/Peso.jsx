@@ -204,14 +204,14 @@ const Peso = () => {
           onClick={() => setSubTab('peso')}
         >
           <Scale size={18} />
-          <span>Registo de Peso (kg)</span>
+          <span>Peso (kg)</span>
         </button>
         <button
           className={`subtab-btn ${subTab === 'altura' ? 'active' : ''}`}
           onClick={() => setSubTab('altura')}
         >
           <Ruler size={18} />
-          <span>Registo de Altura (cm)</span>
+          <span>Altura (cm)</span>
         </button>
       </div>
 
