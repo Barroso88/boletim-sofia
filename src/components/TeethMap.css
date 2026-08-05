@@ -52,7 +52,7 @@
   display: block;
 }
 
-/* ─── Tooth Hotspots — Invisible by design ────────────────────────────────── */
+/* ─── Tooth Hotspots — Invisible mapping, colored ring on eruption ─────────── */
 
 .tooth-hotspot {
   position: absolute;
@@ -61,34 +61,34 @@
   cursor: pointer;
   padding: 0;
   z-index: 5;
-  /* Completely invisible — just a clickable region */
-  transition: box-shadow 0.35s ease, filter 0.35s ease;
+  transition: box-shadow 0.3s ease, outline 0.3s ease;
+  outline: 2.5px solid transparent;
+  outline-offset: 1px;
 }
 
-/* Subtle white shimmer on hover — tells user "this is clickable" without ruining the image */
+/* Hover: very faint white outline — just enough to feel interactive */
 .tooth-hotspot:hover {
-  box-shadow:
-    inset 0 0 12px rgba(255, 255, 255, 0.55),
-    0 0 16px rgba(255, 255, 255, 0.3);
-  filter: brightness(1.12);
+  outline: 2.5px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
   z-index: 15;
 }
 
-/* ERUPTED: luminous white glow — tooth "glows alive" on the image */
+/* ERUPTED: green ring + soft glow — unmistakably registered */
 .tooth-hotspot.tooth-erupted {
+  outline: 3px solid #22c55e;
+  outline-offset: 2px;
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.9),
-    inset 0 0 20px rgba(255, 255, 255, 0.6),
-    0 0 24px rgba(255, 255, 255, 0.5),
-    0 0 6px rgba(255, 255, 255, 0.9);
-  filter: brightness(1.22) saturate(0.8);
+    0 0 10px rgba(34, 197, 94, 0.55),
+    0 0 4px rgba(34, 197, 94, 0.9);
   z-index: 10;
-  animation: tooth-pulse 3s ease-in-out infinite;
 }
 
-@keyframes tooth-pulse {
-  0%, 100% { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9), inset 0 0 20px rgba(255,255,255,0.6), 0 0 24px rgba(255,255,255,0.5), 0 0 6px rgba(255,255,255,0.9); }
-  50%       { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.7), inset 0 0 10px rgba(255,255,255,0.3), 0 0 12px rgba(255,255,255,0.3), 0 0 3px rgba(255,255,255,0.7); }
+.tooth-hotspot.tooth-erupted:hover {
+  outline: 3px solid #16a34a;
+  box-shadow:
+    0 0 14px rgba(34, 197, 94, 0.8),
+    0 0 6px rgba(34, 197, 94, 1);
+  z-index: 15;
 }
 
 /* ─── Legend ─────────────────────────────────────────────────────────────── */
