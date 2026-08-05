@@ -5,6 +5,32 @@ import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
 import './Vacinas.css';
 
+const normalizeVaccineName = (nome) => {
+  const n = (nome || '').toLowerCase().trim();
+  if (n.includes('hepatite b') && (n.includes('1') || n.includes('nascimento') || !n.includes('2'))) {
+    return 'Vacina contra a Hepatite B (1.ª Dose)';
+  }
+  if (n.includes('hepatite b') && (n.includes('2') || n.includes('2.ª') || n.includes('2ª'))) {
+    return 'Vacina contra a Hepatite B (2.ª Dose)';
+  }
+  if (n.includes('tuberculose') || n.includes('bcg')) {
+    return 'Vacina contra a Tuberculose (BCG)';
+  }
+  if (n.includes('difteria')) return 'Vacina contra a Difteria';
+  if (n.includes('poliomielite')) return 'Vacina contra a Poliomielite';
+  if (n.includes('tosse convulsa')) return 'Vacina contra a Tosse Convulsa, componente acelular';
+  if (n.includes('haemophilus')) return 'Vacina contra o Haemophilus influenzae tipo B';
+  if (n.includes('meningococo do grupo b')) return 'Vacina contra o meningococo do grupo B';
+  if (n.includes('tétano') || n.includes('tetano')) return 'Vacina contra o Tétano';
+  if (n.includes('pneumocócica') || n.includes('pneumococica')) return 'Vacina pneumocócica conjugada de 20 componentes';
+  if (n.includes('parotidite')) return 'Vacina contra a Parotidite Epidémica';
+  if (n.includes('serogrupos a, c') || n.includes('w135')) return 'Vacina meningocócica conjugada contra os serogrupos A, C, W135 e Y';
+  if (n.includes('rubéola') || n.includes('rubeola')) return 'Vacina viva contra a Rubéola';
+  if (n.includes('sarampo')) return 'Vacina viva contra o Sarampo';
+  if (n.includes('papilomavírus') || n.includes('papilomavirus') || n.includes('hpv')) return 'Vacina contra o papilomavírus humano (tipo 9)';
+  return nome;
+};
+
 const Vacinas = () => {
   const [vacinas, setVacinas] = useState([]);
   const [editandoVacina, setEditandoVacina] = useState(null);
@@ -23,10 +49,11 @@ const Vacinas = () => {
       const seen = new Set();
       const clean = [];
       (loadedData || []).forEach(v => {
-        const key = (v.nome || '').toLowerCase().trim();
+        const normName = normalizeVaccineName(v.nome);
+        const key = normName.toLowerCase().trim();
         if (!seen.has(key)) {
           seen.add(key);
-          clean.push(v);
+          clean.push({ ...v, nome: normName });
         }
       });
       setVacinas(clean);
