@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, Milk } from 'lucide-react';
+import VitaminaModal from './VitaminaModal';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -17,6 +18,7 @@ const Layout = ({ children }) => {
 
   return (
     <div className="layout">
+      <VitaminaModal />
       <nav className="navbar glass-card">
         <div className="navbar-left">
           <Link

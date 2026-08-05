@@ -5,6 +5,24 @@ import { Calendar, Syringe } from 'lucide-react';
 import { api } from '../services/api';
 import './Dashboard.css';
 
+const defaultVacinas = [
+  { id: 1, nome: 'Vacina contra a Hepatite B (1.ª Dose)', dataRecomendada: '14/07/2026', tomada: true, dataAdministrada: '14/07/2026', grupo: 'Nascimento' },
+  { id: 2, nome: 'Vacina contra a Tuberculose (BCG)', dataRecomendada: '31/07/2026', tomada: true, dataAdministrada: '31/07/2026', grupo: 'Nascimento' },
+  { id: 3, nome: 'Vacina contra a Difteria', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 4, nome: 'Vacina contra a Hepatite B (2.ª Dose)', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 5, nome: 'Vacina contra a Poliomielite', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 6, nome: 'Vacina contra a Tosse Convulsa, componente acelular', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 7, nome: 'Vacina contra o Haemophilus influenzae tipo B', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 8, nome: 'Vacina contra o meningococo do grupo B', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 9, nome: 'Vacina contra o Tétano', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 10, nome: 'Vacina pneumocócica conjugada de 20 componentes', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 11, nome: 'Vacina contra a Parotidite Epidémica', dataRecomendada: 'De 13/07/2027 a 13/08/2027', tomada: false, grupo: '12 Meses' },
+  { id: 12, nome: 'Vacina meningocócica conjugada contra os serogrupos A, C, W135 e Y', dataRecomendada: 'De 13/07/2027 a 13/08/2027', tomada: false, grupo: '12 Meses' },
+  { id: 13, nome: 'Vacina viva contra a Rubéola', dataRecomendada: 'De 13/07/2027 a 13/07/2028', tomada: false, grupo: '12 Meses' },
+  { id: 14, nome: 'Vacina viva contra o Sarampo', dataRecomendada: 'De 13/07/2027 a 13/07/2028', tomada: false, grupo: '12 Meses' },
+  { id: 15, nome: 'Vacina contra o Vírus do Papiloma Humano (HPV)', dataRecomendada: 'De 13/07/2036 a 13/07/2037', tomada: false, grupo: '10 Anos' },
+];
+
 const Dashboard = () => {
   const birthDate = new Date(2026, 6, 13); // 13 de Julho de 2026
   const now = new Date();
@@ -19,57 +37,106 @@ const Dashboard = () => {
   const days = differenceInDays(now, dateAfterMonths);
   const age = { years, months, days };
 
-  // Agenda Events State
+  // Data State
   const [eventos, setEventos] = useState([]);
+  const [vacinas, setVacinas] = useState([]);
 
   useEffect(() => {
     api.getAgenda().then(data => setEventos(data));
+    api.getVacinas(defaultVacinas).then(data => setVacinas(data));
   }, []);
 
-  // Filter and Sort Logic
-  const getEventosFiltrados = (tipo, futuros) => {
+  // Filter 5 Consultas
+  const getConsultas = (futuras) => {
     const hoje = new Date();
-    
-    let filtrados = eventos.filter(e => {
-      if (e.tipo !== tipo) return false;
-      const dataEvento = new Date(e.data);
-      return futuros ? dataEvento >= hoje : dataEvento < hoje;
+    const filtradas = eventos.filter(e => {
+      if (e.tipo !== 'Consulta') return false;
+      const d = new Date(e.data);
+      return futuras ? d >= hoje : d < hoje;
     });
 
-    // Ordenar
-    filtrados.sort((a, b) => {
-      const dataA = new Date(a.data).getTime();
-      const dataB = new Date(b.data).getTime();
-      return futuros ? dataA - dataB : dataB - dataA; // Crescent for future, decrescent for past
+    filtradas.sort((a, b) => {
+      const dA = new Date(a.data).getTime();
+      const dB = new Date(b.data).getTime();
+      return futuras ? dA - dB : dB - dA;
     });
 
-    return filtrados.slice(0, 3);
+    return filtradas.slice(0, 5).map(c => ({
+      id: c.id,
+      titulo: c.titulo,
+      dataFormatted: format(new Date(c.data), "d MMM, HH:mm", { locale: ptBR })
+    }));
   };
 
-  const consultasPassadas = getEventosFiltrados('Consulta', false);
-  const consultasFuturas = getEventosFiltrados('Consulta', true);
-  const vacinasPassadas = getEventosFiltrados('Vacina', false);
-  const vacinasFuturas = getEventosFiltrados('Vacina', true);
+  // Filter 5 Vacinas
+  const getVacinas = (futuras) => {
+    if (futuras) {
+      const pnvFuturas = vacinas.filter(v => !v.tomada).map(v => ({
+        id: `pnv-${v.id}`,
+        titulo: v.nome,
+        dataFormatted: v.dataRecomendada,
+        subtext: v.grupo
+      }));
 
-  const renderEventList = (events, emptyMessage, isPast = false) => {
-    if (events.length === 0) {
+      const agendaFuturas = eventos.filter(e => {
+        if (e.tipo !== 'Vacina') return false;
+        return new Date(e.data) >= new Date();
+      }).map(e => ({
+        id: `agenda-${e.id}`,
+        titulo: e.titulo,
+        dataFormatted: format(new Date(e.data), "d MMM, HH:mm", { locale: ptBR }),
+        subtext: 'Agendada'
+      }));
+
+      return [...pnvFuturas, ...agendaFuturas].slice(0, 5);
+    } else {
+      const pnvPassadas = vacinas.filter(v => v.tomada).map(v => ({
+        id: `pnv-${v.id}`,
+        titulo: v.nome,
+        dataFormatted: v.dataAdministrada || v.dataRecomendada,
+        subtext: 'Administrada'
+      }));
+
+      const agendaPassadas = eventos.filter(e => {
+        if (e.tipo !== 'Vacina') return false;
+        return new Date(e.data) < new Date();
+      }).map(e => ({
+        id: `agenda-${e.id}`,
+        titulo: e.titulo,
+        dataFormatted: format(new Date(e.data), "d MMM, HH:mm", { locale: ptBR }),
+        subtext: 'Realizada'
+      }));
+
+      return [...pnvPassadas, ...agendaPassadas].slice(0, 5);
+    }
+  };
+
+  const consultasPassadas = getConsultas(false);
+  const consultasFuturas = getConsultas(true);
+  const vacinasPassadas = getVacinas(false);
+  const vacinasFuturas = getVacinas(true);
+
+  const renderList = (items, emptyMessage, isPast = false) => {
+    if (!items || items.length === 0) {
       return <div className="no-events">{emptyMessage}</div>;
     }
     return (
       <div className="event-list">
-        {events.map(ev => {
-          const evDate = new Date(ev.data);
-          return (
-            <div key={ev.id} className="event-item">
-              <div className="event-header">
-                <span className="event-title">{ev.titulo}</span>
-                <span className={`event-date ${isPast ? 'past' : ''}`}>
-                  {format(evDate, "d MMM, HH:mm", { locale: ptBR })}
-                </span>
-              </div>
+        {items.map(item => (
+          <div key={item.id} className="event-item">
+            <div className="event-header">
+              <span className="event-title">{item.titulo}</span>
+              <span className={`event-date ${isPast ? 'past' : ''}`}>
+                {item.dataFormatted}
+              </span>
             </div>
-          );
-        })}
+            {item.subtext && (
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-light)', marginTop: '2px' }}>
+                {item.subtext}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     );
   };
@@ -96,7 +163,7 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* New Health Summary Grid */}
+      {/* Health Summary Grid */}
       <div className="health-summary">
         {/* Column 1: Consultas */}
         <div className="health-column">
@@ -104,16 +171,16 @@ const Dashboard = () => {
           
           <div className="health-section">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
-              Próximas
+              Próximas (5)
             </h3>
-            {renderEventList(consultasFuturas, "Sem consultas agendadas.", false)}
+            {renderList(consultasFuturas, "Sem consultas agendadas.", false)}
           </div>
           
           <div className="health-section">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
-              Últimas (Histórico)
+              Últimas (5)
             </h3>
-            {renderEventList(consultasPassadas, "Sem histórico registado.", true)}
+            {renderList(consultasPassadas, "Sem histórico registado.", true)}
           </div>
         </div>
 
@@ -123,20 +190,19 @@ const Dashboard = () => {
           
           <div className="health-section">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
-              Próximas
+              Próximas (5)
             </h3>
-            {renderEventList(vacinasFuturas, "Sem vacinas agendadas.", false)}
+            {renderList(vacinasFuturas, "Sem vacinas agendadas.", false)}
           </div>
           
           <div className="health-section">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
-              Últimas (Histórico)
+              Últimas (5)
             </h3>
-            {renderEventList(vacinasPassadas, "Sem histórico registado.", true)}
+            {renderList(vacinasPassadas, "Sem histórico registado.", true)}
           </div>
         </div>
       </div>
-      
     </div>
   );
 };
