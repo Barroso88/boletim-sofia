@@ -20,14 +20,17 @@ const Vacinas = () => {
 
   useEffect(() => {
     api.getVacinas(defaultVacinas).then(loadedData => {
-      if (!loadedData || loadedData.length === 0) {
-        setVacinas(defaultVacinas);
-        return;
-      }
-      const existingIds = new Set(loadedData.map(v => v.id));
-      const missingDefaults = defaultVacinas.filter(d => !existingIds.has(d.id));
-      const merged = [...loadedData, ...missingDefaults];
-      setVacinas(merged);
+      const seen = new Set();
+      const clean = [];
+      (loadedData || []).forEach(v => {
+        const key = (v.nome || '').toLowerCase().trim();
+        if (!seen.has(key)) {
+          seen.add(key);
+          clean.push(v);
+        }
+      });
+      setVacinas(clean);
+      localStorage.setItem('sofia_vacinas', JSON.stringify(clean));
     });
   }, []);
 

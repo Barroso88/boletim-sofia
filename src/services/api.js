@@ -189,22 +189,27 @@ export const api = {
 
     if (!defaultList) return loadedData;
 
-    // Ensure default items exist with proper properties
-    const result = defaultList.map(def => {
-      const existing = loadedData ? loadedData.find(v => v.id === def.id || v.nome === def.nome) : null;
-      if (existing) {
-        return {
-          ...def,
-          ...existing,
-          tomada: existing.tomada !== undefined ? existing.tomada : def.tomada,
-          dataAdministrada: existing.dataAdministrada || def.dataAdministrada
-        };
+    const seen = new Set();
+    const cleanList = [];
+
+    (loadedData || []).forEach(v => {
+      const key = (v.nome || '').toLowerCase().trim();
+      if (!seen.has(key)) {
+        seen.add(key);
+        cleanList.push(v);
       }
-      return def;
     });
 
-    localStorage.setItem(localKey, JSON.stringify(result));
-    return result;
+    defaultList.forEach(def => {
+      const key = (def.nome || '').toLowerCase().trim();
+      if (!seen.has(key)) {
+        seen.add(key);
+        cleanList.push(def);
+      }
+    });
+
+    localStorage.setItem(localKey, JSON.stringify(cleanList));
+    return cleanList;
   },
 
   async toggleVacina(id, novaLista, localKey = 'sofia_vacinas') {
