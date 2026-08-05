@@ -135,21 +135,31 @@ export const api = {
   // --- VACINAS ---
   async getVacinas(defaultList, localKey = 'sofia_vacinas') {
     const remote = await fetchWithFallback(`${API_BASE}/vacinas`);
+    let loadedData;
     if (remote && Array.isArray(remote) && remote.length > 0) {
-      localStorage.setItem(localKey, JSON.stringify(remote));
-      return remote;
+      loadedData = remote;
+    } else {
+      const saved = localStorage.getItem(localKey);
+      loadedData = saved ? JSON.parse(saved) : defaultList;
     }
-    const saved = localStorage.getItem(localKey);
-    const result = saved ? JSON.parse(saved) : defaultList;
 
-    // Bulk sync default to DB
-    if (result && result.length > 0) {
-      fetchWithFallback(`${API_BASE}/vacinas/bulk`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(result)
-      });
-    }
+    if (!defaultList) return loadedData;
+
+    // Ensure default items exist with proper properties
+    const result = defaultList.map(def => {
+      const existing = loadedData ? loadedData.find(v => v.id === def.id || v.nome === def.nome) : null;
+      if (existing) {
+        return {
+          ...def,
+          ...existing,
+          tomada: existing.tomada !== undefined ? existing.tomada : def.tomada,
+          dataAdministrada: existing.dataAdministrada || def.dataAdministrada
+        };
+      }
+      return def;
+    });
+
+    localStorage.setItem(localKey, JSON.stringify(result));
     return result;
   },
 

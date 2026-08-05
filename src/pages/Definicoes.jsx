@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw } from 'lucide-react';
+import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles } from 'lucide-react';
 import './Definicoes.css';
 
-const THEMES = [
+const BABY_THEMES = [
+  { id: 'baby-clouds', name: 'Nuvem & Estrelas ☁️', primary: '#0284C7', secondary: '#818CF8', bg: '#F0F9FF', tag: 'Elementos no fundo' },
+  { id: 'baby-teddy', name: 'Ursinho Carinho 🧸', primary: '#D97706', secondary: '#F59E0B', bg: '#FFFBEB', tag: 'Elementos no fundo' },
+  { id: 'baby-nursery', name: 'Biberão & Chupeta 🍼', primary: '#EC4899', secondary: '#38BDF8', bg: '#FFF1F2', tag: 'Elementos no fundo' },
+  { id: 'baby-rainbow', name: 'Arco-Íris Bebé 🌈', primary: '#8B5CF6', secondary: '#F43F5E', bg: '#F5F3FF', tag: 'Elementos no fundo' },
+  { id: 'baby-safari', name: 'Safari Bebés 🦒', primary: '#10B981', secondary: '#F59E0B', bg: '#ECFDF5', tag: 'Elementos no fundo' },
+  { id: 'baby-duckling', name: 'Patinho de Banho 🐥', primary: '#F59E0B', secondary: '#06B6D4', bg: '#FEFCE8', tag: 'Elementos no fundo' },
+];
+
+const STANDARD_THEMES = [
   { id: 'rosegold', name: 'Rose Gold', primary: '#F43F5E', secondary: '#FB923C', bg: '#FFF5F7' },
   { id: 'ocean', name: 'Ocean Blue', primary: '#0284C7', secondary: '#6366F1', bg: '#E0F2FE' },
   { id: 'forest', name: 'Forest Green', primary: '#059669', secondary: '#0D9488', bg: '#DCFCE7' },
@@ -51,18 +60,59 @@ const Definicoes = () => {
       </div>
 
       <div className="settings-grid" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        {/* Temas */}
-        <div className="glass-card settings-section animate-fade-in">
+        {/* Temas Especiais Bebé com Fundo Ilustrado */}
+        <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(244,63,94,0.25)', background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(254,243,199,0.5))' }}>
           <div className="settings-header">
-            <Palette size={24} color="var(--color-secondary)" />
-            <h3 className="h3">Temas de Aparência</h3>
+            <Sparkles size={24} color="var(--color-primary)" />
+            <h3 className="h3" style={{ color: 'var(--color-primary-dark)' }}>🍼 Temas Especiais Bebé (Ilustrações de Fundo)</h3>
           </div>
           <p className="text-small mb-4">
-            Personalize as cores de toda a aplicação selecionando um dos nossos 10 temas premium disponíveis abaixo.
+            Temas com marca d’água e ilustrações suaves e transparentes no fundo (nuvens, ursinhos, biberões, chocalhos e patinhos) sem saturar a vista.
           </p>
 
           <div className="themes-grid">
-            {THEMES.map((theme, index) => (
+            {BABY_THEMES.map((theme, index) => (
+              <div 
+                key={theme.id}
+                className={`theme-card ${activeTheme === theme.id ? 'active' : ''}`}
+                onClick={() => changeTheme(theme.id)}
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div 
+                  className="theme-preview"
+                  style={{ backgroundColor: theme.bg }}
+                >
+                  <div className="theme-color-swatch" style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}></div>
+                  <div className="theme-fake-card">
+                    <div className="fake-line" style={{ width: '50%', background: theme.primary }}></div>
+                    <div className="fake-line" style={{ width: '70%' }}></div>
+                  </div>
+                  
+                  {activeTheme === theme.id && (
+                    <div className="theme-check">
+                      <CheckCircle size={20} color={theme.primary} fill="white" />
+                    </div>
+                  )}
+                </div>
+                
+                <span className="theme-name" style={{ fontWeight: 800 }}>{theme.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Temas Clássicos */}
+        <div className="glass-card settings-section animate-fade-in">
+          <div className="settings-header">
+            <Palette size={24} color="var(--color-secondary)" />
+            <h3 className="h3">Temas Clássicos</h3>
+          </div>
+          <p className="text-small mb-4">
+            Cores de destaque suaves e elegantes em tom pastel.
+          </p>
+
+          <div className="themes-grid">
+            {STANDARD_THEMES.map((theme, index) => (
               <div 
                 key={theme.id}
                 className={`theme-card ${activeTheme === theme.id ? 'active' : ''}`}
