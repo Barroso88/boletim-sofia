@@ -184,7 +184,7 @@ const Peso = () => {
                 <th>Data</th>
                 <th>Peso</th>
                 <th>Variação / dia</th>
-                <th>Total Acumulado</th>
+                <th className="col-total">Total</th>
                 <th className="text-right">Ações</th>
               </tr>
             </thead>
@@ -206,14 +206,14 @@ const Peso = () => {
                     <td>
                       {registo.ganhoDia !== null ? (
                         <div className={`ganho-badge ${isGain ? 'gain' : isLoss ? 'loss' : 'neutral'}`}>
-                          {isGain ? <TrendingUp size={14} /> : isLoss ? <TrendingDown size={14} /> : <Minus size={14} />}
+                          {isGain ? <TrendingUp size={13} /> : isLoss ? <TrendingDown size={13} /> : <Minus size={13} />}
                           <span>{registo.ganhoDia > 0 ? '+' : ''}{registo.ganhoDia} g/dia</span>
                         </div>
                       ) : (
                         <div className="ganho-badge neutral"><span>— Início</span></div>
                       )}
                     </td>
-                    <td>
+                    <td className="col-total">
                       {registo.ganhoTotal !== null ? (
                         <div className={`ganho-badge ${isTotalGain ? 'gain' : 'loss'}`}>
                           <span>{registo.ganhoTotal > 0 ? '+' : ''}{registo.ganhoTotal} g</span>
