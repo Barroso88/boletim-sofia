@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Calendar as CalendarIcon, Trash2, Sparkles, CheckCircle } from 'lucide-react';
+import { X, Calendar as CalendarIcon, Trash2, Sparkles, CheckCircle, Clock } from 'lucide-react';
 import './TeethMap.css';
 
 /* ─── Eruption order colors ──────────────────────────────────────────────── */
@@ -20,34 +20,39 @@ const LEGEND = [
 ];
 
 /* ─── SVG Tooth definitions (viewBox 0 0 300 420) ────────────────────────── */
-/* cx/cy = center, rx/ry = radii, rot = rotation (degrees) to follow the arch */
 const TEETH = [
-  // ── Upper arch — Right side (patient's right = image left)
-  { id: 'u_m2_r', label: '2º Molar Sup. Direito',         order: 7, cx: 38, cy: 155, rx: 16, ry: 14, rot: -55 },
-  { id: 'u_m1_r', label: '1º Molar Sup. Direito',         order: 5, cx: 42, cy: 112, rx: 14, ry: 13, rot: -42 },
-  { id: 'u_c_r',  label: 'Canino Sup. Direito',            order: 6, cx: 62, cy: 74,  rx: 10, ry: 15, rot: -28 },
-  { id: 'u_il_r', label: 'Incisivo Lateral Sup. Direito',  order: 3, cx: 97, cy: 46,  rx: 11, ry: 14, rot: -12 },
-  { id: 'u_ic_r', label: 'Incisivo Central Sup. Direito',  order: 2, cx: 132, cy: 32, rx: 13, ry: 17, rot: -2 },
+  // ── Upper arch — Right side
+  { id: 'u_m2_r', label: '2º Molar Sup. Direito',         order: 7, cx: 38,  cy: 155, rx: 16, ry: 14, rot: -55 },
+  { id: 'u_m1_r', label: '1º Molar Sup. Direito',         order: 5, cx: 42,  cy: 112, rx: 14, ry: 13, rot: -42 },
+  { id: 'u_c_r',  label: 'Canino Sup. Direito',            order: 6, cx: 62,  cy: 74,  rx: 10, ry: 15, rot: -28 },
+  { id: 'u_il_r', label: 'Incisivo Lateral Sup. Direito',  order: 3, cx: 97,  cy: 46,  rx: 11, ry: 14, rot: -12 },
+  { id: 'u_ic_r', label: 'Incisivo Central Sup. Direito',  order: 2, cx: 132, cy: 32,  rx: 13, ry: 17, rot: -2  },
   // ── Upper arch — Left side
-  { id: 'u_ic_l', label: 'Incisivo Central Sup. Esquerdo', order: 2, cx: 168, cy: 32, rx: 13, ry: 17, rot: 2 },
-  { id: 'u_il_l', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, cx: 203, cy: 46, rx: 11, ry: 14, rot: 12 },
-  { id: 'u_c_l',  label: 'Canino Sup. Esquerdo',           order: 6, cx: 238, cy: 74, rx: 10, ry: 15, rot: 28 },
-  { id: 'u_m1_l', label: '1º Molar Sup. Esquerdo',        order: 5, cx: 258, cy: 112, rx: 14, ry: 13, rot: 42 },
-  { id: 'u_m2_l', label: '2º Molar Sup. Esquerdo',        order: 7, cx: 262, cy: 155, rx: 16, ry: 14, rot: 55 },
-
+  { id: 'u_ic_l', label: 'Incisivo Central Sup. Esquerdo', order: 2, cx: 168, cy: 32,  rx: 13, ry: 17, rot: 2   },
+  { id: 'u_il_l', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, cx: 203, cy: 46,  rx: 11, ry: 14, rot: 12  },
+  { id: 'u_c_l',  label: 'Canino Sup. Esquerdo',           order: 6, cx: 238, cy: 74,  rx: 10, ry: 15, rot: 28  },
+  { id: 'u_m1_l', label: '1º Molar Sup. Esquerdo',         order: 5, cx: 258, cy: 112, rx: 14, ry: 13, rot: 42  },
+  { id: 'u_m2_l', label: '2º Molar Sup. Esquerdo',         order: 7, cx: 262, cy: 155, rx: 16, ry: 14, rot: 55  },
   // ── Lower arch — Right side
-  { id: 'l_m2_r', label: '2º Molar Inf. Direito',         order: 7, cx: 42, cy: 270, rx: 16, ry: 14, rot: 55 },
-  { id: 'l_m1_r', label: '1º Molar Inf. Direito',         order: 5, cx: 48, cy: 310, rx: 14, ry: 13, rot: 42 },
-  { id: 'l_c_r',  label: 'Canino Inf. Direito',            order: 6, cx: 68, cy: 348, rx: 10, ry: 14, rot: 28 },
-  { id: 'l_il_r', label: 'Incisivo Lateral Inf. Direito',  order: 4, cx: 102, cy: 374, rx: 10, ry: 13, rot: 12 },
-  { id: 'l_ic_r', label: 'Incisivo Central Inf. Direito',  order: 1, cx: 135, cy: 388, rx: 11, ry: 14, rot: 2 },
+  { id: 'l_m2_r', label: '2º Molar Inf. Direito',          order: 7, cx: 42,  cy: 270, rx: 16, ry: 14, rot: 55  },
+  { id: 'l_m1_r', label: '1º Molar Inf. Direito',          order: 5, cx: 48,  cy: 310, rx: 14, ry: 13, rot: 42  },
+  { id: 'l_c_r',  label: 'Canino Inf. Direito',             order: 6, cx: 68,  cy: 348, rx: 10, ry: 14, rot: 28  },
+  { id: 'l_il_r', label: 'Incisivo Lateral Inf. Direito',   order: 4, cx: 102, cy: 374, rx: 10, ry: 13, rot: 12  },
+  { id: 'l_ic_r', label: 'Incisivo Central Inf. Direito',   order: 1, cx: 135, cy: 388, rx: 11, ry: 14, rot: 2   },
   // ── Lower arch — Left side
-  { id: 'l_ic_l', label: 'Incisivo Central Inf. Esquerdo', order: 1, cx: 165, cy: 388, rx: 11, ry: 14, rot: -2 },
-  { id: 'l_il_l', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, cx: 198, cy: 374, rx: 10, ry: 13, rot: -12 },
-  { id: 'l_c_l',  label: 'Canino Inf. Esquerdo',           order: 6, cx: 232, cy: 348, rx: 10, ry: 14, rot: -28 },
-  { id: 'l_m1_l', label: '1º Molar Inf. Esquerdo',        order: 5, cx: 252, cy: 310, rx: 14, ry: 13, rot: -42 },
-  { id: 'l_m2_l', label: '2º Molar Inf. Esquerdo',        order: 7, cx: 258, cy: 270, rx: 16, ry: 14, rot: -55 },
+  { id: 'l_ic_l', label: 'Incisivo Central Inf. Esquerdo',  order: 1, cx: 165, cy: 388, rx: 11, ry: 14, rot: -2  },
+  { id: 'l_il_l', label: 'Incisivo Lateral Inf. Esquerdo',  order: 4, cx: 198, cy: 374, rx: 10, ry: 13, rot: -12 },
+  { id: 'l_c_l',  label: 'Canino Inf. Esquerdo',            order: 6, cx: 232, cy: 348, rx: 10, ry: 14, rot: -28 },
+  { id: 'l_m1_l', label: '1º Molar Inf. Esquerdo',          order: 5, cx: 252, cy: 310, rx: 14, ry: 13, rot: -42 },
+  { id: 'l_m2_l', label: '2º Molar Inf. Esquerdo',          order: 7, cx: 258, cy: 270, rx: 16, ry: 14, rot: -55 },
 ];
+
+/* ─── Date formatter ─────────────────────────────────────────────────────── */
+const formatDate = (iso) => {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+};
 
 /* ─── Component ──────────────────────────────────────────────────────────── */
 const TeethMap = () => {
@@ -66,7 +71,6 @@ const TeethMap = () => {
     setSelectedTooth(t);
     setEruptionDate(teethingData[t.id] || new Date().toISOString().split('T')[0]);
   };
-
   const closeModal = () => { setSelectedTooth(null); setEruptionDate(''); };
 
   const saveToothDate = (e) => {
@@ -78,83 +82,107 @@ const TeethMap = () => {
 
   const removeToothDate = () => {
     setTeethingData(prev => {
-      const next = { ...prev };
-      delete next[selectedTooth.id];
-      return next;
+      const next = { ...prev }; delete next[selectedTooth.id]; return next;
     });
     closeModal();
   };
 
   const eruptedCount = Object.keys(teethingData).length;
 
+  // Registered teeth sorted by date
+  const registeredList = TEETH
+    .filter(t => teethingData[t.id])
+    .sort((a, b) => teethingData[a.id].localeCompare(teethingData[b.id]));
+
   return (
     <div className="teething-layout">
+
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="teething-header">
         <h2 className="teething-title">
-          <Sparkles size={22} color="var(--color-primary)" /> Dentição da Sofia 🦷
+          <Sparkles size={20} color="var(--color-primary)" />
+          Dentição da Sofia
         </h2>
         <p className="teething-subtitle">
           <strong>{eruptedCount} de 20</strong> dentes nascidos — Toque num dente para registar
         </p>
+        {/* Progress bar */}
+        <div className="teeth-progress-bar">
+          <div className="teeth-progress-fill" style={{ width: `${(eruptedCount / 20) * 100}%` }} />
+        </div>
       </div>
 
       {/* ── SVG Dental Chart ───────────────────────────────────────────── */}
       <div className="teeth-svg-wrap">
         <svg viewBox="0 0 300 420" className="teeth-chart" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="gumGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#D49A97" />
-              <stop offset="100%" stopColor="#C07E7B" />
+            <linearGradient id="gumGradU" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#c8888a" />
+              <stop offset="100%" stopColor="#b87070" />
             </linearGradient>
-            <filter id="toothGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="1" stdDeviation="2.5" floodColor="#fff" floodOpacity="0.45" />
-            </filter>
+            <linearGradient id="gumGradL" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#b87070" />
+              <stop offset="100%" stopColor="#c8888a" />
+            </linearGradient>
           </defs>
 
-          {/* Upper jaw — gum with palate cutout */}
+          {/* Upper jaw */}
           <path
             fillRule="evenodd"
-            d={`
-              M 150,5 C 80,5 12,45 12,120 C 12,172 48,195 80,195 L 220,195 C 252,195 288,172 288,120 C 288,45 220,5 150,5 Z
-              M 150,82 C 118,82 88,102 88,142 C 88,172 108,195 140,195 L 160,195 C 192,195 212,172 212,142 C 212,102 182,82 150,82 Z
-            `}
-            fill="url(#gumGrad)"
+            d="M 150,5 C 80,5 12,45 12,120 C 12,172 48,195 80,195 L 220,195 C 252,195 288,172 288,120 C 288,45 220,5 150,5 Z
+               M 150,82 C 118,82 88,102 88,142 C 88,172 108,195 140,195 L 160,195 C 192,195 212,172 212,142 C 212,102 182,82 150,82 Z"
+            fill="url(#gumGradU)"
           />
 
-          {/* Lower jaw — gum with tongue cutout */}
+          {/* Lower jaw */}
           <path
             fillRule="evenodd"
-            d={`
-              M 80,225 C 44,225 12,255 12,312 C 12,385 78,415 150,415 C 222,415 288,385 288,312 C 288,255 256,225 220,225 Z
-              M 138,225 C 108,225 82,252 82,286 C 82,328 112,350 150,350 C 188,350 218,328 218,286 C 218,252 192,225 162,225 Z
-            `}
-            fill="url(#gumGrad)"
+            d="M 80,225 C 44,225 12,255 12,312 C 12,385 78,415 150,415 C 222,415 288,385 288,312 C 288,255 256,225 220,225 Z
+               M 138,225 C 108,225 82,252 82,286 C 82,328 112,350 150,350 C 188,350 218,328 218,286 C 218,252 192,225 162,225 Z"
+            fill="url(#gumGradL)"
           />
 
-          {/* Label between arches */}
+          {/* Divider label */}
           <text x="150" y="213" textAnchor="middle" className="svg-label-text">
             ORDEM DE ERUPÇÃO
           </text>
 
-          {/* ── Teeth ──────────────────────────────────────────────────── */}
+          {/* ── Render each tooth (ellipse + order number) ─────────────── */}
           {TEETH.map(tooth => {
             const erupted = !!teethingData[tooth.id];
+            const color = ORDER_COLORS[tooth.order];
             return (
-              <ellipse
+              <g
                 key={tooth.id}
-                className={`tooth-el${erupted ? ' erupted' : ''}`}
-                cx={tooth.cx}
-                cy={tooth.cy}
-                rx={tooth.rx}
-                ry={tooth.ry}
-                transform={`rotate(${tooth.rot} ${tooth.cx} ${tooth.cy})`}
+                className={`tooth-group${erupted ? ' erupted' : ''}`}
                 onClick={() => openModal(tooth)}
                 role="button"
                 tabIndex={0}
                 aria-label={tooth.label}
                 onKeyDown={e => e.key === 'Enter' && openModal(tooth)}
-              />
+                style={{ cursor: 'pointer' }}
+              >
+                {/* Tooth body */}
+                <ellipse
+                  className="tooth-el"
+                  cx={tooth.cx}
+                  cy={tooth.cy}
+                  rx={tooth.rx}
+                  ry={tooth.ry}
+                  transform={`rotate(${tooth.rot} ${tooth.cx} ${tooth.cy})`}
+                />
+                {/* Order number — always visible */}
+                <text
+                  x={tooth.cx}
+                  y={tooth.cy + 0.5}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="tooth-num"
+                  style={{ fill: erupted ? color : 'rgba(255,255,255,0.55)' }}
+                >
+                  {tooth.order}
+                </text>
+              </g>
             );
           })}
         </svg>
@@ -176,58 +204,89 @@ const TeethMap = () => {
         </div>
       </div>
 
+      {/* ── Registered teeth list ────────────────────────────────────────── */}
+      {registeredList.length > 0 && (
+        <div className="teeth-record-section">
+          <h3 className="legend-title">Registo Individual de Erupção</h3>
+          <div className="teeth-record-list">
+            {registeredList.map((tooth, i) => (
+              <button
+                key={tooth.id}
+                className="teeth-record-item"
+                onClick={() => openModal(tooth)}
+              >
+                <div className="record-badge" style={{ backgroundColor: ORDER_COLORS[tooth.order] }}>
+                  {tooth.order}
+                </div>
+                <div className="record-info">
+                  <span className="record-label">{tooth.label}</span>
+                  <span className="record-date">
+                    <Clock size={11} />
+                    {formatDate(teethingData[tooth.id])}
+                  </span>
+                </div>
+                <CheckCircle size={16} color="#22c55e" style={{ marginLeft: 'auto', flexShrink: 0 }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── Modal ──────────────────────────────────────────────────────── */}
       {selectedTooth && (
         <div className="tooth-modal-overlay" onClick={closeModal}>
-          <div className="tooth-modal glass-card animate-fade-in" onClick={e => e.stopPropagation()}>
-            <div className="flex-between mb-4">
-              <h3 className="h3" style={{ color: 'var(--color-primary-dark)' }}>
-                {teethingData[selectedTooth.id] ? 'Dente Registado 🦷' : 'Registar Novo Dente 🦷'}
-              </h3>
-              <button className="btn-icon" onClick={closeModal}><X size={20} /></button>
-            </div>
+          <div className="tooth-modal animate-fade-in" onClick={e => e.stopPropagation()}>
 
-            <div className="tooth-modal-info">
-              <div className="tooth-modal-order-badge" style={{ backgroundColor: ORDER_COLORS[selectedTooth.order] }}>
+            {/* Header */}
+            <div className="tooth-modal-header">
+              <div className="tooth-modal-icon" style={{ backgroundColor: ORDER_COLORS[selectedTooth.order] }}>
                 {selectedTooth.order}
               </div>
-              <div>
-                <h4 style={{ fontWeight: 800, margin: 0, fontSize: '1.05rem' }}>{selectedTooth.label}</h4>
-                <p style={{ fontSize: '0.85rem', color: ORDER_COLORS[selectedTooth.order], fontWeight: 700, margin: '2px 0 0' }}>
-                  {LEGEND.find(l => l.num === selectedTooth.order)?.label} ({LEGEND.find(l => l.num === selectedTooth.order)?.desc})
+              <div className="tooth-modal-title-area">
+                <h3 className="tooth-modal-title">{selectedTooth.label}</h3>
+                <p className="tooth-modal-subtitle" style={{ color: ORDER_COLORS[selectedTooth.order] }}>
+                  {LEGEND.find(l => l.num === selectedTooth.order)?.label}
                 </p>
               </div>
+              <button className="tooth-modal-close" onClick={closeModal}>
+                <X size={18} />
+              </button>
             </div>
 
-            {teethingData[selectedTooth.id] && (
-              <div className="tooth-erupted-alert">
-                <CheckCircle size={18} color="#10B981" />
-                <span>Este dente já está registado ✨</span>
+            {/* Status pill */}
+            {teethingData[selectedTooth.id] ? (
+              <div className="tooth-status erupted-status">
+                <CheckCircle size={16} />
+                <span>Nascido a <strong>{formatDate(teethingData[selectedTooth.id])}</strong></span>
+              </div>
+            ) : (
+              <div className="tooth-status pending-status">
+                <Clock size={16} />
+                <span>Ainda não registado</span>
               </div>
             )}
 
-            <form onSubmit={saveToothDate}>
-              <div className="input-group mb-4">
-                <label className="input-label" style={{ fontWeight: 700 }}>
-                  <CalendarIcon size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} />
-                  Data em que nasceu
-                </label>
-                <input
-                  type="date"
-                  className="input-field"
-                  value={eruptionDate}
-                  onChange={e => setEruptionDate(e.target.value)}
-                  required
-                />
-              </div>
+            {/* Date input */}
+            <form onSubmit={saveToothDate} className="tooth-modal-form">
+              <label className="tooth-modal-label">
+                <CalendarIcon size={15} />
+                Data de Erupção
+              </label>
+              <input
+                type="date"
+                className="tooth-modal-date-input"
+                value={eruptionDate}
+                onChange={e => setEruptionDate(e.target.value)}
+                required
+              />
 
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                  {teethingData[selectedTooth.id] ? 'Atualizar Data' : 'Confirmar 🦷'}
+              <div className="tooth-modal-actions">
+                <button type="submit" className="btn-confirm">
+                  {teethingData[selectedTooth.id] ? 'Atualizar' : 'Confirmar Erupção 🦷'}
                 </button>
                 {teethingData[selectedTooth.id] && (
-                  <button type="button" className="btn-outline" onClick={removeToothDate} style={{ color: '#EF4444', borderColor: '#FCA5A5' }} title="Remover Registo">
-                    <Trash2 size={18} />
+                  <button type="button" className="btn-delete" onClick={removeToothDate} title="Remover registo">
+                    <Trash2 size={16} />
                   </button>
                 )}
               </div>

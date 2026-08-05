@@ -23,27 +23,43 @@
 
 .teething-title {
   color: var(--color-primary-dark);
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   font-weight: 800;
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.35rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .teething-subtitle {
   color: var(--color-text-light);
-  font-size: 0.9rem;
-  margin: 0;
+  font-size: 0.88rem;
+  margin: 0 0 0.9rem;
+}
+
+/* Progress bar */
+.teeth-progress-bar {
+  width: 100%;
+  height: 5px;
+  background: var(--color-border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.teeth-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #E91E63, #9333EA);
+  border-radius: 99px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── SVG Chart wrapper ──────────────────────────────────────────────────── */
 .teeth-svg-wrap {
   width: 100%;
-  max-width: 360px;
+  max-width: 340px;
   margin: 0 auto;
-  filter: drop-shadow(0 8px 28px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.12));
 }
 
 .teeth-chart {
@@ -53,50 +69,58 @@
   overflow: visible;
 }
 
-/* ── Label text between arches ──────────────────────────────────────────── */
 .svg-label-text {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  fill: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  fill: rgba(255, 255, 255, 0.4);
   pointer-events: none;
 }
 
-/* ── Tooth elements ─────────────────────────────────────────────────────── */
+/* ── Tooth group (ellipse + number) ─────────────────────────────────────── */
+.tooth-group {
+  transition: filter 0.3s ease;
+}
+
+.tooth-group:focus { outline: none; }
+
+.tooth-group:hover .tooth-el {
+  filter: brightness(1.12);
+}
+
+/* Tooth body */
 .tooth-el {
-  fill: #f0e8e8;           /* un-erupted: soft gum-toned off-white */
-  stroke: rgba(255, 255, 255, 0.35);
-  stroke-width: 1.2;
-  cursor: pointer;
-  transition: fill 0.4s ease, filter 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease;
-  filter: none;
+  /* Un-erupted: darker than gum — a muted brownish-mauve */
+  fill: #9e6060;
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+  transition: fill 0.4s ease, filter 0.3s ease;
 }
 
-/* Hover on unerupted: subtle brightening hint */
-.tooth-el:hover {
-  fill: #f9f0f0;
-  stroke: rgba(255, 255, 255, 0.7);
-  stroke-width: 1.8;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
-}
-
-/* Erupted: pure white, brighter, with a clean luminous ring */
-.tooth-el.erupted {
+/* Erupted: white + glow */
+.tooth-group.erupted .tooth-el {
   fill: #ffffff;
-  stroke: rgba(255, 255, 255, 0.95);
-  stroke-width: 2;
-  filter:
-    drop-shadow(0 0 5px rgba(255, 255, 255, 0.9))
-    drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
 }
 
-/* Erupted hover: intensify the glow slightly */
-.tooth-el.erupted:hover {
-  filter:
-    drop-shadow(0 0 8px rgba(255, 255, 255, 1))
-    drop-shadow(0 0 18px rgba(255, 255, 255, 0.6));
+/* Order number on tooth */
+.tooth-num {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  pointer-events: none;
+  transition: fill 0.3s ease;
+  /* Un-erupted: semi-transparent white */
+  fill: rgba(255, 255, 255, 0.55);
+}
+
+/* Erupted: number takes the order color (set inline) */
+.tooth-group.erupted .tooth-num {
+  /* fill set inline per tooth */
+  font-weight: 900;
 }
 
 /* ── Legend ─────────────────────────────────────────────────────────────── */
@@ -107,18 +131,18 @@
 
 .legend-title {
   color: var(--color-text);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  margin: 0 0 1rem;
+  margin: 0 0 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
   text-align: center;
 }
 
 .legend-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
 @media (max-width: 480px) {
@@ -128,46 +152,118 @@
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.65rem;
   background: var(--color-bg);
-  padding: 0.55rem 0.8rem;
-  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 11px;
   border: 1px solid var(--color-border);
 }
 
 .legend-number {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
 .legend-text {
   font-weight: 700;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   line-height: 1.2;
 }
 
 .legend-desc {
   color: var(--color-text-light);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   margin-top: 1px;
 }
 
-/* ── Modal Overlay ──────────────────────────────────────────────────────── */
+/* ── Registered teeth section ───────────────────────────────────────────── */
+.teeth-record-section {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+}
+
+.teeth-record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.teeth-record-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0.65rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  text-align: left;
+}
+
+.teeth-record-item:hover {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+  transform: translateX(3px);
+}
+
+.record-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: white;
+  font-weight: 800;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.record-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.record-label {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.record-date {
+  font-size: 0.72rem;
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+/* ── Modal overlay ──────────────────────────────────────────────────────── */
 .tooth-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(10, 10, 20, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,49 +273,171 @@
 
 .tooth-modal {
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
   background: var(--color-surface);
-  border-radius: 20px;
-  padding: 1.75rem;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  border-radius: 22px;
+  padding: 1.6rem;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255,255,255,0.08);
   border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
 }
 
-.tooth-modal-info {
+/* Modal header row */
+.tooth-modal-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background: var(--color-bg);
-  padding: 1rem;
-  border-radius: 14px;
-  margin-bottom: 1.25rem;
-  border: 1px solid var(--color-border);
+  gap: 0.85rem;
 }
 
-.tooth-modal-order-badge {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+.tooth-modal-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   color: white;
+  font-size: 1.3rem;
+  font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 1.25rem;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
-.tooth-erupted-alert {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  color: #047857;
-  padding: 0.7rem 1rem;
-  border-radius: 12px;
-  font-size: 0.86rem;
-  font-weight: 600;
+.tooth-modal-title-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.tooth-modal-title {
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0 0 2px;
+  color: var(--color-text);
+}
+
+.tooth-modal-subtitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.tooth-modal-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 8px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  margin-bottom: 1.25rem;
+  justify-content: center;
+  color: var(--color-text-light);
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tooth-modal-close:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+/* Status pills */
+.tooth-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.erupted-status {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #15803d;
+}
+
+.pending-status {
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: var(--color-text-light);
+}
+
+/* Form */
+.tooth-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.tooth-modal-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: -0.2rem;
+}
+
+.tooth-modal-date-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 11px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.tooth-modal-date-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.tooth-modal-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btn-confirm {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #9333EA));
+  color: white;
+  border: none;
+  border-radius: 11px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-confirm:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  width: 44px;
+  height: 44px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1.5px solid rgba(239, 68, 68, 0.3);
+  border-radius: 11px;
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.15);
 }
