@@ -98,7 +98,7 @@ const TeethMap = () => {
           <Sparkles size={24} color="var(--color-primary)" /> Dentição da Sofia 🦷
         </h2>
         <p className="teething-subtitle">
-          <strong>{eruptedCount} de 20 dentes nascidos</strong> • Clique no dente para registar a data e pintá-lo de branco!
+          <strong>{eruptedCount} de 20 dentes nascidos</strong> — Toque sobre cada dente para registar a erupção
         </p>
       </div>
 
@@ -127,21 +127,10 @@ const TeethMap = () => {
                   width: `${tooth.w}%`,
                   height: `${tooth.h}%`,
                   borderRadius: tooth.borderRadius,
-                  borderColor: color,
                 }}
                 onClick={() => openModal(tooth)}
-                title={`${tooth.label} ${isErupted ? '(Nascido a ' + teethingData[tooth.id] + ')' : '(Clique para adicionar)'}`}
-              >
-                {isErupted ? (
-                  <span className="tooth-erupted-badge">
-                    <CheckCircle size={14} color={color} fill="white" />
-                  </span>
-                ) : (
-                  <span className="tooth-order-num" style={{ color: color }}>
-                    {tooth.order}
-                  </span>
-                )}
-              </button>
+                title={tooth.label}
+              />
             );
           })}
         </div>
