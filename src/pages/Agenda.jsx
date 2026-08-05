@@ -237,12 +237,12 @@ const Agenda = () => {
                       </span>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '0.25rem' }}>
-                      <button className="btn-delete-evento" style={{ color: 'var(--color-primary)' }} onClick={() => abrirEdicao(evento)} title="Editar evento">
-                        <Pencil size={20} />
+                    <div className="btn-action-group">
+                      <button className="btn-action-edit" onClick={() => abrirEdicao(evento)} title="Editar evento">
+                        <Pencil size={17} />
                       </button>
-                      <button className="btn-delete-evento" onClick={() => removerEvento(evento.id)} title="Remover evento">
-                        <Trash2 size={20} />
+                      <button className="btn-action-delete" onClick={() => removerEvento(evento.id)} title="Remover evento">
+                        <Trash2 size={17} />
                       </button>
                     </div>
                   </div>

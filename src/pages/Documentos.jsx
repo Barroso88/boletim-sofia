@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet } from 'lucide-react';
+import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet } from 'lucide-react';
 import { api } from '../services/api';
 import './Documentos.css';
 
@@ -160,12 +160,12 @@ const Documentos = () => {
 
                   {/* Actions */}
                   <td className="cell-actions text-right col-actions">
-                    <div className="action-pill-group justify-end">
-                      <button className="pill-btn edit-pill" onClick={() => abrirEdicao(doc)} title="Editar">
-                        <Edit2 size={15} /> <span>Editar</span>
+                    <div className="btn-action-group">
+                      <button className="btn-action-edit" onClick={() => abrirEdicao(doc)} title="Editar documento">
+                        <Pencil size={17} />
                       </button>
-                      <button className="pill-btn delete-pill" onClick={() => removerDocumento(doc.id)} title="Apagar">
-                        <Trash2 size={15} />
+                      <button className="btn-action-delete" onClick={() => removerDocumento(doc.id)} title="Remover documento">
+                        <Trash2 size={17} />
                       </button>
                     </div>
                   </td>

@@ -176,22 +176,23 @@ const Marcos = () => {
 
                     {/* Card */}
                     <div className="marco-card">
-                      <button
-                        className="marco-delete-btn"
-                        style={{ right: '2.5rem', color: 'var(--color-primary)' }}
-                        onClick={() => abrirEdicao(marco)}
-                        title="Editar este marco"
-                      >
-                        <Pencil size={16} />
-                      </button>
+                      <div className="btn-action-group" style={{ position: 'absolute', top: '1.25rem', right: '1.25rem' }}>
+                        <button
+                          className="btn-action-edit"
+                          onClick={() => abrirEdicao(marco)}
+                          title="Editar este marco"
+                        >
+                          <Pencil size={16} />
+                        </button>
 
-                      <button
-                        className="marco-delete-btn"
-                        onClick={() => setConfirmarDelete(marco.id)}
-                        title="Remover este marco"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                        <button
+                          className="btn-action-delete"
+                          onClick={() => setConfirmarDelete(marco.id)}
+                          title="Remover este marco"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
 
                       <div className="marco-date-badge">
                         <Calendar size={12} />

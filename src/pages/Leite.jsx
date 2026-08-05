@@ -406,29 +406,28 @@ const Leite = () => {
                     </div>
                   </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                      <div className="feeding-amount-badge">
-                        <span className="amount-val">{reg.quantidade_ml}</span>
-                        <span className="amount-unit">ml</span>
-                      </div>
-
-                      <button
-                        className="btn-delete-item"
-                        style={{ color: 'var(--color-primary)' }}
-                        onClick={() => abrirEdicaoLeite(reg)}
-                        title="Editar registo"
-                      >
-                        <Pencil size={18} />
-                      </button>
-
-                      <button
-                        className="btn-delete-item"
-                        onClick={() => apagarRegistoLeite(reg.id)}
-                        title="Apagar registo"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                  <div className="btn-action-group">
+                    <div className="feeding-amount-badge">
+                      <span className="amount-val">{reg.quantidade_ml}</span>
+                      <span className="amount-unit">ml</span>
                     </div>
+
+                    <button
+                      className="btn-action-edit"
+                      onClick={() => abrirEdicaoLeite(reg)}
+                      title="Editar registo"
+                    >
+                      <Pencil size={17} />
+                    </button>
+
+                    <button
+                      className="btn-action-delete"
+                      onClick={() => apagarRegistoLeite(reg.id)}
+                      title="Apagar registo"
+                    >
+                      <Trash2 size={17} />
+                    </button>
+                  </div>
                 </div>
               ))
             )}
@@ -510,7 +509,7 @@ const Leite = () => {
                       className={`diaper-type-btn ${tipoFraldaSelecionado === dt.id ? 'selected' : ''}`}
                       onClick={() => setTipoFraldaSelecionado(dt.id)}
                     >
-                      <span style={{ fontSize: '1.75rem' }}>{dt.icon}</span>
+                      <span className="diaper-type-icon">{dt.icon}</span>
                       <span>{dt.label}</span>
                     </button>
                   ))}
@@ -593,27 +592,26 @@ const Leite = () => {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <div className="btn-action-group">
                       <div className={`diaper-badge ${diaperMeta.badgeClass}`}>
                         <span>{diaperMeta.icon}</span>
                         <span>{reg.tipo}</span>
                       </div>
 
                       <button
-                        className="btn-delete-item"
-                        style={{ color: '#0284c7' }}
+                        className="btn-action-edit"
                         onClick={() => abrirEdicaoFralda(reg)}
                         title="Editar registo"
                       >
-                        <Pencil size={18} />
+                        <Pencil size={17} />
                       </button>
 
                       <button
-                        className="btn-delete-item"
+                        className="btn-action-delete"
                         onClick={() => apagarRegistoFralda(reg.id)}
                         title="Apagar registo"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={17} />
                       </button>
                     </div>
                   </div>

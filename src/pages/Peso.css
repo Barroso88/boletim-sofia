@@ -3,6 +3,8 @@
 .peso-table-container {
   overflow-x: auto;
   padding: 1rem;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 20px;
 }
 
 .premium-table {
@@ -10,7 +12,43 @@
   border-collapse: separate;
   border-spacing: 0 0.5rem;
   text-align: left;
-  min-width: 600px;
+  min-width: 500px;
+}
+
+@media (max-width: 640px) {
+  .peso-table-container {
+    padding: 0.5rem 0.25rem;
+    border-radius: 16px;
+    margin: 0 -0.25rem;
+  }
+  
+  .premium-table {
+    min-width: 100%;
+    border-spacing: 0 0.35rem;
+  }
+
+  .premium-table th {
+    padding: 0 0.5rem 0.35rem;
+    font-size: 0.7rem;
+  }
+
+  .premium-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.82rem;
+  }
+
+  .td-date {
+    font-size: 0.85rem;
+  }
+
+  .td-weight {
+    font-size: 1.1rem;
+  }
+
+  .ganho-badge {
+    padding: 0.25rem 0.45rem;
+    font-size: 0.72rem;
+  }
 }
 
 .premium-table th {

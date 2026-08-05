@@ -223,12 +223,14 @@ const Peso = () => {
                       )}
                     </td>
                     <td className="text-right">
-                      <button className="btn-delete" style={{ marginRight: '0.4rem', color: 'var(--color-primary)' }} onClick={() => abrirEdicao(registo)} title="Editar pesagem">
-                        <Pencil size={20} />
-                      </button>
-                      <button className="btn-delete" onClick={() => confirmarRemocao(registo.id)} title="Remover registo">
-                        <Trash2 size={20} />
-                      </button>
+                      <div className="btn-action-group">
+                        <button className="btn-action-edit" onClick={() => abrirEdicao(registo)} title="Editar pesagem">
+                          <Pencil size={17} />
+                        </button>
+                        <button className="btn-action-delete" onClick={() => confirmarRemocao(registo.id)} title="Remover registo">
+                          <Trash2 size={17} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -240,29 +242,24 @@ const Peso = () => {
 
       {/* Delete Confirmation Modal */}
       {confirmarDelete && (
-        <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2147483647 }}
-          onClick={() => setConfirmarDelete(null)}
-        >
-          <div
-            className="glass-card animate-fade-in"
-            style={{ padding: '2rem', maxWidth: '380px', width: '90%', textAlign: 'center' }}
-            onClick={e => e.stopPropagation()}
-          >
-            <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
-              <AlertTriangle size={28} color="#ef4444" />
+        <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
+          <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
+              <AlertTriangle size={26} color="#ef4444" />
             </div>
-            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem', fontWeight: 800 }}>Remover Pesagem?</h3>
-            <p style={{ color: 'var(--color-text-light)', fontSize: '0.9rem', margin: '0 0 1.5rem' }}>
-              Esta ação não pode ser desfeita.
-            </p>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button className="btn-outline" style={{ flex: 1 }} onClick={() => setConfirmarDelete(null)}>
+            <div>
+              <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>Remover Pesagem?</h3>
+              <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
+                Esta ação não pode ser desfeita.
+              </p>
+            </div>
+            <div className="form-actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn-outline" onClick={() => setConfirmarDelete(null)}>
                 <X size={16} /> Cancelar
               </button>
               <button
                 className="btn-primary"
-                style={{ flex: 1, background: '#ef4444', borderColor: '#ef4444' }}
+                style={{ background: '#ef4444', borderColor: '#ef4444', boxShadow: '0 4px 14px rgba(239,68,68,0.35)' }}
                 onClick={removerRegisto}
               >
                 <Trash2 size={16} /> Remover
