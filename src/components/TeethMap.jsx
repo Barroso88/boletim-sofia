@@ -26,28 +26,28 @@ const LEGEND = [
 // Image coordinates mapped precisely to dentes-leite.png arch (634px / 1024px clipped circle area)
 const TEETH = [
   // ── ARCADA SUPERIOR (UPPER) ───────────────────────────────────────────────
-  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 4.5, left: 41.5, w: 8.5, h: 5.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 4.5, left: 50.0, w: 8.5, h: 5.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 6.5, left: 32.5, w: 8.0, h: 5.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 6.5, left: 59.5, w: 8.0, h: 5.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 12.0, left: 21.0, w: 8.5, h: 6.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 12.0, left: 70.5, w: 8.5, h: 6.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 22.5, left: 13.0, w: 10.0, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 22.5, left: 77.0, w: 10.0, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 34.0, left: 9.0, w: 12.0, h: 10.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 34.0, left: 79.0, w: 12.0, h: 10.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 4.5, left: 40.5, w: 10.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 4.5, left: 51.0, w: 10.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 6.5, left: 31.5, w: 9.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 6.5, left: 60.5, w: 9.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 12.0, left: 21.0, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 12.0, left: 70.5, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 22.5, left: 12.0, w: 12.0, h: 10.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 22.5, left: 78.0, w: 12.0, h: 10.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 34.0, left: 9.0, w: 14.0, h: 12.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 34.0, left: 79.0, w: 14.0, h: 12.5, borderRadius: '50% 50% 50% 50%' },
 
   // ── ARCADA INFERIOR (LOWER) ───────────────────────────────────────────────
-  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 92.5, left: 42.0, w: 7.5, h: 5.0, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 92.5, left: 50.5, w: 7.5, h: 5.0, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 89.0, left: 33.0, w: 8.0, h: 5.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 89.0, left: 59.0, w: 8.0, h: 5.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 83.5, left: 23.5, w: 8.5, h: 6.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 83.5, left: 68.0, w: 8.5, h: 6.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 73.0, left: 14.5, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 73.0, left: 75.0, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 62.0, left: 10.0, w: 11.5, h: 10.0, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 62.0, left: 78.5, w: 11.5, h: 10.0, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 92.5, left: 42.0, w: 9.5, h: 7.0, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 92.5, left: 50.5, w: 9.5, h: 7.0, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 89.0, left: 33.0, w: 10.0, h: 7.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 89.0, left: 59.0, w: 10.0, h: 7.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 83.5, left: 23.5, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 83.5, left: 68.0, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 73.0, left: 14.5, w: 12.5, h: 10.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 73.0, left: 75.0, w: 12.5, h: 10.5, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 62.0, left: 10.0, w: 13.5, h: 12.0, borderRadius: '50% 50% 50% 50%' },
+  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 62.0, left: 78.5, w: 13.5, h: 12.0, borderRadius: '50% 50% 50% 50%' },
 ];
 
 const TeethMap = () => {

@@ -46,8 +46,8 @@
 }
 
 .teeth-base-image {
-  width: 162%; /* Clips right side (legend) to focus on the dental arch */
-  max-width: none;
+  width: 100%;
+  max-width: 100%;
   height: auto;
   display: block;
 }
@@ -57,29 +57,32 @@
 .tooth-hotspot {
   position: absolute;
   border: none !important;
-  /* Cor exata da gengiva da imagem para ESCONDER o dente branco! */
-  background-color: #c98284 !important; 
+  /* Dim the tooth to look "un-erupted" */
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: grayscale(100%);
+  -webkit-backdrop-filter: grayscale(100%);
   cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 5;
-  box-shadow: 0 0 4px #c98284; /* Soft edge to blend with gums */
+  box-shadow: none;
 }
 
 .tooth-hotspot:hover {
   transform: scale(1.05);
-  background-color: #d89395 !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
   z-index: 15;
 }
 
 /* ERUPTED TOOTH: REVEAL MAGIC 🦷 */
 .tooth-hotspot.tooth-erupted {
-  /* Quando o dente nasce, a "gengiva falsa" fica transparente e revela o dente desenhado na imagem! */
+  /* Quando o dente nasce, o overlay escuro desaparece, revelando o dente brilhante da imagem! */
   background: transparent !important;
-  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   transform: scale(1);
   z-index: 10;
 }
