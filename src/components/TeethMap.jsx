@@ -1,59 +1,53 @@
 import { useState, useEffect } from 'react';
-import { X, Calendar as CalendarIcon, Trash2, CheckCircle } from 'lucide-react';
+import { X, Calendar as CalendarIcon, Trash2, CheckCircle, Sparkles } from 'lucide-react';
 import './TeethMap.css';
-
-// ── Image dimensions: 1024x661 — but we crop to the circle (approx 0–65% width)
-// We use the image as-is, cropped to show only the circle.
-// Tooth hotspot positions are in % relative to the image container.
-// The image is shown at 100% width, so % coords map directly.
 
 // Order colors from the reference image
 const ORDER_COLORS = {
   1: '#4CAF50', // green
-  2: '#2196F3', // blue
+  2: '#E91E63', // pink/magenta
   3: '#2196F3', // blue
-  4: '#4CAF50', // green
-  5: '#FF9800', // orange
-  6: '#E91E63', // pink/red
-  7: '#FF9800', // orange
+  4: '#D97706', // amber/brown
+  5: '#EF4444', // red
+  6: '#9333EA', // purple
+  7: '#F59E0B', // orange
 };
 
 const LEGEND = [
   { num: 1, label: 'Entre os 6 e 8 meses',   desc: 'Dois incisivos inferiores centrais', color: '#4CAF50' },
-  { num: 2, label: 'Por volta dos 8 meses',   desc: 'Dois incisivos superiores centrais', color: '#2196F3' },
+  { num: 2, label: 'Por volta dos 8 meses',   desc: 'Dois incisivos superiores centrais', color: '#E91E63' },
   { num: 3, label: 'Entre os 8 e 12 meses',   desc: 'Dois incisivos superiores laterais', color: '#2196F3' },
-  { num: 4, label: 'Entre os 10 e 12 meses',  desc: 'Dois incisivos inferiores laterais', color: '#4CAF50' },
-  { num: 5, label: 'Entre os 14 e 20 meses',  desc: 'Quatro primeiros molares',           color: '#FF9800' },
-  { num: 6, label: 'Entre os 18 e 24 meses',  desc: 'Quatro caninos',                     color: '#E91E63' },
-  { num: 7, label: 'Entre os 2 e 3 anos',     desc: 'Quatro segundos molares',            color: '#FF9800' },
+  { num: 4, label: 'Entre os 10 e 12 meses',  desc: 'Dois incisivos inferiores laterais', color: '#D97706' },
+  { num: 5, label: 'Entre os 14 e 20 meses',  desc: 'Quatro primeiros molares',           color: '#EF4444' },
+  { num: 6, label: 'Entre os 18 e 24 meses',  desc: 'Quatro caninos',                     color: '#9333EA' },
+  { num: 7, label: 'Entre os 2 e 3 anos',     desc: 'Quatro segundos molares',            color: '#F59E0B' },
 ];
 
-// Image: 1024x687. Circle occupies left ~62% (≈634px wide), centered vertically.
-// Hotspot positions as % relative to the CLIPPED container (634x687).
-// The container shows only the left 62% of the image via object-position.
+// Image coordinates mapped precisely to dentes-leite.png arch (634px / 1024px clipped circle area)
 const TEETH = [
-  // ── UPPER arch ────────────────────────────────────────────────────────────
-  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 5,  left: 41, w: 10, h: 14 },
-  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 5,  left: 52, w: 10, h: 14 },
-  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 7,  left: 29, w:  9, h: 13 },
-  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 7,  left: 62, w:  9, h: 13 },
-  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 19, left: 19, w:  9, h: 14 },
-  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 19, left: 72, w:  9, h: 14 },
-  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 30, left: 9,  w: 12, h: 16 },
-  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 30, left: 79, w: 12, h: 16 },
-  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 46, left: 2,  w: 13, h: 17 },
-  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 46, left: 85, w: 13, h: 17 },
-  // ── LOWER arch ────────────────────────────────────────────────────────────
-  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 79, left: 41, w: 10, h: 13 },
-  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 79, left: 52, w: 10, h: 13 },
-  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 74, left: 29, w:  9, h: 12 },
-  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 74, left: 62, w:  9, h: 12 },
-  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 64, left: 19, w:  9, h: 13 },
-  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 64, left: 72, w:  9, h: 13 },
-  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 53, left: 9,  w: 12, h: 15 },
-  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 53, left: 79, w: 12, h: 15 },
-  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 40, left: 2,  w: 13, h: 17 },
-  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 40, left: 85, w: 13, h: 17 },
+  // ── ARCADA SUPERIOR (UPPER) ───────────────────────────────────────────────
+  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 4.8,  left: 38.5, w: 10.5, h: 14.5, borderRadius: '12px 12px 6px 6px' },
+  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 4.8,  left: 50.8, w: 10.5, h: 14.5, borderRadius: '12px 12px 6px 6px' },
+  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 7.8,  left: 27.2, w: 10.0, h: 14.0, borderRadius: '12px 8px 6px 6px' },
+  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 7.8,  left: 62.5, w: 10.0, h: 14.0, borderRadius: '8px 12px 6px 6px' },
+  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 15.2, left: 16.5, w: 10.5, h: 15.0, borderRadius: '14px 8px 6px 6px' },
+  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 15.2, left: 73.0, w: 10.5, h: 15.0, borderRadius: '8px 14px 6px 6px' },
+  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 26.5, left: 8.5,  w: 12.5, h: 17.0, borderRadius: '12px' },
+  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 26.5, left: 79.0, w: 12.5, h: 17.0, borderRadius: '12px' },
+  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 38.0, left: 3.2,  w: 13.5, h: 18.0, borderRadius: '14px' },
+  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 38.0, left: 83.2, w: 13.5, h: 18.0, borderRadius: '14px' },
+
+  // ── ARCADA INFERIOR (LOWER) ───────────────────────────────────────────────
+  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 80.5, left: 38.5, w: 10.5, h: 14.5, borderRadius: '6px 6px 12px 12px' },
+  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 80.5, left: 50.8, w: 10.5, h: 14.5, borderRadius: '6px 6px 12px 12px' },
+  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 77.2, left: 27.2, w: 10.0, h: 14.0, borderRadius: '6px 6px 12px 8px' },
+  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 77.2, left: 62.5, w: 10.0, h: 14.0, borderRadius: '6px 6px 8px 12px' },
+  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 69.2, left: 16.5, w: 10.5, h: 15.0, borderRadius: '6px 6px 14px 8px' },
+  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 69.2, left: 73.0, w: 10.5, h: 15.0, borderRadius: '6px 6px 8px 14px' },
+  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 57.5, left: 8.5,  w: 12.5, h: 17.0, borderRadius: '12px' },
+  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 57.5, left: 79.0, w: 12.5, h: 17.0, borderRadius: '12px' },
+  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 50.0, left: 3.2,  w: 13.5, h: 18.0, borderRadius: '14px' },
+  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 50.0, left: 83.2, w: 13.5, h: 18.0, borderRadius: '14px' },
 ];
 
 const TeethMap = () => {
@@ -68,8 +62,16 @@ const TeethMap = () => {
     localStorage.setItem('sofia_denticao', JSON.stringify(teethingData));
   }, [teethingData]);
 
-  const openModal  = (t) => { setSelectedTooth(t); setEruptionDate(teethingData[t.id] || ''); };
-  const closeModal = () => { setSelectedTooth(null); setEruptionDate(''); };
+  const openModal = (t) => {
+    setSelectedTooth(t);
+    const hojeStr = new Date().toISOString().split('T')[0];
+    setEruptionDate(teethingData[t.id] || hojeStr);
+  };
+  
+  const closeModal = () => {
+    setSelectedTooth(null);
+    setEruptionDate('');
+  };
 
   const saveToothDate = (e) => {
     e.preventDefault();
@@ -79,23 +81,28 @@ const TeethMap = () => {
   };
 
   const removeToothDate = () => {
-    setTeethingData(prev => { const n = { ...prev }; delete n[selectedTooth.id]; return n; });
+    setTeethingData(prev => {
+      const next = { ...prev };
+      delete next[selectedTooth.id];
+      return next;
+    });
     closeModal();
   };
 
-  const erupted = Object.keys(teethingData).length;
+  const eruptedCount = Object.keys(teethingData).length;
 
   return (
     <div className="teething-illustration-layout">
-
       <div className="teething-header">
-        <h2 className="teething-title">Dentes de Leite</h2>
+        <h2 className="teething-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+          <Sparkles size={24} color="var(--color-primary)" /> Dentição da Sofia 🦷
+        </h2>
         <p className="teething-subtitle">
-          {erupted} de 20 nascidos • Toque num dente para registar!
+          <strong>{eruptedCount} de 20 dentes nascidos</strong> • Clique no dente para registar a data e pintá-lo de branco!
         </p>
       </div>
 
-      {/* ── Image map (circle only, legend shown separately below) ── */}
+      {/* Mapa do dente (recortado exatamente na arcada da imagem dentes-leite.png) */}
       <div className="teeth-image-map-container">
         <div className="teeth-image-clip">
           <img
@@ -105,27 +112,34 @@ const TeethMap = () => {
             draggable={false}
           />
 
-          {/* Clickable hotspots overlaid on image */}
+          {/* Dentes sobrepostos com mapeamento perfeito */}
           {TEETH.map(tooth => {
             const isErupted = !!teethingData[tooth.id];
             const color = ORDER_COLORS[tooth.order];
             return (
               <button
                 key={tooth.id}
+                type="button"
                 className={`tooth-hotspot ${isErupted ? 'tooth-erupted' : ''}`}
                 style={{
                   top: `${tooth.top}%`,
                   left: `${tooth.left}%`,
                   width: `${tooth.w}%`,
                   height: `${tooth.h}%`,
+                  borderRadius: tooth.borderRadius,
                   borderColor: color,
-                  backgroundColor: isErupted ? `${color}55` : 'transparent',
                 }}
                 onClick={() => openModal(tooth)}
-                title={tooth.label}
+                title={`${tooth.label} ${isErupted ? '(Nascido a ' + teethingData[tooth.id] + ')' : '(Clique para adicionar)'}`}
               >
-                {isErupted && (
-                  <span className="tooth-check">✓</span>
+                {isErupted ? (
+                  <span className="tooth-erupted-badge">
+                    <CheckCircle size={14} color={color} fill="white" />
+                  </span>
+                ) : (
+                  <span className="tooth-order-num" style={{ color: color }}>
+                    {tooth.order}
+                  </span>
                 )}
               </button>
             );
@@ -133,9 +147,9 @@ const TeethMap = () => {
         </div>
       </div>
 
-      {/* ── Legend ── */}
+      {/* Legenda de Erupção */}
       <div className="teething-legend teething-legend-horizontal">
-        <h3 className="legend-title">QUANDO NASCEM?</h3>
+        <h3 className="legend-title">Ordem de Erupção dos Dentes</h3>
         <div className="legend-list legend-grid">
           {LEGEND.map(item => (
             <div key={item.num} className="legend-item">
@@ -149,42 +163,45 @@ const TeethMap = () => {
         </div>
       </div>
 
-      {/* ── Modal ── */}
+      {/* Modal para registar a data */}
       {selectedTooth && (
         <div className="tooth-modal-overlay" onClick={closeModal}>
-          <div className="tooth-modal" onClick={e => e.stopPropagation()}>
+          <div className="tooth-modal glass-card animate-fade-in" onClick={e => e.stopPropagation()}>
             <div className="flex-between mb-4">
-              <h3 className="h3">Registar Dente</h3>
-              <button className="btn-icon" onClick={closeModal}><X size={24} /></button>
+              <h3 className="h3" style={{ color: 'var(--color-primary-dark)' }}>
+                {teethingData[selectedTooth.id] ? 'Dente Registado 🦷' : 'Registar Novo Dente 🦷'}
+              </h3>
+              <button className="btn-icon" onClick={closeModal}><X size={20} /></button>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-              <div style={{
-                width: '48px', height: '48px', borderRadius: '50%',
-                background: ORDER_COLORS[selectedTooth.order],
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-              }}>
-                <span style={{ color: 'white', fontWeight: 800, fontSize: '1.3rem' }}>{selectedTooth.order}</span>
+
+            <div className="tooth-modal-info">
+              <div 
+                className="tooth-modal-order-badge" 
+                style={{ backgroundColor: ORDER_COLORS[selectedTooth.order] }}
+              >
+                {selectedTooth.order}
               </div>
               <div>
-                <p style={{ fontWeight: 700, margin: 0 }}>{selectedTooth.label}</p>
-                <p style={{ fontSize: '0.8rem', color: ORDER_COLORS[selectedTooth.order], margin: '2px 0 0' }}>
-                  {LEGEND.find(l => l.num === selectedTooth.order)?.label}
+                <h4 style={{ fontWeight: 800, margin: 0, fontSize: '1.05rem' }}>{selectedTooth.label}</h4>
+                <p style={{ fontSize: '0.85rem', color: ORDER_COLORS[selectedTooth.order], fontWeight: 700, margin: '2px 0 0' }}>
+                  {LEGEND.find(l => l.num === selectedTooth.order)?.label} ({LEGEND.find(l => l.num === selectedTooth.order)?.desc})
                 </p>
               </div>
             </div>
+
             {teethingData[selectedTooth.id] && (
-              <div style={{ background: '#f0fdf4', borderRadius: 10, padding: '0.6rem 1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <CheckCircle size={16} color="#4CAF50" />
-                <span style={{ fontSize: '0.85rem', color: '#2e7d32', fontWeight: 600 }}>
-                  Nasceu a {new Date(teethingData[selectedTooth.id]).toLocaleDateString('pt-PT')}
+              <div className="tooth-erupted-alert">
+                <CheckCircle size={18} color="#10B981" />
+                <span>
+                  Este dente já nasceu e está <strong>pintado de branco ✨</strong>!
                 </span>
               </div>
             )}
+
             <form onSubmit={saveToothDate}>
-              <div className="input-group">
-                <label className="input-label">
-                  <CalendarIcon size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
+              <div className="input-group mb-4">
+                <label className="input-label" style={{ fontWeight: 700 }}>
+                  <CalendarIcon size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} />
                   Data em que nasceu (rasgou a gengiva)
                 </label>
                 <input
@@ -195,10 +212,13 @@ const TeethMap = () => {
                   required
                 />
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
-                <button type="submit" className="btn-primary" style={{ flex: 1 }}>Guardar</button>
+
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <button type="submit" className="btn-primary" style={{ flex: 1 }}>
+                  {teethingData[selectedTooth.id] ? 'Atualizar Data' : 'Confirmar & Pintar de Branco 🦷'}
+                </button>
                 {teethingData[selectedTooth.id] && (
-                  <button type="button" className="btn-outline" onClick={removeToothDate} style={{ color: '#ef4444' }}>
+                  <button type="button" className="btn-outline" onClick={removeToothDate} style={{ color: '#EF4444', borderColor: '#FCA5A5' }} title="Remover Registo">
                     <Trash2 size={18} />
                   </button>
                 )}
