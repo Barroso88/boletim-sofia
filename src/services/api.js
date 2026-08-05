@@ -60,6 +60,50 @@ export const api = {
     fetchWithFallback(`${API_BASE}/peso/${id}`, { method: 'DELETE' });
   },
 
+  // --- ALTURA ---
+  async getAlturas(localKey = 'sofia_altura') {
+    const defaultAlturas = [
+      { id: 1, data: '2026-07-13', altura: 50.0 },
+      { id: 2, data: '2026-07-28', altura: 52.5 },
+      { id: 3, data: '2026-08-05', altura: 54.0 },
+    ];
+    const remote = await fetchWithFallback(`${API_BASE}/altura`);
+    if (remote && Array.isArray(remote) && remote.length > 0) {
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    if (!saved) {
+      localStorage.setItem(localKey, JSON.stringify(defaultAlturas));
+      return defaultAlturas;
+    }
+    return JSON.parse(saved);
+  },
+
+  async saveAltura(registo, localKey = 'sofia_altura') {
+    const saved = localStorage.getItem(localKey);
+    let list = saved ? JSON.parse(saved) : [];
+    const idx = list.findIndex(r => r.id === registo.id);
+    if (idx >= 0) list[idx] = registo;
+    else list.push(registo);
+    localStorage.setItem(localKey, JSON.stringify(list));
+
+    fetchWithFallback(`${API_BASE}/altura`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registo)
+    });
+  },
+
+  async deleteAltura(id, localKey = 'sofia_altura') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(r => r.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/altura/${id}`, { method: 'DELETE' });
+  },
+
   // --- AGENDA ---
   async getAgenda(localKey = 'sofia_agenda') {
     const remote = await fetchWithFallback(`${API_BASE}/agenda`);

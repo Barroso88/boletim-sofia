@@ -67,6 +67,23 @@ const TeethMap = () => {
     localStorage.setItem('sofia_denticao', JSON.stringify(teethingData));
   }, [teethingData]);
 
+  useEffect(() => {
+    // Sanitize any phantom/legacy keys from localStorage
+    const validKeys = new Set(TEETH.map(t => t.id));
+    const sanitized = {};
+    let hasDirty = false;
+    Object.keys(teethingData).forEach(k => {
+      if (validKeys.has(k) && teethingData[k]) {
+        sanitized[k] = teethingData[k];
+      } else {
+        hasDirty = true;
+      }
+    });
+    if (hasDirty) {
+      setTeethingData(sanitized);
+    }
+  }, []);
+
   const openModal = (t) => {
     setSelectedTooth(t);
     setEruptionDate(teethingData[t.id] || new Date().toISOString().split('T')[0]);
@@ -91,12 +108,12 @@ const TeethMap = () => {
     closeModal();
   };
 
-  const eruptedCount = Object.keys(teethingData).length;
-
   // Registered teeth sorted by date
   const registeredList = TEETH
-    .filter(t => teethingData[t.id])
-    .sort((a, b) => teethingData[a.id].localeCompare(teethingData[b.id]));
+    .filter(t => Boolean(teethingData[t.id]))
+    .sort((a, b) => (teethingData[a.id] || '').localeCompare(teethingData[b.id] || ''));
+
+  const eruptedCount = registeredList.length;
 
   return (
     <div className="teething-layout">
