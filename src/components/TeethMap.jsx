@@ -26,28 +26,28 @@ const LEGEND = [
 // Image coordinates mapped precisely to dentes-leite.png arch (634px / 1024px clipped circle area)
 const TEETH = [
   // ── ARCADA SUPERIOR (UPPER) ───────────────────────────────────────────────
-  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 4.8,  left: 38.5, w: 10.5, h: 14.5, borderRadius: '12px 12px 6px 6px' },
-  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 4.8,  left: 50.8, w: 10.5, h: 14.5, borderRadius: '12px 12px 6px 6px' },
-  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 7.8,  left: 27.2, w: 10.0, h: 14.0, borderRadius: '12px 8px 6px 6px' },
-  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 7.8,  left: 62.5, w: 10.0, h: 14.0, borderRadius: '8px 12px 6px 6px' },
-  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 15.2, left: 16.5, w: 10.5, h: 15.0, borderRadius: '14px 8px 6px 6px' },
-  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 15.2, left: 73.0, w: 10.5, h: 15.0, borderRadius: '8px 14px 6px 6px' },
-  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 26.5, left: 8.5,  w: 12.5, h: 17.0, borderRadius: '12px' },
-  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 26.5, left: 79.0, w: 12.5, h: 17.0, borderRadius: '12px' },
-  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 38.0, left: 3.2,  w: 13.5, h: 18.0, borderRadius: '14px' },
-  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 38.0, left: 83.2, w: 13.5, h: 18.0, borderRadius: '14px' },
+  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 23.5, left: 40.0, w: 9.0, h: 6.0, borderRadius: '6px 6px 14px 14px' },
+  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 23.5, left: 51.0, w: 9.0, h: 6.0, borderRadius: '6px 6px 14px 14px' },
+  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 25.5, left: 29.5, w: 8.5, h: 6.0, borderRadius: '6px 8px 12px 14px' },
+  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 25.5, left: 62.0, w: 8.5, h: 6.0, borderRadius: '8px 6px 14px 12px' },
+  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 30.5, left: 20.0, w: 8.5, h: 6.5, borderRadius: '6px 12px 10px 14px' },
+  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 30.5, left: 71.5, w: 8.5, h: 6.5, borderRadius: '12px 6px 14px 10px' },
+  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 38.0, left: 14.5, w: 10.0, h: 7.0, borderRadius: '8px' },
+  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 38.0, left: 75.5, w: 10.0, h: 7.0, borderRadius: '8px' },
+  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 46.5, left: 13.0, w: 10.5, h: 7.5, borderRadius: '10px' },
+  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 46.5, left: 76.5, w: 10.5, h: 7.5, borderRadius: '10px' },
 
   // ── ARCADA INFERIOR (LOWER) ───────────────────────────────────────────────
-  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 80.5, left: 38.5, w: 10.5, h: 14.5, borderRadius: '6px 6px 12px 12px' },
-  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 80.5, left: 50.8, w: 10.5, h: 14.5, borderRadius: '6px 6px 12px 12px' },
-  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 77.2, left: 27.2, w: 10.0, h: 14.0, borderRadius: '6px 6px 12px 8px' },
-  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 77.2, left: 62.5, w: 10.0, h: 14.0, borderRadius: '6px 6px 8px 12px' },
-  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 69.2, left: 16.5, w: 10.5, h: 15.0, borderRadius: '6px 6px 14px 8px' },
-  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 69.2, left: 73.0, w: 10.5, h: 15.0, borderRadius: '6px 6px 8px 14px' },
-  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 57.5, left: 8.5,  w: 12.5, h: 17.0, borderRadius: '12px' },
-  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 57.5, left: 79.0, w: 12.5, h: 17.0, borderRadius: '12px' },
-  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 50.0, left: 3.2,  w: 13.5, h: 18.0, borderRadius: '14px' },
-  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 50.0, left: 83.2, w: 13.5, h: 18.0, borderRadius: '14px' },
+  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 80.5, left: 42.0, w: 7.5, h: 5.5, borderRadius: '14px 14px 6px 6px' },
+  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 80.5, left: 50.5, w: 7.5, h: 5.5, borderRadius: '14px 14px 6px 6px' },
+  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 78.5, left: 33.5, w: 8.0, h: 5.5, borderRadius: '12px 14px 6px 8px' },
+  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 78.5, left: 58.5, w: 8.0, h: 5.5, borderRadius: '14px 12px 8px 6px' },
+  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 73.0, left: 25.0, w: 8.5, h: 6.0, borderRadius: '12px 14px 6px 10px' },
+  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 73.0, left: 66.5, w: 8.5, h: 6.0, borderRadius: '14px 12px 10px 6px' },
+  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 64.0, left: 18.0, w: 10.0, h: 7.0, borderRadius: '10px' },
+  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 64.0, left: 72.0, w: 10.0, h: 7.0, borderRadius: '10px' },
+  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 54.0, left: 15.0, w: 10.5, h: 7.5, borderRadius: '12px' },
+  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 54.0, left: 74.5, w: 10.5, h: 7.5, borderRadius: '12px' },
 ];
 
 const TeethMap = () => {
@@ -106,8 +106,8 @@ const TeethMap = () => {
       <div className="teeth-image-map-container">
         <div className="teeth-image-clip">
           <img
-            src="/dentes-leite.png"
-            alt="Mapa de Dentes de Leite"
+            src="/realistic_gums.jpg"
+            alt="Gengivas"
             className="teeth-base-image"
             draggable={false}
           />
