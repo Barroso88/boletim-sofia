@@ -222,12 +222,22 @@ export const api = {
   // --- DOCUMENTOS ---
   async getDocumentos(defaultList, localKey = 'sofia_documentos') {
     const remote = await fetchWithFallback(`${API_BASE}/documentos`);
+    let result = [];
     if (remote && Array.isArray(remote) && remote.length > 0) {
-      localStorage.setItem(localKey, JSON.stringify(remote));
-      return remote;
+      result = remote;
+    } else {
+      const saved = localStorage.getItem(localKey);
+      result = saved ? JSON.parse(saved) : defaultList;
     }
-    const saved = localStorage.getItem(localKey);
-    const result = saved ? JSON.parse(saved) : defaultList;
+
+    if (defaultList && Array.isArray(defaultList)) {
+      const existingTypes = new Set(result.map(d => d.type || d.titulo));
+      const missing = defaultList.filter(d => !existingTypes.has(d.type || d.titulo));
+      if (missing.length > 0) {
+        result = [...result, ...missing];
+        localStorage.setItem(localKey, JSON.stringify(result));
+      }
+    }
 
     if (result && result.length > 0) {
       fetchWithFallback(`${API_BASE}/documentos/bulk`, {

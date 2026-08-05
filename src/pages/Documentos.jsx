@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle } from 'lucide-react';
+import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
 import { api } from '../services/api';
 import './Documentos.css';
 
@@ -8,7 +8,8 @@ const defaultDocs = [
   { id: 2, titulo: 'Cartão Cidadão', numero: '', type: 'id' },
   { id: 3, titulo: 'Nº Utente', numero: '', type: 'health' },
   { id: 4, titulo: 'Segurança Social', numero: '', type: 'social' },
-  { id: 5, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
+  { id: 5, titulo: 'Cartão de Seguro', numero: '', type: 'insurance' },
+  { id: 6, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
 ];
 
 const Documentos = () => {
@@ -20,6 +21,8 @@ const Documentos = () => {
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novoNumero, setNovoNumero] = useState('');
   const [copiadoId, setCopiadoId] = useState(null);
+  const [confirmarDelete, setConfirmarDelete] = useState(null);
+  const [draggedIndex, setDraggedIndex] = useState(null);
 
   useEffect(() => {
     api.getDocumentos(defaultDocs).then(data => setDocumentos(data));
@@ -53,8 +56,6 @@ const Documentos = () => {
     setNovoNumero('');
   };
 
-  const [confirmarDelete, setConfirmarDelete] = useState(null);
-
   const removerDocumentoConfirmado = () => {
     if (!confirmarDelete) return;
     const id = confirmarDelete;
@@ -62,6 +63,42 @@ const Documentos = () => {
     setDocumentos(novaLista);
     api.deleteDocumento(id, novaLista);
     setConfirmarDelete(null);
+  };
+
+  const moverDoc = (index, direction) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= documentos.length) return;
+    const novaLista = [...documentos];
+    const [movedItem] = novaLista.splice(index, 1);
+    novaLista.splice(targetIndex, 0, movedItem);
+    setDocumentos(novaLista);
+    api.saveDocumentos(novaLista);
+  };
+
+  // Drag & Drop Handlers
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.setData('text/plain', index.toString());
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const dragIndexStr = e.dataTransfer.getData('text/plain');
+    const dragIndex = parseInt(dragIndexStr, 10);
+    if (isNaN(dragIndex) || dragIndex === dropIndex) {
+      setDraggedIndex(null);
+      return;
+    }
+    const novaLista = [...documentos];
+    const [movedItem] = novaLista.splice(dragIndex, 1);
+    novaLista.splice(dropIndex, 0, movedItem);
+    setDocumentos(novaLista);
+    api.saveDocumentos(novaLista);
+    setDraggedIndex(null);
   };
 
   const copiarParaClipboard = (numero, id) => {
@@ -76,9 +113,10 @@ const Documentos = () => {
     if (doc.type && doc.type !== 'custom') return doc.type;
     const title = (doc.titulo || '').toLowerCase();
     if (title.includes('nif') || title.includes('fiscal')) return 'tax';
-    if (title.includes('civil') || title.includes('cc')) return 'id';
+    if (title.includes('civil') || title.includes('cc') || title.includes('cidadão')) return 'id';
     if (title.includes('saúde') || title.includes('utente')) return 'health';
     if (title.includes('segurança social') || title.includes('niss') || title.includes('social')) return 'social';
+    if (title.includes('seguro') || title.includes('insurance') || title.includes('generali')) return 'insurance';
     if (title.includes('sanguíneo') || title.includes('sangue')) return 'blood';
     if (title.includes('passaporte') || title.includes('passport')) return 'passport';
     return doc.type || 'custom';
@@ -87,14 +125,15 @@ const Documentos = () => {
   const getDocIcon = (doc) => {
     const t = getDocType(doc);
     switch (t) {
-      case 'tax':      return <img src="/nif_logo.png" alt="NIF" className="doc-icon-img" />;
-      case 'id':       return <img src="/cc_logo.png" alt="CC" className="doc-icon-img" />;
-      case 'health':   return <img src="/sns_logo.png" alt="SNS" className="doc-icon-img" />;
-      case 'social':   return <img src="/seg_social_logo.png" alt="NISS" className="doc-icon-img" />;
-      case 'blood':    return <Droplet size={22} color="#ef4444" />;
-      case 'passport': return <img src="/passport_logo.png" alt="Passaporte" className="doc-icon-img" style={{ borderRadius: '4px' }} />;
-      case 'custom':   return <CreditCard size={22} />;
-      default:         return <FolderHeart size={22} />;
+      case 'tax':       return <img src="/nif_logo.png" alt="NIF" className="doc-icon-img" />;
+      case 'id':        return <img src="/cc_logo.png" alt="CC" className="doc-icon-img" />;
+      case 'health':    return <img src="/sns_logo.png" alt="SNS" className="doc-icon-img" />;
+      case 'social':    return <img src="/seg_social_logo.png" alt="NISS" className="doc-icon-img" />;
+      case 'insurance': return <img src="/seguro_logo.png" alt="Seguro" className="doc-icon-img" style={{ borderRadius: '4px', objectFit: 'contain' }} />;
+      case 'blood':     return <Droplet size={22} color="#ef4444" />;
+      case 'passport':  return <img src="/passport_logo.png" alt="Passaporte" className="doc-icon-img" style={{ borderRadius: '4px' }} />;
+      case 'custom':    return <CreditCard size={22} />;
+      default:          return <FolderHeart size={22} />;
     }
   };
 
@@ -127,8 +166,8 @@ const Documentos = () => {
       <div className="executive-table-wrapper glass-card">
         <table className="executive-table">
           <colgroup>
-            <col style={{ width: '75%' }} />   {/* Document name & number */}
-            <col style={{ width: '25%' }} />   {/* Actions */}
+            <col style={{ width: '65%' }} />   {/* Document name & number */}
+            <col style={{ width: '35%' }} />   {/* Actions */}
           </colgroup>
           <thead>
             <tr>
@@ -140,9 +179,20 @@ const Documentos = () => {
             {documentos.map((doc, index) => {
               const isPreenchido = doc.numero && doc.numero.trim() !== '';
               return (
-                <tr key={doc.id} className="executive-row" style={{ animationDelay: `${index * 0.05}s` }}>
-                  {/* Doc name + icon + number below */}
+                <tr
+                  key={doc.id}
+                  className={`executive-row ${draggedIndex === index ? 'dragging' : ''}`}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, index)}
+                  style={{ animationDelay: `${index * 0.04}s` }}
+                >
+                  {/* Doc name + drag handle + icon + number */}
                   <td className="cell-doc">
+                    <div className="drag-handle-icon" title="Arraste para reordenar">
+                      <GripVertical size={16} color="var(--color-border)" />
+                    </div>
                     <div className={`cell-icon-badge icon-bg-${getDocType(doc)}`}>
                       {getDocIcon(doc)}
                     </div>
@@ -164,11 +214,27 @@ const Documentos = () => {
                   {/* Actions */}
                   <td className="cell-actions text-right col-actions">
                     <div className="btn-action-group">
+                      <button
+                        className="btn-action-move"
+                        onClick={() => moverDoc(index, -1)}
+                        disabled={index === 0}
+                        title="Mover para cima"
+                      >
+                        <ChevronUp size={16} />
+                      </button>
+                      <button
+                        className="btn-action-move"
+                        onClick={() => moverDoc(index, 1)}
+                        disabled={index === documentos.length - 1}
+                        title="Mover para baixo"
+                      >
+                        <ChevronDown size={16} />
+                      </button>
                       <button className="btn-action-edit" onClick={() => abrirEdicao(doc)} title="Editar documento">
-                        <Pencil size={17} />
+                        <Pencil size={16} />
                       </button>
                       <button className="btn-action-delete" onClick={() => setConfirmarDelete(doc.id)} title="Remover documento">
-                        <Trash2 size={17} />
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   </td>
@@ -179,7 +245,6 @@ const Documentos = () => {
         </table>
       </div>
 
-      {/* ─── EDIT MODAL ─── */}
       {/* ─── EDIT DOCUMENT MODAL ─── */}
       {editDoc && (
         <div className="modal-overlay" onClick={() => setEditDoc(null)}>
@@ -207,7 +272,7 @@ const Documentos = () => {
                   className="input-field"
                   value={editTitulo}
                   onChange={e => setEditTitulo(e.target.value)}
-                  placeholder="Ex: NIF, Cartão de Cidadão..."
+                  placeholder="Ex: NIF, Cartão de Cidadão, Cartão de Seguro..."
                 />
               </div>
 
@@ -254,11 +319,11 @@ const Documentos = () => {
             <div className="modal-header">
               <div className="modal-title-group">
                 <div className="modal-icon-badge">
-                  <FolderHeart size={22} />
+                  <Plus size={22} />
                 </div>
                 <div>
-                  <h3 className="modal-title">Novo Registo Oficial</h3>
-                  <p className="modal-subtitle">Adicione um novo documento da Sofia</p>
+                  <h3 className="modal-title">Novo Documento</h3>
+                  <p className="modal-subtitle">Adicione um novo documento ao registo</p>
                 </div>
               </div>
               <button className="btn-icon" onClick={() => setAdicionandoNovo(false)}>
@@ -273,20 +338,21 @@ const Documentos = () => {
                   type="text"
                   className="input-field"
                   value={novoTitulo}
-                  onChange={(e) => setNovoTitulo(e.target.value)}
+                  onChange={e => setNovoTitulo(e.target.value)}
+                  placeholder="Ex: Cartão de Seguro / Passaporte"
                   required
-                  placeholder="Ex: Passaporte / Cartão de Seguro"
+                  autoFocus
                 />
               </div>
 
               <div className="input-group">
-                <label className="input-label">Número de Registo</label>
+                <label className="input-label">Número / Identificador</label>
                 <input
                   type="text"
                   className="input-field"
                   value={novoNumero}
-                  onChange={(e) => setNovoNumero(e.target.value)}
-                  placeholder="Ex: N12345678"
+                  onChange={e => setNovoNumero(e.target.value)}
+                  placeholder="Insira o número..."
                 />
               </div>
 
@@ -302,6 +368,7 @@ const Documentos = () => {
           </div>
         </div>
       )}
+
       {/* Delete Confirmation Modal */}
       {confirmarDelete && (
         <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>

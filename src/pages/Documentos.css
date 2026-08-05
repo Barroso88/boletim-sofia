@@ -100,9 +100,55 @@
 .icon-bg-id { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .icon-bg-health { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .icon-bg-social { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.icon-bg-insurance { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .icon-bg-passport { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .icon-bg-blood { background: #fef2f2; color: #ef4444; }
 .icon-bg-custom { background: #f5f3ff; color: #8b5cf6; }
+
+.drag-handle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  padding: 0.2rem 0.1rem;
+  opacity: 0.5;
+  transition: opacity var(--transition-fast);
+}
+
+.drag-handle-icon:hover {
+  opacity: 1;
+}
+
+.executive-row.dragging {
+  opacity: 0.45;
+  background: rgba(244, 63, 94, 0.08) !important;
+}
+
+.btn-action-move {
+  background: rgba(100, 116, 139, 0.08);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.btn-action-move:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.18);
+  color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-action-move:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
 
 .doc-meta {
   display: flex;
