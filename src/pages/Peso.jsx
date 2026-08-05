@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Plus, Scale, Trash2, TrendingUp, TrendingDown, Minus, AlertTriangle, X } from 'lucide-react';
+import { Plus, Scale, Trash2, TrendingUp, TrendingDown, Minus, AlertTriangle, X, Pencil } from 'lucide-react';
 import WeightChart from '../components/WeightChart';
 import { api } from '../services/api';
 import './Peso.css';
@@ -9,6 +9,7 @@ import './Peso.css';
 const Peso = () => {
   const [registos, setRegistos] = useState([]);
   const [adicionando, setAdicionando] = useState(false);
+  const [editandoId, setEditandoId] = useState(null);
   const [novaData, setNovaData] = useState('');
   const [novoPeso, setNovoPeso] = useState('');
   const [confirmarDelete, setConfirmarDelete] = useState(null);
@@ -17,17 +18,29 @@ const Peso = () => {
     api.getPesos().then(data => setRegistos(data));
   }, []);
 
+  const abrirEdicao = (registo) => {
+    setEditandoId(registo.id);
+    setNovaData(registo.data);
+    setNovoPeso(registo.peso);
+    setAdicionando(true);
+  };
+
   const adicionarRegisto = (e) => {
     e.preventDefault();
     if (!novaData || !novoPeso) return;
     const registo = {
-      id: Date.now(),
+      id: editandoId || Date.now(),
       data: novaData,
       peso: parseFloat(novoPeso),
     };
-    setRegistos(prev => [...prev, registo]);
+    setRegistos(prev => {
+      const exists = prev.some(r => r.id === registo.id);
+      if (exists) return prev.map(r => r.id === registo.id ? registo : r);
+      return [...prev, registo];
+    });
     api.savePeso(registo);
     setAdicionando(false);
+    setEditandoId(null);
     setNovaData('');
     setNovoPeso('');
   };
@@ -190,6 +203,9 @@ const Peso = () => {
                       )}
                     </td>
                     <td className="text-right">
+                      <button className="btn-delete" style={{ marginRight: '0.4rem', color: 'var(--color-primary)' }} onClick={() => abrirEdicao(registo)} title="Editar pesagem">
+                        <Pencil size={20} />
+                      </button>
                       <button className="btn-delete" onClick={() => confirmarRemocao(registo.id)} title="Remover registo">
                         <Trash2 size={20} />
                       </button>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers } from 'lucide-react';
+import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil } from 'lucide-react';
 import { api } from '../services/api';
 import './Leite.css';
 
@@ -19,12 +19,14 @@ const Leite = () => {
   const [registosLeite, setRegistosLeite] = useState([]);
   const [dataSelecionada, setDataSelecionada] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [adicionandoLeite, setAdicionandoLeite] = useState(false);
+  const [editandoIdLeite, setEditandoIdLeite] = useState(null);
   const [novaHoraLeite, setNovaHoraLeite] = useState(format(new Date(), 'HH:mm'));
   const [novaQuantidade, setNovaQuantidade] = useState(150);
 
   // Fraldas State
   const [registosFraldas, setRegistosFraldas] = useState([]);
   const [adicionandoFralda, setAdicionandoFralda] = useState(false);
+  const [editandoIdFralda, setEditandoIdFralda] = useState(null);
   const [novaHoraFralda, setNovaHoraFralda] = useState(format(new Date(), 'HH:mm'));
   const [tipoFraldaSelecionado, setTipoFraldaSelecionado] = useState('Xixi');
 
@@ -57,18 +59,30 @@ const Leite = () => {
     }
   };
 
+  const abrirEdicaoLeite = (reg) => {
+    setEditandoIdLeite(reg.id);
+    setNovaHoraLeite(reg.hora);
+    setNovaQuantidade(reg.quantidade_ml);
+    setAdicionandoLeite(true);
+  };
+
   const adicionarRegistoLeite = (e) => {
     e.preventDefault();
     if (!novaHoraLeite || !novaQuantidade) return;
     const registo = {
-      id: Date.now(),
+      id: editandoIdLeite || Date.now(),
       data: dataSelecionada,
       hora: novaHoraLeite,
       quantidade_ml: Number(novaQuantidade),
     };
-    setRegistosLeite(prev => [registo, ...prev]);
+    setRegistosLeite(prev => {
+      const exists = prev.some(r => r.id === registo.id);
+      if (exists) return prev.map(r => r.id === registo.id ? registo : r);
+      return [registo, ...prev];
+    });
     api.saveLeite(registo);
     setAdicionandoLeite(false);
+    setEditandoIdLeite(null);
   };
 
   const apagarRegistoLeite = (id) => {
@@ -102,18 +116,30 @@ const Leite = () => {
     }
   };
 
+  const abrirEdicaoFralda = (reg) => {
+    setEditandoIdFralda(reg.id);
+    setNovaHoraFralda(reg.hora);
+    setTipoFraldaSelecionado(reg.tipo);
+    setAdicionandoFralda(true);
+  };
+
   const adicionarRegistoFralda = (e) => {
     e.preventDefault();
     if (!novaHoraFralda || !tipoFraldaSelecionado) return;
     const registo = {
-      id: Date.now(),
+      id: editandoIdFralda || Date.now(),
       data: dataSelecionada,
       hora: novaHoraFralda,
       tipo: tipoFraldaSelecionado,
     };
-    setRegistosFraldas(prev => [registo, ...prev]);
+    setRegistosFraldas(prev => {
+      const exists = prev.some(r => r.id === registo.id);
+      if (exists) return prev.map(r => r.id === registo.id ? registo : r);
+      return [registo, ...prev];
+    });
     api.saveFralda(registo);
     setAdicionandoFralda(false);
+    setEditandoIdFralda(null);
   };
 
   const apagarRegistoFralda = (id) => {
@@ -380,20 +406,29 @@ const Leite = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div className="feeding-amount-badge">
-                      <span className="amount-val">{reg.quantidade_ml}</span>
-                      <span className="amount-unit">ml</span>
-                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                      <div className="feeding-amount-badge">
+                        <span className="amount-val">{reg.quantidade_ml}</span>
+                        <span className="amount-unit">ml</span>
+                      </div>
 
-                    <button
-                      className="btn-delete-item"
-                      onClick={() => apagarRegistoLeite(reg.id)}
-                      title="Apagar registo"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
+                      <button
+                        className="btn-delete-item"
+                        style={{ color: 'var(--color-primary)' }}
+                        onClick={() => abrirEdicaoLeite(reg)}
+                        title="Editar registo"
+                      >
+                        <Pencil size={18} />
+                      </button>
+
+                      <button
+                        className="btn-delete-item"
+                        onClick={() => apagarRegistoLeite(reg.id)}
+                        title="Apagar registo"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                 </div>
               ))
             )}
@@ -558,11 +593,20 @@ const Leite = () => {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                       <div className={`diaper-badge ${diaperMeta.badgeClass}`}>
                         <span>{diaperMeta.icon}</span>
                         <span>{reg.tipo}</span>
                       </div>
+
+                      <button
+                        className="btn-delete-item"
+                        style={{ color: '#0284c7' }}
+                        onClick={() => abrirEdicaoFralda(reg)}
+                        title="Editar registo"
+                      >
+                        <Pencil size={18} />
+                      </button>
 
                       <button
                         className="btn-delete-item"

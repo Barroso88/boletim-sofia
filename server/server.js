@@ -382,7 +382,7 @@ app.post('/api/leite', async (req, res) => {
   const { id, data, hora, quantidade_ml } = req.body;
   try {
     await pool.query(
-      'INSERT INTO leite (id, data, hora, quantidade_ml) VALUES ($1, $2, $3, $4)',
+      'INSERT INTO leite (id, data, hora, quantidade_ml) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, quantidade_ml = $4',
       [id, data, hora, quantidade_ml]
     );
     res.json({ success: true });
@@ -414,7 +414,7 @@ app.post('/api/fraldas', async (req, res) => {
   const { id, data, hora, tipo } = req.body;
   try {
     await pool.query(
-      'INSERT INTO fraldas (id, data, hora, tipo) VALUES ($1, $2, $3, $4)',
+      'INSERT INTO fraldas (id, data, hora, tipo) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, tipo = $4',
       [id, data, hora, tipo]
     );
     res.json({ success: true });

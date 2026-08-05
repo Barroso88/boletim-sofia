@@ -37,13 +37,13 @@ export const api = {
   },
 
   async savePeso(registo, localKey = 'sofia_peso') {
-    // Local save first
     const saved = localStorage.getItem(localKey);
     let list = saved ? JSON.parse(saved) : [];
-    list.push(registo);
+    const idx = list.findIndex(r => r.id === registo.id);
+    if (idx >= 0) list[idx] = registo;
+    else list.push(registo);
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    // Async DB save
     fetchWithFallback(`${API_BASE}/peso`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,7 +74,9 @@ export const api = {
   async saveEvento(evento, localKey = 'sofia_agenda') {
     const saved = localStorage.getItem(localKey);
     let list = saved ? JSON.parse(saved) : [];
-    list.push(evento);
+    const idx = list.findIndex(e => e.id === evento.id);
+    if (idx >= 0) list[idx] = evento;
+    else list.push(evento);
     list.sort((a, b) => new Date(a.data) - new Date(b.data));
     localStorage.setItem(localKey, JSON.stringify(list));
 
@@ -108,7 +110,9 @@ export const api = {
   async saveMarco(marco, localKey = 'sofia_marcos') {
     const saved = localStorage.getItem(localKey);
     let list = saved ? JSON.parse(saved) : [];
-    list.push(marco);
+    const idx = list.findIndex(m => m.id === marco.id);
+    if (idx >= 0) list[idx] = marco;
+    else list.push(marco);
     list.sort((a, b) => new Date(a.data) - new Date(b.data));
     localStorage.setItem(localKey, JSON.stringify(list));
 
@@ -218,7 +222,9 @@ export const api = {
   async saveLeite(registo, localKey = 'sofia_leite') {
     const saved = localStorage.getItem(localKey);
     let list = saved ? JSON.parse(saved) : [];
-    list.push(registo);
+    const idx = list.findIndex(r => r.id === registo.id);
+    if (idx >= 0) list[idx] = registo;
+    else list.push(registo);
     // Sort by time descending
     list.sort((a, b) => b.hora.localeCompare(a.hora));
     localStorage.setItem(localKey, JSON.stringify(list));
@@ -253,7 +259,9 @@ export const api = {
   async saveFralda(registo, localKey = 'sofia_fraldas') {
     const saved = localStorage.getItem(localKey);
     let list = saved ? JSON.parse(saved) : [];
-    list.push(registo);
+    const idx = list.findIndex(r => r.id === registo.id);
+    if (idx >= 0) list[idx] = registo;
+    else list.push(registo);
     list.sort((a, b) => b.hora.localeCompare(a.hora));
     localStorage.setItem(localKey, JSON.stringify(list));
 

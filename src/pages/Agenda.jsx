@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { api } from '../services/api';
@@ -10,6 +10,7 @@ const Agenda = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [adicionando, setAdicionando] = useState(false);
+  const [editandoId, setEditandoId] = useState(null);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novaHora, setNovaHora] = useState('09:00');
   const [novoTipo, setNovoTipo] = useState('Consulta');
@@ -35,6 +36,19 @@ const Agenda = () => {
   // --- Events Logic ---
   const eventosDoDiaSelecionado = eventos.filter(ev => isSameDay(new Date(ev.data), selectedDate));
   
+  const abrirEdicao = (evento) => {
+    setEditandoId(evento.id);
+    setNovoTitulo(evento.titulo);
+    setNovoTipo(evento.tipo);
+    try {
+      const d = new Date(evento.data);
+      setNovaHora(format(d, 'HH:mm'));
+    } catch (e) {
+      setNovaHora('09:00');
+    }
+    setAdicionando(true);
+  };
+
   const adicionarEvento = (e) => {
     e.preventDefault();
     if (!novoTitulo || !novaHora || !selectedDate) return;
@@ -45,16 +59,18 @@ const Agenda = () => {
     dataComHora.setMinutes(parseInt(minutes, 10));
     
     const evento = {
-      id: Date.now(),
+      id: editandoId || Date.now(),
       titulo: novoTitulo,
       data: dataComHora.toISOString(),
       tipo: novoTipo
     };
     
-    const novaLista = [...eventos, evento].sort((a, b) => new Date(a.data) - new Date(b.data));
+    const outros = eventos.filter(ev => ev.id !== evento.id);
+    const novaLista = [...outros, evento].sort((a, b) => new Date(a.data) - new Date(b.data));
     setEventos(novaLista);
     api.saveEvento(evento);
     setAdicionando(false);
+    setEditandoId(null);
     setNovoTitulo('');
     setNovaHora('09:00');
   };
@@ -199,9 +215,14 @@ const Agenda = () => {
                       </span>
                     </div>
 
-                    <button className="btn-delete-evento" onClick={() => removerEvento(evento.id)}>
-                      <Trash2 size={20} />
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.25rem' }}>
+                      <button className="btn-delete-evento" style={{ color: 'var(--color-primary)' }} onClick={() => abrirEdicao(evento)} title="Editar evento">
+                        <Pencil size={20} />
+                      </button>
+                      <button className="btn-delete-evento" onClick={() => removerEvento(evento.id)} title="Remover evento">
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
                   </div>
                 );
               })

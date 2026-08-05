@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Syringe, CheckCircle, Circle, ShieldCheck, Clock, Calendar, Sparkles } from 'lucide-react';
+import { Syringe, CheckCircle, Circle, ShieldCheck, Clock, Calendar, Sparkles, Pencil, X } from 'lucide-react';
 import { api } from '../services/api';
 import './Vacinas.css';
 
@@ -31,6 +31,8 @@ const defaultVacinas = [
 
 const Vacinas = () => {
   const [vacinas, setVacinas] = useState([]);
+  const [editandoVacina, setEditandoVacina] = useState(null);
+  const [novaDataVacina, setNovaDataVacina] = useState('');
 
   useEffect(() => {
     api.getVacinas(defaultVacinas).then(loadedData => {
@@ -146,8 +148,19 @@ const Vacinas = () => {
                   </span>
                 </div>
                 
-                <div className="vacina-badge">
+                <div className="vacina-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span className="badge-concluida">Administrada</span>
+                  <button
+                    className="btn-edit-vacina"
+                    style={{ background: 'rgba(5, 150, 105, 0.12)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#047857', cursor: 'pointer' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      abrirEdicaoVacina(vacina);
+                    }}
+                    title="Editar data da vacina"
+                  >
+                    <Pencil size={15} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -211,6 +224,42 @@ const Vacinas = () => {
           </div>
         )}
       </div>
+
+      {/* ─── EDIT VACCINE MODAL ─── */}
+      {editandoVacina && (
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}
+          onClick={() => setEditandoVacina(null)}
+        >
+          <div
+            className="glass-card animate-fade-in"
+            style={{ padding: '1.5rem', maxWidth: '400px', width: '90%' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 className="h3" style={{ margin: 0 }}>Editar Data da Vacina</h3>
+              <button className="btn-icon" onClick={() => setEditandoVacina(null)}><X size={20} /></button>
+            </div>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-light)', marginBottom: '1rem' }}>
+              <strong>{editandoVacina.nome}</strong>
+            </p>
+            <div className="input-group" style={{ marginBottom: '1.25rem' }}>
+              <label className="input-label">Data de Administração</label>
+              <input
+                type="text"
+                className="input-field"
+                value={novaDataVacina}
+                onChange={e => setNovaDataVacina(e.target.value)}
+                placeholder="Ex: 14/07/2026"
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button className="btn-outline" style={{ flex: 1 }} onClick={() => setEditandoVacina(null)}>Cancelar</button>
+              <button className="btn-primary" style={{ flex: 1 }} onClick={guardarEdicaoVacina}>Guardar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

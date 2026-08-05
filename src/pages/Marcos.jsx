@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Star, Calendar, AlertTriangle, X } from 'lucide-react';
+import { Plus, Trash2, Star, Calendar, AlertTriangle, X, Pencil } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import TeethMap from '../components/TeethMap';
@@ -11,6 +11,7 @@ const ICONS = ['👶', '🌟', '👣', '🗣️', '🦷', '🍼', '🧸', '🎉'
 const Marcos = () => {
   const [marcos, setMarcos] = useState([]);
   const [adicionando, setAdicionando] = useState(false);
+  const [editandoId, setEditandoId] = useState(null);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novaData, setNovaData] = useState('');
   const [novaDescricao, setNovaDescricao] = useState('');
@@ -30,14 +31,25 @@ const Marcos = () => {
     });
   }, []);
 
+  const abrirEdicao = (marco) => {
+    setEditandoId(marco.id);
+    setNovoTitulo(marco.titulo);
+    setNovaData(marco.data);
+    setNovaDescricao(marco.descricao || '');
+    setNovoIcone(marco.icone || '🌟');
+    setAdicionando(true);
+  };
+
   const adicionarMarco = (e) => {
     e.preventDefault();
     if (!novoTitulo || !novaData) return;
-    const marco = { id: Date.now(), titulo: novoTitulo, data: novaData, descricao: novaDescricao, icone: novoIcone };
-    const novaLista = [...marcos, marco].sort((a, b) => new Date(a.data) - new Date(b.data));
+    const marco = { id: editandoId || Date.now(), titulo: novoTitulo, data: novaData, descricao: novaDescricao, icone: novoIcone };
+    const outros = marcos.filter(m => m.id !== marco.id);
+    const novaLista = [...outros, marco].sort((a, b) => new Date(a.data) - new Date(b.data));
     setMarcos(novaLista);
     api.saveMarco(marco);
     setAdicionando(false);
+    setEditandoId(null);
     setNovoTitulo(''); setNovaData(''); setNovaDescricao(''); setNovoIcone('🌟');
   };
 
@@ -164,6 +176,15 @@ const Marcos = () => {
 
                     {/* Card */}
                     <div className="marco-card">
+                      <button
+                        className="marco-delete-btn"
+                        style={{ right: '2.5rem', color: 'var(--color-primary)' }}
+                        onClick={() => abrirEdicao(marco)}
+                        title="Editar este marco"
+                      >
+                        <Pencil size={16} />
+                      </button>
+
                       <button
                         className="marco-delete-btn"
                         onClick={() => setConfirmarDelete(marco.id)}
