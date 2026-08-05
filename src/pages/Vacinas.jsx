@@ -7,15 +7,8 @@ import './Vacinas.css';
 
 const normalizeVaccineName = (nome) => {
   const n = (nome || '').toLowerCase().trim();
-  if (n.includes('hepatite b') && (n.includes('1') || n.includes('nascimento') || !n.includes('2'))) {
-    return 'Vacina contra a Hepatite B (1.ª Dose)';
-  }
-  if (n.includes('hepatite b') && (n.includes('2') || n.includes('2.ª') || n.includes('2ª'))) {
-    return 'Vacina contra a Hepatite B (2.ª Dose)';
-  }
-  if (n.includes('tuberculose') || n.includes('bcg')) {
-    return 'Vacina contra a Tuberculose (BCG)';
-  }
+  if (n.includes('hepatite b')) return 'Vacina contra a Hepatite B';
+  if (n.includes('tuberculose') || n.includes('bcg')) return 'Vacina contra a tuberculose';
   if (n.includes('difteria')) return 'Vacina contra a Difteria';
   if (n.includes('poliomielite')) return 'Vacina contra a Poliomielite';
   if (n.includes('tosse convulsa')) return 'Vacina contra a Tosse Convulsa, componente acelular';
