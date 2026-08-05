@@ -177,93 +177,126 @@ const Documentos = () => {
       </div>
 
       {/* ─── EDIT MODAL ─── */}
+      {/* ─── EDIT DOCUMENT MODAL ─── */}
       {editDoc && (
-        <div className="doc-modal-overlay" onClick={() => setEditDoc(null)}>
-          <div className="doc-modal-sheet glass-card animate-fade-in" onClick={e => e.stopPropagation()}>
-            {/* Sheet handle */}
-            <div className="doc-modal-handle"></div>
-
-            <div className="flex-between mb-4">
-              <div>
-                <p className="doc-modal-label">A editar documento</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.25rem' }}>
-                  <div className={`cell-icon-badge icon-bg-${getDocType(editDoc)}`} style={{ width: '32px', height: '32px' }}>
-                    {getDocIcon(editDoc)}
-                  </div>
+        <div className="modal-overlay" onClick={() => setEditDoc(null)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <div className={`modal-icon-badge icon-bg-${getDocType(editDoc)}`}>
+                  {getDocIcon(editDoc)}
+                </div>
+                <div>
+                  <h3 className="modal-title">Editar Documento</h3>
+                  <p className="modal-subtitle">{editDoc.titulo}</p>
                 </div>
               </div>
-              <button className="btn-icon" onClick={() => setEditDoc(null)}><X size={20} /></button>
+              <button className="btn-icon" onClick={() => setEditDoc(null)}>
+                <X size={18} />
+              </button>
             </div>
 
-            {/* Title field */}
-            <div className="input-group">
-              <label className="input-label">Nome do Documento</label>
-              <input
-                type="text"
-                className="input-field"
-                value={editTitulo}
-                onChange={e => setEditTitulo(e.target.value)}
-                placeholder="Ex: NIF, Cartão de Cidadão..."
-              />
-            </div>
-
-            {/* Number / Blood type field */}
-            <div className="input-group">
-              <label className="input-label">
-                {isBlood(editDoc) ? 'Grupo Sanguíneo' : 'Número / Identificador'}
-              </label>
-              {isBlood(editDoc) ? (
-                <select className="input-field" value={editNumero} onChange={e => setEditNumero(e.target.value)} autoFocus>
-                  <option value="">Selecione o grupo...</option>
-                  {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(t => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group">
+                <label className="input-label">Nome do Documento</label>
                 <input
                   type="text"
                   className="input-field"
-                  value={editNumero}
-                  onChange={e => setEditNumero(e.target.value)}
-                  placeholder="Insira o número ou código..."
-                  autoFocus
+                  value={editTitulo}
+                  onChange={e => setEditTitulo(e.target.value)}
+                  placeholder="Ex: NIF, Cartão de Cidadão..."
                 />
-              )}
-            </div>
+              </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
-              <button className="btn-outline" style={{ flex: 1 }} onClick={() => setEditDoc(null)}>
-                <X size={16} /> Cancelar
-              </button>
-              <button className="btn-primary" style={{ flex: 1 }} onClick={guardarEdicao}>
-                <Save size={16} /> Guardar
-              </button>
+              <div className="input-group">
+                <label className="input-label">
+                  {isBlood(editDoc) ? 'Grupo Sanguíneo' : 'Número / Identificador'}
+                </label>
+                {isBlood(editDoc) ? (
+                  <select className="input-field" value={editNumero} onChange={e => setEditNumero(e.target.value)} autoFocus>
+                    <option value="">Selecione o grupo...</option>
+                    {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={editNumero}
+                    onChange={e => setEditNumero(e.target.value)}
+                    placeholder="Insira o número ou código..."
+                    autoFocus
+                  />
+                )}
+              </div>
+
+              <div className="form-actions">
+                <button className="btn-outline" onClick={() => setEditDoc(null)}>
+                  <X size={16} /> Cancelar
+                </button>
+                <button className="btn-primary" onClick={guardarEdicao}>
+                  <Save size={16} /> Guardar
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── ADD DOCUMENT FORM ─── */}
+      {/* ─── ADD DOCUMENT MODAL ─── */}
       {adicionandoNovo && (
-        <div className="executive-add-card glass-card animate-fade-in">
-          <div className="flex-between mb-3">
-            <h3 className="h3">Novo Registo Oficial</h3>
-            <button className="btn-icon" onClick={() => setAdicionandoNovo(false)}><X size={20} /></button>
+        <div className="modal-overlay" onClick={() => setAdicionandoNovo(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <div className="modal-icon-badge">
+                  <FolderHeart size={22} />
+                </div>
+                <div>
+                  <h3 className="modal-title">Novo Registo Oficial</h3>
+                  <p className="modal-subtitle">Adicione um novo documento da Sofia</p>
+                </div>
+              </div>
+              <button className="btn-icon" onClick={() => setAdicionandoNovo(false)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={adicionarNovoDocumento} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group">
+                <label className="input-label">Nome do Documento</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={novoTitulo}
+                  onChange={(e) => setNovoTitulo(e.target.value)}
+                  required
+                  placeholder="Ex: Passaporte / Cartão de Seguro"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Número de Registo</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={novoNumero}
+                  onChange={(e) => setNovoNumero(e.target.value)}
+                  placeholder="Ex: N12345678"
+                />
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => setAdicionandoNovo(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary">
+                  Gravar Registo
+                </button>
+              </div>
+            </form>
           </div>
-          <form onSubmit={adicionarNovoDocumento} className="add-form-grid">
-            <div className="input-group">
-              <label className="input-label">Nome do Documento</label>
-              <input type="text" className="input-field" value={novoTitulo} onChange={(e) => setNovoTitulo(e.target.value)} required placeholder="Ex: Passaporte / Cartão de Seguro" />
-            </div>
-            <div className="input-group">
-              <label className="input-label">Número de Registo</label>
-              <input type="text" className="input-field" value={novoNumero} onChange={(e) => setNovoNumero(e.target.value)} placeholder="Ex: N12345678" />
-            </div>
-            <div className="form-submit-row">
-              <button type="button" className="btn-outline" onClick={() => setAdicionandoNovo(false)}>Cancelar</button>
-              <button type="submit" className="btn-primary">Gravar Registo</button>
-            </div>
-          </form>
         </div>
       )}
     </div>

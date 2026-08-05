@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight, Pencil, X } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { api } from '../services/api';
@@ -143,54 +143,76 @@ const Agenda = () => {
           </button>
         </div>
 
-        {adicionando ? (
-          <div className="glass-card animate-fade-in" style={{ padding: '1.5rem', border: '2px dashed var(--color-primary-light)' }}>
-            <h4 className="h4 mb-4">Novo Agendamento</h4>
-            <form onSubmit={adicionarEvento}>
-              <div className="input-group">
-                <label className="input-label">Título</label>
-                <input
-                  type="text"
-                  className="input-field"
-                  value={novoTitulo}
-                  onChange={(e) => setNovoTitulo(e.target.value)}
-                  placeholder="Ex: Pediatra Dra. Maria"
-                  required
-                />
+        {adicionando && (
+          <div className="modal-overlay" onClick={() => setAdicionando(false)}>
+            <div className="modal-card" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <div className="modal-title-group">
+                  <div className="modal-icon-badge">
+                    <CalendarIcon size={22} />
+                  </div>
+                  <div>
+                    <h3 className="modal-title">Novo Agendamento</h3>
+                    <p className="modal-subtitle">
+                      {format(selectedDate, "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                    </p>
+                  </div>
+                </div>
+                <button className="btn-icon" onClick={() => setAdicionando(false)}>
+                  <X size={18} />
+                </button>
               </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-grid-2col">
+
+              <form onSubmit={adicionarEvento} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div className="input-group">
-                  <label className="input-label">Hora</label>
+                  <label className="input-label">Título do Agendamento</label>
                   <input
-                    type="time"
+                    type="text"
                     className="input-field"
-                    value={novaHora}
-                    onChange={(e) => setNovaHora(e.target.value)}
+                    value={novoTitulo}
+                    onChange={(e) => setNovoTitulo(e.target.value)}
+                    placeholder="Ex: Pediatra Dra. Maria / Vacina dos 2 meses"
                     required
                   />
                 </div>
-                <div className="input-group">
-                  <label className="input-label">Tipo</label>
-                  <select 
-                    className="input-field" 
-                    value={novoTipo} 
-                    onChange={(e) => setNovoTipo(e.target.value)}
-                  >
-                    <option value="Consulta">Consulta</option>
-                    <option value="Vacina">Vacina</option>
-                    <option value="Outro">Outro</option>
-                  </select>
-                </div>
-              </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                <button type="submit" className="btn-primary">Guardar</button>
-                <button type="button" className="btn-outline" onClick={() => setAdicionando(false)}>Cancelar</button>
-              </div>
-            </form>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-grid-2col">
+                  <div className="input-group">
+                    <label className="input-label">Hora</label>
+                    <input
+                      type="time"
+                      className="input-field"
+                      value={novaHora}
+                      onChange={(e) => setNovaHora(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label className="input-label">Tipo de Evento</label>
+                    <select
+                      className="input-field"
+                      value={novoTipo}
+                      onChange={(e) => setNovoTipo(e.target.value)}
+                    >
+                      <option value="Consulta">Consulta 🩺</option>
+                      <option value="Vacina">Vacina 💉</option>
+                      <option value="Outro">Outro 📌</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-actions">
+                  <button type="button" className="btn-outline" onClick={() => setAdicionando(false)}>
+                    Cancelar
+                  </button>
+                  <button type="submit" className="btn-primary">
+                    Guardar Agendamento
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        ) : (
+        )}
           <div className="agenda-day-list animate-fade-in">
             {eventosDoDiaSelecionado.length === 0 ? (
               <div className="glass-card" style={{ padding: '2.5rem 1.5rem', textAlign: 'center', color: 'var(--color-text-light)' }}>
@@ -228,9 +250,8 @@ const Agenda = () => {
               })
             )}
           </div>
-        )}
+        </div>
       </div>
-    </div>
   );
 };
 

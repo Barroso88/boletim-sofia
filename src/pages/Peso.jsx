@@ -99,10 +99,24 @@ const Peso = () => {
       </div>
 
       {adicionando && (
-        <div className="glass-card mb-4 animate-fade-in" style={{ padding: '2rem' }}>
-          <h3 className="h3 mb-4">Adicionar Nova Pesagem</h3>
-          <form onSubmit={adicionarRegisto}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }} className="form-grid-2col">
+        <div className="modal-overlay" onClick={() => setAdicionando(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <div className="modal-icon-badge">
+                  <Scale size={22} />
+                </div>
+                <div>
+                  <h3 className="modal-title">Registar Nova Pesagem</h3>
+                  <p className="modal-subtitle">Registe o peso atual da Sofia em kg</p>
+                </div>
+              </div>
+              <button className="btn-icon" onClick={() => setAdicionando(false)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={adicionarRegisto} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div className="input-group">
                 <label className="input-label">Data da Pesagem</label>
                 <input
@@ -113,6 +127,7 @@ const Peso = () => {
                   required
                 />
               </div>
+
               <div className="input-group">
                 <label className="input-label">Peso (kg)</label>
                 <input
@@ -126,12 +141,17 @@ const Peso = () => {
                   required
                 />
               </div>
-            </div>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-              <button type="submit" className="btn-primary">Guardar Registo</button>
-              <button type="button" className="btn-outline" onClick={() => setAdicionando(false)}>Cancelar</button>
-            </div>
-          </form>
+
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => setAdicionando(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary">
+                  Guardar Registo
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
