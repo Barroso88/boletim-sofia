@@ -12,9 +12,14 @@ const VitaminaModal = () => {
       const hora = agora.getHours();
       const hojeStr = format(agora, 'yyyy-MM-dd');
       const dataConfirmada = localStorage.getItem('sofia_vitamina_confirmada_data');
+      
+      const searchParams = new URLSearchParams(window.location.search);
+      const isForcePreview = searchParams.get('previewVitamina') === 'true';
 
-      // Se ainda não confirmou hoje e já são 9h ou mais
-      if (dataConfirmada !== hojeStr && hora >= 9) {
+      // Se for forçado por preview de teste ou se for >= 9h e ainda não confirmado
+      if (isForcePreview) {
+        setMostrarModal(true);
+      } else if (dataConfirmada !== hojeStr && hora >= 9) {
         setMostrarModal(true);
       } else {
         setMostrarModal(false);
@@ -22,6 +27,15 @@ const VitaminaModal = () => {
     };
 
     verificarVitamina();
+
+    const handleCustomEvent = () => {
+      setMostrarModal(true);
+    };
+
+    window.addEventListener('abrirPreviewVitamina', handleCustomEvent);
+    return () => {
+      window.removeEventListener('abrirPreviewVitamina', handleCustomEvent);
+    };
   }, []);
 
   const confirmarVitamina = () => {
