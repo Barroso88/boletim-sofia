@@ -15,8 +15,9 @@ import {
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
+  const dataPoint = payload[0]?.payload;
   const peso = payload[0]?.value;
-  const ganho = payload[1]?.value; // g/dia
+  const ganho = dataPoint?.ganhoDia; // g/dia
 
   return (
     <div style={{

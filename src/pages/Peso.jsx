@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react';
-import { differenceInDays, format } from 'date-fns';
+import { differenceInCalendarDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Plus, Scale, Trash2, TrendingUp, TrendingDown, Minus, AlertTriangle, X, Pencil } from 'lucide-react';
 import WeightChart from '../components/WeightChart';
 import { api } from '../services/api';
 import './Peso.css';
+
+// Helper for local date parsing (prevents timezone shifts for YYYY-MM-DD strings)
+const parseDate = (d) => {
+  if (!d) return new Date();
+  if (d instanceof Date) return d;
+  if (typeof d === 'string' && d.length === 10) {
+    const [y, m, day] = d.split('-').map(Number);
+    return new Date(y, m - 1, day);
+  }
+  return new Date(d);
+};
 
 const Peso = () => {
   const [registos, setRegistos] = useState([]);
@@ -21,7 +32,7 @@ const Peso = () => {
   const abrirEdicao = (registo) => {
     setEditandoId(registo.id);
     setNovaData(registo.data);
-    setNovoPeso(registo.peso);
+    setNovoPeso(registo.peso.toString());
     setAdicionando(true);
   };
 
@@ -56,18 +67,20 @@ const Peso = () => {
 
   // Sort ascending, compute ganhoDia (g/dia vs prev record)
   const processedRegistos = [...registos]
-    .sort((a, b) => new Date(a.data) - new Date(b.data))
+    .sort((a, b) => parseDate(a.data) - parseDate(b.data))
     .map((registo, index, array) => {
       let ganhoDia = null;
       let ganhoTotal = null;
 
       if (index > 0) {
         const prev = array[index - 1];
-        const daysDiff = differenceInDays(new Date(registo.data), new Date(prev.data));
-        const weightDiffGrams = (registo.peso - prev.peso) * 1000;
-        if (daysDiff > 0) {
-          ganhoDia = Math.round(weightDiffGrams / daysDiff);
-        }
+        const dCurr = parseDate(registo.data);
+        const dPrev = parseDate(prev.data);
+        const daysDiff = differenceInCalendarDays(dCurr, dPrev);
+        const weightDiffGrams = Math.round((registo.peso - prev.peso) * 1000);
+        
+        const effectiveDays = daysDiff > 0 ? daysDiff : 1;
+        ganhoDia = Math.round(weightDiffGrams / effectiveDays);
       }
 
       // Total gain/loss since first record
@@ -81,7 +94,7 @@ const Peso = () => {
     .reverse(); // Newest first
 
   const chartData = [...processedRegistos].reverse().map(r => ({
-    dataFormato: format(new Date(r.data), 'dd MMM', { locale: ptBR }),
+    dataFormato: format(parseDate(r.data), 'dd/MM'),
     peso: r.peso,
     ganhoDia: r.ganhoDia,
   }));
