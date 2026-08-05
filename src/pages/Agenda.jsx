@@ -102,18 +102,20 @@ const Agenda = () => {
         
         <div className="calendar-grid">
           {calendarDays.map((day, idx) => {
-            const hasEventos = eventos.some(ev => isSameDay(new Date(ev.data), day));
-            const hasConsultas = eventos.some(ev => isSameDay(new Date(ev.data), day) && ev.tipo === 'Consulta');
-            const hasVacinas = eventos.some(ev => isSameDay(new Date(ev.data), day) && ev.tipo === 'Vacina');
-            
+            const dayEvents = eventos.filter(ev => isSameDay(new Date(ev.data), day));
+            const hasEventos = dayEvents.length > 0;
+            const hasConsultas = dayEvents.some(ev => ev.tipo === 'Consulta');
+            const hasVacinas = dayEvents.some(ev => ev.tipo === 'Vacina');
+            const hasOutros = dayEvents.some(ev => ev.tipo === 'Outro' || (!['Consulta', 'Vacina'].includes(ev.tipo)));
+
             const isSelected = isSameDay(day, selectedDate);
             const isCurrentMonth = isSameMonth(day, monthStart);
             const isTodayDate = isToday(day);
-            
+
             return (
-              <div 
-                key={idx} 
-                className={`calendar-cell ${!isCurrentMonth ? 'other-month' : ''} ${isSelected ? 'selected' : ''} ${isTodayDate ? 'today' : ''}`}
+              <div
+                key={idx}
+                className={`calendar-cell ${!isCurrentMonth ? 'other-month' : ''} ${isSelected ? 'selected' : ''} ${isTodayDate ? 'today' : ''} ${hasEventos ? 'has-event' : ''}`}
                 onClick={() => {
                   setSelectedDate(day);
                   setAdicionando(false);
@@ -122,8 +124,9 @@ const Agenda = () => {
                 <span className="calendar-day-num">{format(day, 'd')}</span>
                 {hasEventos && (
                   <div className="calendar-indicators">
-                    {hasConsultas && <span className="dot dot-consulta"></span>}
-                    {hasVacinas && <span className="dot dot-vacina"></span>}
+                    {hasConsultas && <span className="dot dot-consulta" title="Consulta"></span>}
+                    {hasVacinas && <span className="dot dot-vacina" title="Vacina"></span>}
+                    {hasOutros && <span className="dot dot-outro" title="Outro evento"></span>}
                   </div>
                 )}
               </div>

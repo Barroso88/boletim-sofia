@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Syringe, CheckCircle, Circle, ShieldCheck, Clock, Calendar, Sparkles, Pencil, X } from 'lucide-react';
+import { Syringe, CheckCircle, Circle, ShieldCheck, Clock, Calendar, Sparkles, Pencil, Trash2, Plus, AlertTriangle, X } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
 import './Vacinas.css';
@@ -8,7 +8,15 @@ import './Vacinas.css';
 const Vacinas = () => {
   const [vacinas, setVacinas] = useState([]);
   const [editandoVacina, setEditandoVacina] = useState(null);
-  const [novaDataVacina, setNovaDataVacina] = useState('');
+  const [adicionandoVacina, setAdicionandoVacina] = useState(false);
+  const [confirmarDelete, setConfirmarDelete] = useState(null);
+
+  // Form state
+  const [formNome, setFormNome] = useState('');
+  const [formGrupo, setFormGrupo] = useState('Nascimento');
+  const [formDataRecomendada, setFormDataRecomendada] = useState('');
+  const [formDataAdministrada, setFormDataAdministrada] = useState('');
+  const [formTomada, setFormTomada] = useState(false);
 
   useEffect(() => {
     api.getVacinas(defaultVacinas).then(loadedData => {
@@ -16,13 +24,17 @@ const Vacinas = () => {
         setVacinas(defaultVacinas);
         return;
       }
-      // Ensure all items from defaultVacinas exist in the loaded data (merging if missing)
       const existingIds = new Set(loadedData.map(v => v.id));
       const missingDefaults = defaultVacinas.filter(d => !existingIds.has(d.id));
       const merged = [...loadedData, ...missingDefaults];
       setVacinas(merged);
     });
   }, []);
+
+  const persistVacinas = (novaLista) => {
+    setVacinas(novaLista);
+    localStorage.setItem('sofia_vacinas', JSON.stringify(novaLista));
+  };
 
   const toggleTomada = (id) => {
     const hojeFormatted = format(new Date(), 'dd/MM/yyyy');
@@ -37,19 +49,80 @@ const Vacinas = () => {
       }
       return v;
     });
-    setVacinas(novaLista);
+    persistVacinas(novaLista);
     api.toggleVacina(id, novaLista);
+  };
+
+  const abrirEdicaoVacina = (vacina) => {
+    setEditandoVacina(vacina);
+    setFormNome(vacina.nome || '');
+    setFormGrupo(vacina.grupo || 'Outras');
+    setFormDataRecomendada(vacina.dataRecomendada || '');
+    setFormDataAdministrada(vacina.dataAdministrada || '');
+    setFormTomada(!!vacina.tomada);
+  };
+
+  const guardarEdicaoVacina = (e) => {
+    e.preventDefault();
+    if (!editandoVacina) return;
+    const novaLista = vacinas.map(v => {
+      if (v.id === editandoVacina.id) {
+        return {
+          ...v,
+          nome: formNome,
+          grupo: formGrupo,
+          dataRecomendada: formDataRecomendada,
+          dataAdministrada: formTomada ? (formDataAdministrada || format(new Date(), 'dd/MM/yyyy')) : null,
+          tomada: formTomada,
+        };
+      }
+      return v;
+    });
+    persistVacinas(novaLista);
+    api.toggleVacina(editandoVacina.id, novaLista);
+    setEditandoVacina(null);
+  };
+
+  const abrirCriacaoVacina = () => {
+    setFormNome('');
+    setFormGrupo('Outras');
+    setFormDataRecomendada('Sob recomendação médica');
+    setFormDataAdministrada(format(new Date(), 'dd/MM/yyyy'));
+    setFormTomada(false);
+    setAdicionandoVacina(true);
+  };
+
+  const adicionarNovaVacina = (e) => {
+    e.preventDefault();
+    const novaVacina = {
+      id: Date.now(),
+      nome: formNome,
+      grupo: formGrupo || 'Outras',
+      dataRecomendada: formDataRecomendada || 'Sob indicação médica',
+      dataAdministrada: formTomada ? (formDataAdministrada || format(new Date(), 'dd/MM/yyyy')) : null,
+      tomada: formTomada,
+    };
+    const novaLista = [...vacinas, novaVacina];
+    persistVacinas(novaLista);
+    api.toggleVacina(novaVacina.id, novaLista);
+    setAdicionandoVacina(false);
+  };
+
+  const removerVacina = () => {
+    if (!confirmarDelete) return;
+    const novaLista = vacinas.filter(v => v.id !== confirmarDelete);
+    persistVacinas(novaLista);
+    api.toggleVacina(confirmarDelete, novaLista);
+    setConfirmarDelete(null);
   };
 
   const administradas = vacinas.filter(v => v.tomada);
   const porTomar = vacinas.filter(v => !v.tomada);
 
-  // Group 'por tomar' by 'grupo'
   const groupedPorTomar = porTomar.reduce((acc, vacina) => {
-    if (!acc[vacina.grupo]) {
-      acc[vacina.grupo] = [];
-    }
-    acc[vacina.grupo].push(vacina);
+    const grp = vacina.grupo || 'Outras';
+    if (!acc[grp]) acc[grp] = [];
+    acc[grp].push(vacina);
     return acc;
   }, {});
 
@@ -60,13 +133,18 @@ const Vacinas = () => {
   return (
     <div className="page-container page-vacinas">
       {/* Header */}
-      <header className="page-header" style={{ marginBottom: '1rem' }}>
-        <h1 className="h1 flex-center" style={{ gap: '0.6rem', justifyContent: 'flex-start' }}>
-          <span>Boletim de Vacinas</span>
-          <Syringe size={26} className="text-primary" />
-        </h1>
-        <p className="text-secondary">Plano Nacional de Vacinação da Sofia</p>
-      </header>
+      <div className="flex-between mb-4 flex-wrap gap-3">
+        <div>
+          <h1 className="h1" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span>Boletim de Vacinas</span>
+            <Syringe size={26} className="text-primary" />
+          </h1>
+          <p className="text-secondary" style={{ marginTop: '0.2rem' }}>Plano Nacional de Vacinação da Sofia</p>
+        </div>
+        <button className="btn-primary" onClick={abrirCriacaoVacina}>
+          <Plus size={18} /> Nova Vacina
+        </button>
+      </div>
 
       {/* Official SNS 24 Card */}
       <div className="sns-card glass-card mb-4">
@@ -107,35 +185,37 @@ const Vacinas = () => {
         ) : (
           <div className="vacinas-list">
             {administradas.map(vacina => (
-              <div 
-                key={vacina.id} 
+              <div
+                key={vacina.id}
                 className="vacina-card glass-card tomada"
                 onClick={() => toggleTomada(vacina.id)}
-                title="Clique para desmarcar ou mover para Por Tomar"
+                title="Clique para alterar estado"
               >
                 <div className="vacina-status">
-                  <CheckCircle size={28} className="icon-check" />
+                  <CheckCircle size={26} className="icon-check" />
                 </div>
-                
+
                 <div className="vacina-info">
                   <h4 className="vacina-nome">{vacina.nome}</h4>
                   <span className="vacina-data-admin">
                     ✓ Administrada em: <strong>{vacina.dataAdministrada || vacina.dataRecomendada}</strong>
                   </span>
                 </div>
-                
-                <div className="vacina-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span className="badge-concluida">Administrada</span>
+
+                <div className="btn-action-group" onClick={e => e.stopPropagation()}>
                   <button
-                    className="btn-edit-vacina"
-                    style={{ background: 'rgba(5, 150, 105, 0.12)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#047857', cursor: 'pointer' }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      abrirEdicaoVacina(vacina);
-                    }}
-                    title="Editar data da vacina"
+                    className="btn-action-edit"
+                    onClick={() => abrirEdicaoVacina(vacina)}
+                    title="Editar vacina"
                   >
-                    <Pencil size={15} />
+                    <Pencil size={17} />
+                  </button>
+                  <button
+                    className="btn-action-delete"
+                    onClick={() => setConfirmarDelete(vacina.id)}
+                    title="Apagar vacina"
+                  >
+                    <Trash2 size={17} />
                   </button>
                 </div>
               </div>
@@ -169,28 +249,41 @@ const Vacinas = () => {
                   <Calendar size={18} />
                   <span>{grupo}</span>
                 </h3>
-                
+
                 <div className="vacinas-list">
                   {lista.map(vacina => (
-                    <div 
-                      key={vacina.id} 
+                    <div
+                      key={vacina.id}
                       className="vacina-card glass-card"
                       onClick={() => toggleTomada(vacina.id)}
-                      title="Clique para marcar como administrada (move para o topo)"
+                      title="Clique para marcar como administrada"
                     >
                       <div className="vacina-status">
-                        <Circle size={28} className="icon-circle" />
+                        <Circle size={26} className="icon-circle" />
                       </div>
-                      
+
                       <div className="vacina-info">
                         <h4 className="vacina-nome">{vacina.nome}</h4>
                         <span className="vacina-data">
                           Data recomendada: <strong>{vacina.dataRecomendada}</strong>
                         </span>
                       </div>
-                      
-                      <div className="vacina-badge">
-                        <span className="badge-proxima">Por Tomar</span>
+
+                      <div className="btn-action-group" onClick={e => e.stopPropagation()}>
+                        <button
+                          className="btn-action-edit"
+                          onClick={() => abrirEdicaoVacina(vacina)}
+                          title="Editar vacina"
+                        >
+                          <Pencil size={17} />
+                        </button>
+                        <button
+                          className="btn-action-delete"
+                          onClick={() => setConfirmarDelete(vacina.id)}
+                          title="Apagar vacina"
+                        >
+                          <Trash2 size={17} />
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -203,35 +296,188 @@ const Vacinas = () => {
 
       {/* ─── EDIT VACCINE MODAL ─── */}
       {editandoVacina && (
-        <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}
-          onClick={() => setEditandoVacina(null)}
-        >
-          <div
-            className="glass-card animate-fade-in"
-            style={{ padding: '1.5rem', maxWidth: '400px', width: '90%' }}
-            onClick={e => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 className="h3" style={{ margin: 0 }}>Editar Data da Vacina</h3>
-              <button className="btn-icon" onClick={() => setEditandoVacina(null)}><X size={20} /></button>
+        <div className="modal-overlay" onClick={() => setEditandoVacina(null)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <div className="modal-icon-badge">
+                  <Syringe size={22} />
+                </div>
+                <div>
+                  <h3 className="modal-title">Editar Vacina</h3>
+                  <p className="modal-subtitle">{editandoVacina.nome}</p>
+                </div>
+              </div>
+              <button className="btn-icon" onClick={() => setEditandoVacina(null)}>
+                <X size={18} />
+              </button>
             </div>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-light)', marginBottom: '1rem' }}>
-              <strong>{editandoVacina.nome}</strong>
-            </p>
-            <div className="input-group" style={{ marginBottom: '1.25rem' }}>
-              <label className="input-label">Data de Administração</label>
-              <input
-                type="text"
-                className="input-field"
-                value={novaDataVacina}
-                onChange={e => setNovaDataVacina(e.target.value)}
-                placeholder="Ex: 14/07/2026"
-              />
+
+            <form onSubmit={guardarEdicaoVacina} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group">
+                <label className="input-label">Nome da Vacina</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={formNome}
+                  onChange={e => setFormNome(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-grid-2col">
+                <div className="input-group">
+                  <label className="input-label">Grupo / Idade</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={formGrupo}
+                    onChange={e => setFormGrupo(e.target.value)}
+                    placeholder="Ex: 2 Meses"
+                  />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Data Recomendada</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={formDataRecomendada}
+                    onChange={e => setFormDataRecomendada(e.target.value)}
+                    placeholder="Ex: 13/09/2026"
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Estado de Administração</label>
+                <select
+                  className="input-field"
+                  value={formTomada ? 'true' : 'false'}
+                  onChange={e => setFormTomada(e.target.value === 'true')}
+                >
+                  <option value="true">✓ Administrada (Tomada)</option>
+                  <option value="false">⏳ Por Tomar (Pendente)</option>
+                </select>
+              </div>
+
+              {formTomada && (
+                <div className="input-group">
+                  <label className="input-label">Data de Administração</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={formDataAdministrada}
+                    onChange={e => setFormDataAdministrada(e.target.value)}
+                    placeholder="Ex: 14/07/2026"
+                  />
+                </div>
+              )}
+
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => setEditandoVacina(null)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary">
+                  Guardar Alterações
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── ADD NEW VACCINE MODAL ─── */}
+      {adicionandoVacina && (
+        <div className="modal-overlay" onClick={() => setAdicionandoVacina(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <div className="modal-icon-badge">
+                  <Plus size={22} />
+                </div>
+                <div>
+                  <h3 className="modal-title">Nova Vacina</h3>
+                  <p className="modal-subtitle">Adicione uma vacina personalizada ao plano</p>
+                </div>
+              </div>
+              <button className="btn-icon" onClick={() => setAdicionandoVacina(false)}>
+                <X size={18} />
+              </button>
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button className="btn-outline" style={{ flex: 1 }} onClick={() => setEditandoVacina(null)}>Cancelar</button>
-              <button className="btn-primary" style={{ flex: 1 }} onClick={guardarEdicaoVacina}>Guardar</button>
+
+            <form onSubmit={adicionarNovaVacina} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group">
+                <label className="input-label">Nome da Vacina</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={formNome}
+                  onChange={e => setFormNome(e.target.value)}
+                  placeholder="Ex: Bexsero (Dose Extra) / Gripe"
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-grid-2col">
+                <div className="input-group">
+                  <label className="input-label">Grupo / Idade</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={formGrupo}
+                    onChange={e => setFormGrupo(e.target.value)}
+                    placeholder="Ex: Outras / Extra"
+                  />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Data Recomendada</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={formDataRecomendada}
+                    onChange={e => setFormDataRecomendada(e.target.value)}
+                    placeholder="Ex: Sob indicação médica"
+                  />
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => setAdicionandoVacina(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary">
+                  Adicionar Vacina
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── DELETE CONFIRMATION MODAL ─── */}
+      {confirmarDelete && (
+        <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
+          <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
+              <AlertTriangle size={26} color="#ef4444" />
+            </div>
+            <div>
+              <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>Remover Vacina?</h3>
+              <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
+                Esta vacina será removida do boletim da Sofia.
+              </p>
+            </div>
+            <div className="form-actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn-outline" onClick={() => setConfirmarDelete(null)}>
+                <X size={16} /> Cancelar
+              </button>
+              <button
+                className="btn-primary"
+                style={{ background: '#ef4444', borderColor: '#ef4444', boxShadow: '0 4px 14px rgba(239,68,68,0.35)' }}
+                onClick={removerVacina}
+              >
+                <Trash2 size={16} /> Remover
+              </button>
             </div>
           </div>
         </div>

@@ -84,23 +84,37 @@
   background: rgba(15, 23, 42, 0.03);
 }
 
+/* Days with events styling */
+.calendar-cell.has-event {
+  background: rgba(244, 63, 94, 0.05);
+  border: 1.5px solid rgba(244, 63, 94, 0.22);
+}
+
+.calendar-cell.has-event:hover {
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.35);
+}
+
 .calendar-cell.other-month {
   color: var(--color-border); /* VERY faded */
+  opacity: 0.45;
 }
 
 /* Today style */
 .calendar-cell.today {
   border-color: var(--color-primary-light);
   color: var(--color-primary-dark);
+  font-weight: 800;
 }
 
 /* Selected style */
 .calendar-cell.selected {
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: white;
-  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
-  border-color: transparent;
-  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(244, 63, 94, 0.35);
+  border-color: transparent !important;
+  transform: scale(1.06);
+  z-index: 2;
 }
 
 .calendar-day-num {
@@ -110,24 +124,40 @@
 /* Indicators */
 .calendar-indicators {
   display: flex;
-  gap: 0.2rem;
+  align-items: center;
+  gap: 0.25rem;
   position: absolute;
-  bottom: 0.5rem;
+  bottom: 0.45rem;
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
+  box-shadow: 0 0 5px currentColor;
+  transition: transform 0.2s ease;
 }
 
-.dot-consulta { background-color: var(--color-primary-dark); }
-.dot-vacina { background-color: var(--color-secondary); }
+.dot-consulta {
+  background-color: #f43f5e;
+  color: #f43f5e;
+}
+
+.dot-vacina {
+  background-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.dot-outro {
+  background-color: #f59e0b;
+  color: #f59e0b;
+}
 
 /* Indicators change color when selected */
 .calendar-cell.selected .dot {
-  background-color: white;
-  opacity: 0.8;
+  background-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
 }
 
 /* 2. Details Section */
