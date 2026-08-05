@@ -230,23 +230,30 @@ export const api = {
       result = saved ? JSON.parse(saved) : defaultList;
     }
 
-    if (defaultList && Array.isArray(defaultList)) {
-      const existingTypes = new Set(result.map(d => d.type || d.titulo));
-      const missing = defaultList.filter(d => !existingTypes.has(d.type || d.titulo));
-      if (missing.length > 0) {
-        result = [...result, ...missing];
-        localStorage.setItem(localKey, JSON.stringify(result));
+    // Deduplicate documents by type/title (preserves custom docs)
+    const seen = new Set();
+    const uniqueList = [];
+    (result || []).forEach(doc => {
+      const key = (doc.type && doc.type !== 'custom') ? doc.type : (doc.titulo || '').toLowerCase().trim();
+      if (!seen.has(key) || doc.type === 'custom') {
+        if (doc.type && doc.type !== 'custom') seen.add(key);
+        uniqueList.push(doc);
       }
-    }
+    });
 
-    if (result && result.length > 0) {
-      fetchWithFallback(`${API_BASE}/documentos/bulk`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(result)
+    // Auto-merge any missing default item (e.g. Cartão de Seguro)
+    if (defaultList && Array.isArray(defaultList)) {
+      defaultList.forEach(d => {
+        const key = (d.type && d.type !== 'custom') ? d.type : (d.titulo || '').toLowerCase().trim();
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueList.push(d);
+        }
       });
     }
-    return result;
+
+    localStorage.setItem(localKey, JSON.stringify(uniqueList));
+    return uniqueList;
   },
 
   async saveDocumentos(novaLista, localKey = 'sofia_documentos') {

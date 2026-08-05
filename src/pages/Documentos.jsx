@@ -25,7 +25,19 @@ const Documentos = () => {
   const [draggedIndex, setDraggedIndex] = useState(null);
 
   useEffect(() => {
-    api.getDocumentos(defaultDocs).then(data => setDocumentos(data));
+    api.getDocumentos(defaultDocs).then(data => {
+      const seen = new Set();
+      const clean = [];
+      (data || []).forEach(doc => {
+        const key = (doc.type && doc.type !== 'custom') ? doc.type : (doc.titulo || '').toLowerCase().trim();
+        if (!seen.has(key) || doc.type === 'custom') {
+          if (doc.type && doc.type !== 'custom') seen.add(key);
+          clean.push(doc);
+        }
+      });
+      setDocumentos(clean);
+      localStorage.setItem('sofia_documentos', JSON.stringify(clean));
+    });
   }, []);
 
   const abrirEdicao = (doc) => {
