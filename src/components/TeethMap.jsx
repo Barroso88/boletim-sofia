@@ -1,55 +1,55 @@
 import { useState, useEffect } from 'react';
-import { X, Calendar as CalendarIcon, Trash2, CheckCircle, Sparkles } from 'lucide-react';
+import { X, Calendar as CalendarIcon, Trash2, Sparkles, CheckCircle } from 'lucide-react';
 import './TeethMap.css';
 
-// Order colors from the reference image
+/* ─── Eruption order colors ──────────────────────────────────────────────── */
 const ORDER_COLORS = {
-  1: '#4CAF50', // green
-  2: '#E91E63', // pink/magenta
-  3: '#2196F3', // blue
-  4: '#D97706', // amber/brown
-  5: '#EF4444', // red
-  6: '#9333EA', // purple
-  7: '#F59E0B', // orange
+  1: '#4CAF50', 2: '#E91E63', 3: '#2196F3', 4: '#D97706',
+  5: '#EF4444', 6: '#9333EA', 7: '#F59E0B',
 };
 
+/* ─── Legend data ────────────────────────────────────────────────────────── */
 const LEGEND = [
-  { num: 1, label: 'Entre os 6 e 8 meses',   desc: 'Dois incisivos inferiores centrais', color: '#4CAF50' },
-  { num: 2, label: 'Por volta dos 8 meses',   desc: 'Dois incisivos superiores centrais', color: '#E91E63' },
-  { num: 3, label: 'Entre os 8 e 12 meses',   desc: 'Dois incisivos superiores laterais', color: '#2196F3' },
-  { num: 4, label: 'Entre os 10 e 12 meses',  desc: 'Dois incisivos inferiores laterais', color: '#D97706' },
-  { num: 5, label: 'Entre os 14 e 20 meses',  desc: 'Quatro primeiros molares',           color: '#EF4444' },
-  { num: 6, label: 'Entre os 18 e 24 meses',  desc: 'Quatro caninos',                     color: '#9333EA' },
-  { num: 7, label: 'Entre os 2 e 3 anos',     desc: 'Quatro segundos molares',            color: '#F59E0B' },
+  { num: 1, label: 'Entre os 6 e 8 meses',   desc: 'Incisivos centrais inferiores', color: '#4CAF50' },
+  { num: 2, label: 'Por volta dos 8 meses',   desc: 'Incisivos centrais superiores', color: '#E91E63' },
+  { num: 3, label: 'Entre os 8 e 12 meses',   desc: 'Incisivos laterais superiores', color: '#2196F3' },
+  { num: 4, label: 'Entre os 10 e 12 meses',  desc: 'Incisivos laterais inferiores', color: '#D97706' },
+  { num: 5, label: 'Entre os 14 e 20 meses',  desc: 'Primeiros molares',             color: '#EF4444' },
+  { num: 6, label: 'Entre os 18 e 24 meses',  desc: 'Caninos',                       color: '#9333EA' },
+  { num: 7, label: 'Entre os 2 e 3 anos',     desc: 'Segundos molares',              color: '#F59E0B' },
 ];
 
-// Image coordinates mapped precisely to dentes-leite.png arch (634px / 1024px clipped circle area)
+/* ─── SVG Tooth definitions (viewBox 0 0 300 420) ────────────────────────── */
+/* cx/cy = center, rx/ry = radii, rot = rotation (degrees) to follow the arch */
 const TEETH = [
-  // ── ARCADA SUPERIOR (UPPER) ───────────────────────────────────────────────
-  { id: 'u_ic_dir', label: 'Incisivo Central Sup. Direito',  order: 2, top: 4.5, left: 40.5, w: 10.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_ic_esq', label: 'Incisivo Central Sup. Esquerdo', order: 2, top: 4.5, left: 51.0, w: 10.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_il_dir', label: 'Incisivo Lateral Sup. Direito',  order: 3, top: 6.5, left: 31.5, w: 9.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_il_esq', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, top: 6.5, left: 60.5, w: 9.5, h: 7.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_c_dir',  label: 'Canino Superior Direito',        order: 6, top: 12.0, left: 21.0, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_c_esq',  label: 'Canino Superior Esquerdo',       order: 6, top: 12.0, left: 70.5, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m1_dir', label: '1º Molar Superior Direito',      order: 5, top: 22.5, left: 12.0, w: 12.0, h: 10.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m1_esq', label: '1º Molar Superior Esquerdo',     order: 5, top: 22.5, left: 78.0, w: 12.0, h: 10.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m2_dir', label: '2º Molar Superior Direito',      order: 7, top: 34.0, left: 9.0, w: 14.0, h: 12.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'u_m2_esq', label: '2º Molar Superior Esquerdo',     order: 7, top: 34.0, left: 79.0, w: 14.0, h: 12.5, borderRadius: '50% 50% 50% 50%' },
+  // ── Upper arch — Right side (patient's right = image left)
+  { id: 'u_m2_r', label: '2º Molar Sup. Direito',         order: 7, cx: 38, cy: 155, rx: 16, ry: 14, rot: -55 },
+  { id: 'u_m1_r', label: '1º Molar Sup. Direito',         order: 5, cx: 42, cy: 112, rx: 14, ry: 13, rot: -42 },
+  { id: 'u_c_r',  label: 'Canino Sup. Direito',            order: 6, cx: 62, cy: 74,  rx: 10, ry: 15, rot: -28 },
+  { id: 'u_il_r', label: 'Incisivo Lateral Sup. Direito',  order: 3, cx: 97, cy: 46,  rx: 11, ry: 14, rot: -12 },
+  { id: 'u_ic_r', label: 'Incisivo Central Sup. Direito',  order: 2, cx: 132, cy: 32, rx: 13, ry: 17, rot: -2 },
+  // ── Upper arch — Left side
+  { id: 'u_ic_l', label: 'Incisivo Central Sup. Esquerdo', order: 2, cx: 168, cy: 32, rx: 13, ry: 17, rot: 2 },
+  { id: 'u_il_l', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, cx: 203, cy: 46, rx: 11, ry: 14, rot: 12 },
+  { id: 'u_c_l',  label: 'Canino Sup. Esquerdo',           order: 6, cx: 238, cy: 74, rx: 10, ry: 15, rot: 28 },
+  { id: 'u_m1_l', label: '1º Molar Sup. Esquerdo',        order: 5, cx: 258, cy: 112, rx: 14, ry: 13, rot: 42 },
+  { id: 'u_m2_l', label: '2º Molar Sup. Esquerdo',        order: 7, cx: 262, cy: 155, rx: 16, ry: 14, rot: 55 },
 
-  // ── ARCADA INFERIOR (LOWER) ───────────────────────────────────────────────
-  { id: 'l_ic_dir', label: 'Incisivo Central Inf. Direito',  order: 1, top: 92.5, left: 42.0, w: 9.5, h: 7.0, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_ic_esq', label: 'Incisivo Central Inf. Esquerdo', order: 1, top: 92.5, left: 50.5, w: 9.5, h: 7.0, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_il_dir', label: 'Incisivo Lateral Inf. Direito',  order: 4, top: 89.0, left: 33.0, w: 10.0, h: 7.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_il_esq', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, top: 89.0, left: 59.0, w: 10.0, h: 7.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_c_dir',  label: 'Canino Inferior Direito',        order: 6, top: 83.5, left: 23.5, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_c_esq',  label: 'Canino Inferior Esquerdo',       order: 6, top: 83.5, left: 68.0, w: 10.5, h: 8.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m1_dir', label: '1º Molar Inferior Direito',      order: 5, top: 73.0, left: 14.5, w: 12.5, h: 10.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m1_esq', label: '1º Molar Inferior Esquerdo',     order: 5, top: 73.0, left: 75.0, w: 12.5, h: 10.5, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m2_dir', label: '2º Molar Inferior Direito',      order: 7, top: 62.0, left: 10.0, w: 13.5, h: 12.0, borderRadius: '50% 50% 50% 50%' },
-  { id: 'l_m2_esq', label: '2º Molar Inferior Esquerdo',     order: 7, top: 62.0, left: 78.5, w: 13.5, h: 12.0, borderRadius: '50% 50% 50% 50%' },
+  // ── Lower arch — Right side
+  { id: 'l_m2_r', label: '2º Molar Inf. Direito',         order: 7, cx: 42, cy: 270, rx: 16, ry: 14, rot: 55 },
+  { id: 'l_m1_r', label: '1º Molar Inf. Direito',         order: 5, cx: 48, cy: 310, rx: 14, ry: 13, rot: 42 },
+  { id: 'l_c_r',  label: 'Canino Inf. Direito',            order: 6, cx: 68, cy: 348, rx: 10, ry: 14, rot: 28 },
+  { id: 'l_il_r', label: 'Incisivo Lateral Inf. Direito',  order: 4, cx: 102, cy: 374, rx: 10, ry: 13, rot: 12 },
+  { id: 'l_ic_r', label: 'Incisivo Central Inf. Direito',  order: 1, cx: 135, cy: 388, rx: 11, ry: 14, rot: 2 },
+  // ── Lower arch — Left side
+  { id: 'l_ic_l', label: 'Incisivo Central Inf. Esquerdo', order: 1, cx: 165, cy: 388, rx: 11, ry: 14, rot: -2 },
+  { id: 'l_il_l', label: 'Incisivo Lateral Inf. Esquerdo', order: 4, cx: 198, cy: 374, rx: 10, ry: 13, rot: -12 },
+  { id: 'l_c_l',  label: 'Canino Inf. Esquerdo',           order: 6, cx: 232, cy: 348, rx: 10, ry: 14, rot: -28 },
+  { id: 'l_m1_l', label: '1º Molar Inf. Esquerdo',        order: 5, cx: 252, cy: 310, rx: 14, ry: 13, rot: -42 },
+  { id: 'l_m2_l', label: '2º Molar Inf. Esquerdo',        order: 7, cx: 258, cy: 270, rx: 16, ry: 14, rot: -55 },
 ];
 
+/* ─── Component ──────────────────────────────────────────────────────────── */
 const TeethMap = () => {
   const [teethingData, setTeethingData] = useState(() => {
     const saved = localStorage.getItem('sofia_denticao');
@@ -64,14 +64,10 @@ const TeethMap = () => {
 
   const openModal = (t) => {
     setSelectedTooth(t);
-    const hojeStr = new Date().toISOString().split('T')[0];
-    setEruptionDate(teethingData[t.id] || hojeStr);
+    setEruptionDate(teethingData[t.id] || new Date().toISOString().split('T')[0]);
   };
-  
-  const closeModal = () => {
-    setSelectedTooth(null);
-    setEruptionDate('');
-  };
+
+  const closeModal = () => { setSelectedTooth(null); setEruptionDate(''); };
 
   const saveToothDate = (e) => {
     e.preventDefault();
@@ -92,54 +88,82 @@ const TeethMap = () => {
   const eruptedCount = Object.keys(teethingData).length;
 
   return (
-    <div className="teething-illustration-layout">
+    <div className="teething-layout">
+      {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="teething-header">
-        <h2 className="teething-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-          <Sparkles size={24} color="var(--color-primary)" /> Dentição da Sofia 🦷
+        <h2 className="teething-title">
+          <Sparkles size={22} color="var(--color-primary)" /> Dentição da Sofia 🦷
         </h2>
         <p className="teething-subtitle">
-          <strong>{eruptedCount} de 20 dentes nascidos</strong> — Toque sobre cada dente para registar a erupção
+          <strong>{eruptedCount} de 20</strong> dentes nascidos — Toque num dente para registar
         </p>
       </div>
 
-      {/* Mapa do dente (recortado exatamente na arcada da imagem dentes-leite.png) */}
-      <div className="teeth-image-map-container">
-        <div className="teeth-image-clip">
-          <img
-            src="/dentes.png"
-            alt="Dentes"
-            className="teeth-base-image"
-            draggable={false}
+      {/* ── SVG Dental Chart ───────────────────────────────────────────── */}
+      <div className="teeth-svg-wrap">
+        <svg viewBox="0 0 300 420" className="teeth-chart" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gumGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#D49A97" />
+              <stop offset="100%" stopColor="#C07E7B" />
+            </linearGradient>
+            <filter id="toothGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="1" stdDeviation="2.5" floodColor="#fff" floodOpacity="0.45" />
+            </filter>
+          </defs>
+
+          {/* Upper jaw — gum with palate cutout */}
+          <path
+            fillRule="evenodd"
+            d={`
+              M 150,5 C 80,5 12,45 12,120 C 12,172 48,195 80,195 L 220,195 C 252,195 288,172 288,120 C 288,45 220,5 150,5 Z
+              M 150,82 C 118,82 88,102 88,142 C 88,172 108,195 140,195 L 160,195 C 192,195 212,172 212,142 C 212,102 182,82 150,82 Z
+            `}
+            fill="url(#gumGrad)"
           />
 
-          {/* Dentes sobrepostos com mapeamento perfeito */}
+          {/* Lower jaw — gum with tongue cutout */}
+          <path
+            fillRule="evenodd"
+            d={`
+              M 80,225 C 44,225 12,255 12,312 C 12,385 78,415 150,415 C 222,415 288,385 288,312 C 288,255 256,225 220,225 Z
+              M 138,225 C 108,225 82,252 82,286 C 82,328 112,350 150,350 C 188,350 218,328 218,286 C 218,252 192,225 162,225 Z
+            `}
+            fill="url(#gumGrad)"
+          />
+
+          {/* Label between arches */}
+          <text x="150" y="213" textAnchor="middle" className="svg-label-text">
+            ORDEM DE ERUPÇÃO
+          </text>
+
+          {/* ── Teeth ──────────────────────────────────────────────────── */}
           {TEETH.map(tooth => {
-            const isErupted = !!teethingData[tooth.id];
-            const color = ORDER_COLORS[tooth.order];
+            const erupted = !!teethingData[tooth.id];
             return (
-              <button
+              <ellipse
                 key={tooth.id}
-                type="button"
-                className={`tooth-hotspot ${isErupted ? 'tooth-erupted' : ''}`}
-                style={{
-                  top: `${tooth.top}%`,
-                  left: `${tooth.left}%`,
-                  width: `${tooth.w}%`,
-                  height: `${tooth.h}%`,
-                  borderRadius: tooth.borderRadius,
-                }}
+                className={`tooth-el${erupted ? ' erupted' : ''}`}
+                cx={tooth.cx}
+                cy={tooth.cy}
+                rx={tooth.rx}
+                ry={tooth.ry}
+                transform={`rotate(${tooth.rot} ${tooth.cx} ${tooth.cy})`}
                 onClick={() => openModal(tooth)}
-                title={tooth.label}
+                role="button"
+                tabIndex={0}
+                aria-label={tooth.label}
+                onKeyDown={e => e.key === 'Enter' && openModal(tooth)}
               />
             );
           })}
-        </div>
+        </svg>
       </div>
 
-      {/* Legenda de Erupção */}
-      <div className="teething-legend teething-legend-horizontal">
+      {/* ── Legend ──────────────────────────────────────────────────────── */}
+      <div className="teething-legend">
         <h3 className="legend-title">Ordem de Erupção dos Dentes</h3>
-        <div className="legend-list legend-grid">
+        <div className="legend-grid">
           {LEGEND.map(item => (
             <div key={item.num} className="legend-item">
               <div className="legend-number" style={{ backgroundColor: item.color }}>{item.num}</div>
@@ -152,7 +176,7 @@ const TeethMap = () => {
         </div>
       </div>
 
-      {/* Modal para registar a data */}
+      {/* ── Modal ──────────────────────────────────────────────────────── */}
       {selectedTooth && (
         <div className="tooth-modal-overlay" onClick={closeModal}>
           <div className="tooth-modal glass-card animate-fade-in" onClick={e => e.stopPropagation()}>
@@ -164,10 +188,7 @@ const TeethMap = () => {
             </div>
 
             <div className="tooth-modal-info">
-              <div 
-                className="tooth-modal-order-badge" 
-                style={{ backgroundColor: ORDER_COLORS[selectedTooth.order] }}
-              >
+              <div className="tooth-modal-order-badge" style={{ backgroundColor: ORDER_COLORS[selectedTooth.order] }}>
                 {selectedTooth.order}
               </div>
               <div>
@@ -181,9 +202,7 @@ const TeethMap = () => {
             {teethingData[selectedTooth.id] && (
               <div className="tooth-erupted-alert">
                 <CheckCircle size={18} color="#10B981" />
-                <span>
-                  Este dente já nasceu e está <strong>pintado de branco ✨</strong>!
-                </span>
+                <span>Este dente já está registado ✨</span>
               </div>
             )}
 
@@ -191,7 +210,7 @@ const TeethMap = () => {
               <div className="input-group mb-4">
                 <label className="input-label" style={{ fontWeight: 700 }}>
                   <CalendarIcon size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} />
-                  Data em que nasceu (rasgou a gengiva)
+                  Data em que nasceu
                 </label>
                 <input
                   type="date"
@@ -204,7 +223,7 @@ const TeethMap = () => {
 
               <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                  {teethingData[selectedTooth.id] ? 'Atualizar Data' : 'Confirmar & Pintar de Branco 🦷'}
+                  {teethingData[selectedTooth.id] ? 'Atualizar Data' : 'Confirmar 🦷'}
                 </button>
                 {teethingData[selectedTooth.id] && (
                   <button type="button" className="btn-outline" onClick={removeToothDate} style={{ color: '#EF4444', borderColor: '#FCA5A5' }} title="Remover Registo">
