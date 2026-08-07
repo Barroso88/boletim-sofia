@@ -203,6 +203,18 @@
   transition: all var(--transition-normal);
 }
 
+.quick-snapshot-card.milk-card {
+  background: linear-gradient(135deg, rgba(253, 242, 248, 0.92), rgba(252, 231, 243, 0.75));
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  box-shadow: 0 4px 20px rgba(244, 63, 94, 0.08);
+}
+
+.quick-snapshot-card.diaper-card {
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.92), rgba(224, 242, 254, 0.75));
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.08);
+}
+
 .quick-snapshot-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);

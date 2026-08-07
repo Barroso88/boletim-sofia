@@ -210,7 +210,7 @@ const Dashboard = () => {
       {/* Quick View Snapshots: Última Mamada & Última Fralda */}
       <div className="quick-snapshots-grid">
         {/* Card 1: Última Mamada */}
-        <div className="quick-snapshot-card glass-card">
+        <div className="quick-snapshot-card milk-card glass-card">
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge milk-bg">
@@ -244,7 +244,7 @@ const Dashboard = () => {
         </div>
 
         {/* Card 2: Última Fralda */}
-        <div className="quick-snapshot-card glass-card">
+        <div className="quick-snapshot-card diaper-card glass-card">
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge diaper-bg">
