@@ -598,6 +598,20 @@
   box-shadow: 0 8px 25px rgba(244, 63, 94, 0.35);
 }
 
+.btn-weekly-report-diapers {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08), rgba(99, 102, 241, 0.08));
+  border: 1.5px solid rgba(2, 132, 199, 0.25);
+  color: #0284c7;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.08);
+}
+
+.btn-weekly-report-diapers:hover {
+  background: linear-gradient(135deg, #0284c7, #6366f1);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 8px 25px rgba(2, 132, 199, 0.35);
+}
+
 /* Weekly Report Modal */
 .weekly-report-modal {
   max-width: 650px !important;
@@ -761,6 +775,20 @@
   color: var(--color-primary-dark);
   font-weight: 800;
   font-size: 0.82rem;
+}
+
+.badge-diaper {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 10px;
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
+  font-weight: 800;
+  font-size: 0.82rem;
+}
+
+.bar-fill-diaper {
+  background: linear-gradient(180deg, #0284c7, #6366f1);
 }
 
 @media (max-width: 640px) {

@@ -30,6 +30,7 @@ const Leite = () => {
   const [editandoIdFralda, setEditandoIdFralda] = useState(null);
   const [novaHoraFralda, setNovaHoraFralda] = useState(format(new Date(), 'HH:mm'));
   const [tipoFraldaSelecionado, setTipoFraldaSelecionado] = useState('Xixi');
+  const [mostrarRelatorioFraldas, setMostrarRelatorioFraldas] = useState(false);
 
   useEffect(() => {
     api.getLeite().then(data => setRegistosLeite(data));
@@ -90,6 +91,74 @@ const Leite = () => {
       mediaMamadasDia,
       maxDia,
       maxMlGraph,
+      numDiasValidos
+    };
+  };
+
+  // --- RELATÓRIO SEMANAL FRALDAS CALCULATIONS ---
+  const getDadosRelatorioFraldas = () => {
+    const START_DATE_STR = '2026-08-05';
+    const hoje = new Date();
+    const dias = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = subDays(hoje, i);
+      const dateStr = format(d, 'yyyy-MM-dd');
+      
+      if (dateStr < START_DATE_STR) continue;
+
+      const dayLabelRaw = format(d, 'eee', { locale: ptBR });
+      const dayFullLabel = format(d, "eeee (dd/MM)", { locale: ptBR });
+      
+      const registosDoDia = registosFraldas.filter(r => r.data === dateStr);
+      const countTotal = registosDoDia.length;
+      
+      let countXixi = 0;
+      let countCoco = 0;
+      let countAmbos = 0;
+
+      registosDoDia.forEach(r => {
+        const t = (r.tipo || '').toLowerCase();
+        if (t.includes('cocó') && t.includes('xixi')) countAmbos++;
+        else if (t.includes('cocó')) countCoco++;
+        else countXixi++;
+      });
+
+      const dayLabel = dayLabelRaw.charAt(0).toUpperCase() + dayLabelRaw.slice(1, 3);
+
+      dias.push({
+        dateStr,
+        dayLabel,
+        dayFullLabel: dayFullLabel.charAt(0).toUpperCase() + dayFullLabel.slice(1),
+        countTotal,
+        countXixi,
+        countCoco,
+        countAmbos
+      });
+    }
+
+    const numDiasValidos = Math.max(dias.length, 1);
+    const totalSemanalFraldas = dias.reduce((sum, d) => sum + d.countTotal, 0);
+    const totalSemanalXixi = dias.reduce((sum, d) => sum + d.countXixi + d.countAmbos, 0);
+    const totalSemanalCoco = dias.reduce((sum, d) => sum + d.countCoco + d.countAmbos, 0);
+    
+    const mediaDiariaFraldas = (totalSemanalFraldas / numDiasValidos).toFixed(1);
+
+    let maxDia = dias[0] || { countTotal: 0, dayLabel: '--' };
+    dias.forEach(d => {
+      if (d.countTotal > maxDia.countTotal) maxDia = d;
+    });
+
+    const maxFraldasGraph = Math.max(...dias.map(d => d.countTotal), 5);
+
+    return {
+      dias,
+      totalSemanalFraldas,
+      totalSemanalXixi,
+      totalSemanalCoco,
+      mediaDiariaFraldas,
+      maxDia,
+      maxFraldasGraph,
       numDiasValidos
     };
   };
@@ -717,9 +786,20 @@ const Leite = () => {
                       </button>
                     </div>
                   </div>
-                );
+                )
               })
             )}
+          </div>
+
+          {/* Button to Open Weekly Diaper Report */}
+          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+            <button
+              className="btn-weekly-report btn-weekly-report-diapers"
+              onClick={() => setMostrarRelatorioFraldas(true)}
+            >
+              <BarChart2 size={20} />
+              <span>Ver Relatório Semanal de Fraldas</span>
+            </button>
           </div>
         </>
       )}
@@ -852,6 +932,117 @@ const Leite = () => {
                             <td><span className="badge-ml">{d.totalMl} ml</span></td>
                             <td>{d.count} mamadas</td>
                             <td className="hide-mobile">{d.avgMl > 0 ? `${d.avgMl} ml` : '--'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Modal de Relatório Semanal de Fraldas */}
+      {mostrarRelatorioFraldas && (() => {
+        const relatorio = getDadosRelatorioFraldas();
+        return (
+          <div className="modal-overlay" onClick={() => setMostrarRelatorioFraldas(false)}>
+            <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <div className="modal-title-group">
+                  <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, #0284c7, #6366f1)' }}>
+                    <BarChart2 size={22} />
+                  </div>
+                  <div>
+                    <h2 className="modal-title">Relatório Semanal de Fraldas</h2>
+                    <p className="modal-subtitle">
+                      {relatorio.numDiasValidos < 7
+                        ? `Resumo dos registos (desde 05/08 · ${relatorio.numDiasValidos} ${relatorio.numDiasValidos === 1 ? 'dia' : 'dias'})`
+                        : 'Resumo dos últimos 7 dias da Sofia'}
+                    </p>
+                  </div>
+                </div>
+                <button className="btn-action-close" onClick={() => setMostrarRelatorioFraldas(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="modal-body">
+                {/* 4 Cards de Métricas */}
+                <div className="weekly-stats-grid">
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><TrendingUp size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.mediaDiariaFraldas}</div>
+                    <div className="weekly-stat-lbl">Média / Dia</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><Sparkles size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.totalSemanalXixi}</div>
+                    <div className="weekly-stat-lbl">Trocas com Xixi 💧</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#c2410c' }}><Sparkles size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.totalSemanalCoco}</div>
+                    <div className="weekly-stat-lbl">Trocas com Cocó 💩</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#f59e0b' }}><Award size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.maxDia.countTotal}</div>
+                    <div className="weekly-stat-lbl">Dia de Pico ({relatorio.maxDia.dayLabel})</div>
+                  </div>
+                </div>
+
+                {/* Gráfico de Barras dos 7 Dias */}
+                <div className="weekly-chart-card">
+                  <h3 className="chart-title">Trocas Diárias (desde 05/08)</h3>
+                  <div className="bars-container">
+                    {relatorio.dias.map(d => {
+                      const heightPct = Math.round((d.countTotal / relatorio.maxFraldasGraph) * 100);
+                      const isMax = d.dateStr === relatorio.maxDia.dateStr && d.countTotal > 0;
+                      return (
+                        <div key={d.dateStr} className="bar-column">
+                          <div className="bar-val">{d.countTotal > 0 ? `${d.countTotal}` : ''}</div>
+                          <div className="bar-track">
+                            <div
+                              className={`bar-fill bar-fill-diaper ${isMax ? 'max-bar' : ''}`}
+                              style={{ height: `${Math.max(heightPct, 6)}%` }}
+                              title={`${d.countTotal} fraldas (💧${d.countXixi} | 💩${d.countCoco} | 🧻${d.countAmbos})`}
+                            />
+                          </div>
+                          <div className="bar-label">{d.dayLabel}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Tabela Detalhada por Dia */}
+                <div className="weekly-table-card">
+                  <h3 className="chart-title">Detalhamento por Dia</h3>
+                  <div className="weekly-table-wrapper">
+                    <table className="weekly-table">
+                      <thead>
+                        <tr>
+                          <th>Dia / Data</th>
+                          <th>Total Fraldas</th>
+                          <th>Xixi 💧</th>
+                          <th>Cocó 💩</th>
+                          <th className="hide-mobile">Ambos 🧻</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {relatorio.dias.slice().reverse().map(d => (
+                          <tr key={d.dateStr}>
+                            <td><strong>{d.dayFullLabel}</strong></td>
+                            <td><span className="badge-diaper">{d.countTotal} fraldas</span></td>
+                            <td>{d.countXixi + d.countAmbos}</td>
+                            <td>{d.countCoco + d.countAmbos}</td>
+                            <td className="hide-mobile">{d.countAmbos}</td>
                           </tr>
                         ))}
                       </tbody>
