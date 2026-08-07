@@ -831,7 +831,7 @@ const Leite = () => {
                           <th>Dia / Data</th>
                           <th>Total (ml)</th>
                           <th>N.º Mamadas</th>
-                          <th>Média / Mamada</th>
+                          <th className="hide-mobile">Média / Mamada</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -840,7 +840,7 @@ const Leite = () => {
                             <td><strong>{d.dayFullLabel}</strong></td>
                             <td><span className="badge-ml">{d.totalMl} ml</span></td>
                             <td>{d.count} mamadas</td>
-                            <td>{d.avgMl > 0 ? `${d.avgMl} ml` : '--'}</td>
+                            <td className="hide-mobile">{d.avgMl > 0 ? `${d.avgMl} ml` : '--'}</td>
                           </tr>
                         ))}
                       </tbody>
