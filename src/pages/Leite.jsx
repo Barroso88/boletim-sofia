@@ -38,12 +38,17 @@ const Leite = () => {
 
   // --- RELATÓRIO SEMANAL CALCULATIONS ---
   const getDadosRelatorioSemanal = () => {
+    const START_DATE_STR = '2026-08-05';
     const hoje = new Date();
     const dias = [];
     
     for (let i = 6; i >= 0; i--) {
       const d = subDays(hoje, i);
       const dateStr = format(d, 'yyyy-MM-dd');
+      
+      // Ignore days before tracking start date (05/08/2026)
+      if (dateStr < START_DATE_STR) continue;
+
       const dayLabelRaw = format(d, 'eee', { locale: ptBR });
       const dayFullLabel = format(d, "eeee (dd/MM)", { locale: ptBR });
       
@@ -64,12 +69,13 @@ const Leite = () => {
       });
     }
 
+    const numDiasValidos = Math.max(dias.length, 1);
     const totalSemanalMl = dias.reduce((sum, d) => sum + d.totalMl, 0);
     const totalSemanalMamadas = dias.reduce((sum, d) => sum + d.count, 0);
-    const mediaDiariaMl = Math.round(totalSemanalMl / 7);
-    const mediaMamadasDia = (totalSemanalMamadas / 7).toFixed(1);
+    const mediaDiariaMl = Math.round(totalSemanalMl / numDiasValidos);
+    const mediaMamadasDia = (totalSemanalMamadas / numDiasValidos).toFixed(1);
 
-    let maxDia = dias[0];
+    let maxDia = dias[0] || { totalMl: 0, dayLabel: '--' };
     dias.forEach(d => {
       if (d.totalMl > maxDia.totalMl) maxDia = d;
     });
@@ -83,7 +89,8 @@ const Leite = () => {
       mediaDiariaMl,
       mediaMamadasDia,
       maxDia,
-      maxMlGraph
+      maxMlGraph,
+      numDiasValidos
     };
   };
 
@@ -761,7 +768,11 @@ const Leite = () => {
                   </div>
                   <div>
                     <h2 className="modal-title">Relatório Semanal das Mamadas</h2>
-                    <p className="modal-subtitle">Resumo dos últimos 7 dias da Sofia</p>
+                    <p className="modal-subtitle">
+                      {relatorio.numDiasValidos < 7
+                        ? `Resumo dos registos (desde 05/08 · ${relatorio.numDiasValidos} ${relatorio.numDiasValidos === 1 ? 'dia' : 'dias'})`
+                        : 'Resumo dos últimos 7 dias da Sofia'}
+                    </p>
                   </div>
                 </div>
                 <button className="btn-action-close" onClick={() => setMostrarRelatorioSemanal(false)}>
@@ -781,7 +792,7 @@ const Leite = () => {
                   <div className="weekly-stat-card">
                     <div className="weekly-stat-icon text-secondary"><Milk size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.totalSemanalMl} <span className="stat-unit">ml</span></div>
-                    <div className="weekly-stat-lbl">Total 7 Dias</div>
+                    <div className="weekly-stat-lbl">{relatorio.numDiasValidos < 7 ? `Total (${relatorio.numDiasValidos}d)` : 'Total 7 Dias'}</div>
                   </div>
 
                   <div className="weekly-stat-card">
@@ -799,7 +810,7 @@ const Leite = () => {
 
                 {/* Gráfico de Barras dos 7 Dias */}
                 <div className="weekly-chart-card">
-                  <h3 className="chart-title">Consumo Diário nos Últimos 7 Dias</h3>
+                  <h3 className="chart-title">Consumo Diário (desde 05/08)</h3>
                   <div className="bars-container">
                     {relatorio.dias.map(d => {
                       const heightPct = Math.round((d.totalMl / relatorio.maxMlGraph) * 100);
