@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { format, parseISO, formatDistanceToNow } from 'date-fns';
+import { format, parseISO, formatDistanceToNow, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X } from 'lucide-react';
+import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X, BarChart2, TrendingUp, Award } from 'lucide-react';
 import { api } from '../services/api';
 import './Leite.css';
 
@@ -22,6 +22,7 @@ const Leite = () => {
   const [editandoIdLeite, setEditandoIdLeite] = useState(null);
   const [novaHoraLeite, setNovaHoraLeite] = useState(format(new Date(), 'HH:mm'));
   const [novaQuantidade, setNovaQuantidade] = useState(150);
+  const [mostrarRelatorioSemanal, setMostrarRelatorioSemanal] = useState(false);
 
   // Fraldas State
   const [registosFraldas, setRegistosFraldas] = useState([]);
@@ -34,6 +35,57 @@ const Leite = () => {
     api.getLeite().then(data => setRegistosLeite(data));
     api.getFraldas().then(data => setRegistosFraldas(data));
   }, []);
+
+  // --- RELATÓRIO SEMANAL CALCULATIONS ---
+  const getDadosRelatorioSemanal = () => {
+    const hoje = new Date();
+    const dias = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = subDays(hoje, i);
+      const dateStr = format(d, 'yyyy-MM-dd');
+      const dayLabelRaw = format(d, 'eee', { locale: ptBR });
+      const dayFullLabel = format(d, "eeee (dd/MM)", { locale: ptBR });
+      
+      const registosDoDia = registosLeite.filter(r => r.data === dateStr);
+      const totalMl = registosDoDia.reduce((acc, r) => acc + (r.quantidade_ml || 0), 0);
+      const count = registosDoDia.length;
+      const avgMl = count > 0 ? Math.round(totalMl / count) : 0;
+
+      const dayLabel = dayLabelRaw.charAt(0).toUpperCase() + dayLabelRaw.slice(1, 3);
+
+      dias.push({
+        dateStr,
+        dayLabel,
+        dayFullLabel: dayFullLabel.charAt(0).toUpperCase() + dayFullLabel.slice(1),
+        totalMl,
+        count,
+        avgMl
+      });
+    }
+
+    const totalSemanalMl = dias.reduce((sum, d) => sum + d.totalMl, 0);
+    const totalSemanalMamadas = dias.reduce((sum, d) => sum + d.count, 0);
+    const mediaDiariaMl = Math.round(totalSemanalMl / 7);
+    const mediaMamadasDia = (totalSemanalMamadas / 7).toFixed(1);
+
+    let maxDia = dias[0];
+    dias.forEach(d => {
+      if (d.totalMl > maxDia.totalMl) maxDia = d;
+    });
+
+    const maxMlGraph = Math.max(...dias.map(d => d.totalMl), 100);
+
+    return {
+      dias,
+      totalSemanalMl,
+      totalSemanalMamadas,
+      mediaDiariaMl,
+      mediaMamadasDia,
+      maxDia,
+      maxMlGraph
+    };
+  };
 
   // --- LEITE CALCULATIONS ---
   const registosLeiteDoDia = registosLeite
@@ -464,6 +516,17 @@ const Leite = () => {
               ))
             )}
           </div>
+
+          {/* Button to Open Weekly Feeding Report */}
+          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+            <button
+              className="btn-weekly-report"
+              onClick={() => setMostrarRelatorioSemanal(true)}
+            >
+              <BarChart2 size={20} />
+              <span>Ver Relatório Semanal das Mamadas</span>
+            </button>
+          </div>
         </>
       )}
 
@@ -684,6 +747,111 @@ const Leite = () => {
           </div>
         </div>
       )}
+
+      {/* Modal de Relatório Semanal de Mamadas */}
+      {mostrarRelatorioSemanal && (() => {
+        const relatorio = getDadosRelatorioSemanal();
+        return (
+          <div className="modal-overlay" onClick={() => setMostrarRelatorioSemanal(false)}>
+            <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <div className="modal-title-group">
+                  <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))' }}>
+                    <BarChart2 size={22} />
+                  </div>
+                  <div>
+                    <h2 className="modal-title">Relatório Semanal das Mamadas</h2>
+                    <p className="modal-subtitle">Resumo dos últimos 7 dias da Sofia</p>
+                  </div>
+                </div>
+                <button className="btn-action-close" onClick={() => setMostrarRelatorioSemanal(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="modal-body">
+                {/* 4 Cards de Métricas */}
+                <div className="weekly-stats-grid">
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon text-primary"><TrendingUp size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.mediaDiariaMl} <span className="stat-unit">ml</span></div>
+                    <div className="weekly-stat-lbl">Média Diária</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon text-secondary"><Milk size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.totalSemanalMl} <span className="stat-unit">ml</span></div>
+                    <div className="weekly-stat-lbl">Total 7 Dias</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><Clock size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.mediaMamadasDia}</div>
+                    <div className="weekly-stat-lbl">Mamadas / Dia</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#f59e0b' }}><Award size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.maxDia.totalMl} <span className="stat-unit">ml</span></div>
+                    <div className="weekly-stat-lbl">Dia de Pico ({relatorio.maxDia.dayLabel})</div>
+                  </div>
+                </div>
+
+                {/* Gráfico de Barras dos 7 Dias */}
+                <div className="weekly-chart-card">
+                  <h3 className="chart-title">Consumo Diário nos Últimos 7 Dias</h3>
+                  <div className="bars-container">
+                    {relatorio.dias.map(d => {
+                      const heightPct = Math.round((d.totalMl / relatorio.maxMlGraph) * 100);
+                      const isMax = d.dateStr === relatorio.maxDia.dateStr && d.totalMl > 0;
+                      return (
+                        <div key={d.dateStr} className="bar-column">
+                          <div className="bar-val">{d.totalMl > 0 ? `${d.totalMl}` : ''}</div>
+                          <div className="bar-track">
+                            <div
+                              className={`bar-fill ${isMax ? 'max-bar' : ''}`}
+                              style={{ height: `${Math.max(heightPct, 6)}%` }}
+                              title={`${d.totalMl} ml (${d.count} mamadas)`}
+                            />
+                          </div>
+                          <div className="bar-label">{d.dayLabel}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Tabela Detalhada por Dia */}
+                <div className="weekly-table-card">
+                  <h3 className="chart-title">Detalhamento por Dia</h3>
+                  <div className="weekly-table-wrapper">
+                    <table className="weekly-table">
+                      <thead>
+                        <tr>
+                          <th>Dia / Data</th>
+                          <th>Total (ml)</th>
+                          <th>N.º Mamadas</th>
+                          <th>Média / Mamada</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {relatorio.dias.slice().reverse().map(d => (
+                          <tr key={d.dateStr}>
+                            <td><strong>{d.dayFullLabel}</strong></td>
+                            <td><span className="badge-ml">{d.totalMl} ml</span></td>
+                            <td>{d.count} mamadas</td>
+                            <td>{d.avgMl > 0 ? `${d.avgMl} ml` : '--'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
