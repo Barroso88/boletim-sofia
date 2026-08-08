@@ -84,15 +84,57 @@
   background: rgba(15, 23, 42, 0.03);
 }
 
-/* Days with events styling */
+/* Days with events styling - colored matching the dot indicator */
 .calendar-cell.has-event {
-  background: rgba(244, 63, 94, 0.05);
-  border: 1.5px solid rgba(244, 63, 94, 0.22);
+  background: rgba(100, 116, 139, 0.06);
+  border: 1.5px solid rgba(100, 116, 139, 0.25);
+}
+
+.calendar-cell.has-event-consulta {
+  background: rgba(244, 63, 94, 0.08);
+  border: 1.5px solid rgba(244, 63, 94, 0.3);
+  color: #e11d48;
+}
+
+.calendar-cell.has-event-exames {
+  background: rgba(2, 132, 199, 0.08);
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+  color: #0284c7;
+}
+
+.calendar-cell.has-event-analises {
+  background: rgba(6, 182, 212, 0.08);
+  border: 1.5px solid rgba(6, 182, 212, 0.3);
+  color: #0891b2;
+}
+
+.calendar-cell.has-event-vacina {
+  background: rgba(139, 92, 246, 0.08);
+  border: 1.5px solid rgba(139, 92, 246, 0.3);
+  color: #8b5cf6;
+}
+
+.calendar-cell.has-event-mesversario {
+  background: rgba(236, 72, 153, 0.08);
+  border: 1.5px solid rgba(236, 72, 153, 0.3);
+  color: #ec4899;
+}
+
+.calendar-cell.has-event-aniversario {
+  background: rgba(234, 179, 8, 0.1);
+  border: 1.5px solid rgba(234, 179, 8, 0.35);
+  color: #ca8a04;
+}
+
+.calendar-cell.has-event-outro {
+  background: rgba(100, 116, 139, 0.08);
+  border: 1.5px solid rgba(100, 116, 139, 0.3);
+  color: #64748b;
 }
 
 .calendar-cell.has-event:hover {
-  background: rgba(244, 63, 94, 0.1);
-  border-color: rgba(244, 63, 94, 0.35);
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .calendar-cell.other-month {

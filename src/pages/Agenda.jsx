@@ -131,10 +131,13 @@ const Agenda = () => {
             const isCurrentMonth = isSameMonth(day, monthStart);
             const isTodayDate = isToday(day);
 
+            const dominantTipo = dayEvents.length > 0 ? getTipoClass(dayEvents[0].tipo) : null;
+            const eventClass = hasEventos ? `has-event has-event-${dominantTipo}` : '';
+
             return (
               <div
                 key={idx}
-                className={`calendar-cell ${!isCurrentMonth ? 'other-month' : ''} ${isSelected ? 'selected' : ''} ${isTodayDate ? 'today' : ''} ${hasEventos ? 'has-event' : ''}`}
+                className={`calendar-cell ${!isCurrentMonth ? 'other-month' : ''} ${isSelected ? 'selected' : ''} ${isTodayDate ? 'today' : ''} ${eventClass}`}
                 onClick={() => {
                   setSelectedDate(day);
                   setAdicionando(false);

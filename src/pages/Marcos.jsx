@@ -8,6 +8,17 @@ import './Marcos.css';
 
 const ICONS = ['👶', '🌟', '👣', '🗣️', '🦷', '🍼', '🧸', '🎉', '✈️', '❤️', '🎂', '🏥', '💉', '🌈', '🐣', '👏'];
 
+const MARCO_COLORS = [
+  { id: 'rose', name: 'Rosa Suave', bg: 'linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(253, 226, 236, 0.95))', border: 'rgba(244, 63, 94, 0.25)', accent: '#f43f5e', dotBg: '#ffe4e6' },
+  { id: 'sky', name: 'Azul Céu', bg: 'linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(224, 242, 254, 0.95))', border: 'rgba(2, 132, 199, 0.25)', accent: '#0284c7', dotBg: '#e0f2fe' },
+  { id: 'purple', name: 'Alfazema', bg: 'linear-gradient(135deg, rgba(250, 245, 255, 0.95), rgba(243, 232, 255, 0.95))', border: 'rgba(139, 92, 246, 0.25)', accent: '#8b5cf6', dotBg: '#f3e8ff' },
+  { id: 'emerald', name: 'Menta', bg: 'linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(209, 250, 229, 0.95))', border: 'rgba(16, 185, 129, 0.25)', accent: '#10b981', dotBg: '#d1fae5' },
+  { id: 'amber', name: 'Pêssego', bg: 'linear-gradient(135deg, rgba(255, 251, 235, 0.95), rgba(254, 243, 199, 0.95))', border: 'rgba(245, 158, 11, 0.25)', accent: '#f59e0b', dotBg: '#fef3c7' },
+  { id: 'pink', name: 'Orquídea', bg: 'linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.95))', border: 'rgba(236, 72, 153, 0.25)', accent: '#ec4899', dotBg: '#fce7f3' },
+  { id: 'indigo', name: 'Índigo', bg: 'linear-gradient(135deg, rgba(238, 242, 255, 0.95), rgba(224, 231, 255, 0.95))', border: 'rgba(99, 102, 241, 0.25)', accent: '#6366f1', dotBg: '#e0e7ff' },
+  { id: 'teal', name: 'Turquesa', bg: 'linear-gradient(135deg, rgba(240, 253, 250, 0.95), rgba(204, 251, 241, 0.95))', border: 'rgba(20, 184, 166, 0.25)', accent: '#14b8a6', dotBg: '#ccfbf1' },
+];
+
 const Marcos = () => {
   const [marcos, setMarcos] = useState([]);
   const [adicionando, setAdicionando] = useState(false);
@@ -16,13 +27,14 @@ const Marcos = () => {
   const [novaData, setNovaData] = useState('');
   const [novaDescricao, setNovaDescricao] = useState('');
   const [novoIcone, setNovoIcone] = useState('🌟');
+  const [novaCor, setNovaCor] = useState('rose');
   const [activeTab, setActiveTab] = useState('timeline');
   const [confirmarDelete, setConfirmarDelete] = useState(null);
 
   useEffect(() => {
     api.getMarcos().then(data => {
       if (data.length === 0) {
-        const defaultMarco = { id: 1, titulo: 'Nasceu!', data: '2026-07-13', descricao: 'O dia mais feliz das nossas vidas.', icone: '👶' };
+        const defaultMarco = { id: 1, titulo: 'Nasceu!', data: '2026-07-13', descricao: 'O dia mais feliz das nossas vidas.', icone: '👶', cor: 'rose' };
         setMarcos([defaultMarco]);
         api.saveMarco(defaultMarco);
       } else {
@@ -37,20 +49,30 @@ const Marcos = () => {
     setNovaData(marco.data);
     setNovaDescricao(marco.descricao || '');
     setNovoIcone(marco.icone || '🌟');
+    const idx = marcos.findIndex(m => m.id === marco.id);
+    const fallbackColor = MARCO_COLORS[idx >= 0 ? idx % MARCO_COLORS.length : 0].id;
+    setNovaCor(marco.cor || fallbackColor);
     setAdicionando(true);
   };
 
   const adicionarMarco = (e) => {
     e.preventDefault();
     if (!novoTitulo || !novaData) return;
-    const marco = { id: editandoId || Date.now(), titulo: novoTitulo, data: novaData, descricao: novaDescricao, icone: novoIcone };
+    const marco = {
+      id: editandoId || Date.now(),
+      titulo: novoTitulo,
+      data: novaData,
+      descricao: novaDescricao,
+      icone: novoIcone,
+      cor: novaCor
+    };
     const outros = marcos.filter(m => m.id !== marco.id);
     const novaLista = [...outros, marco].sort((a, b) => new Date(a.data) - new Date(b.data));
     setMarcos(novaLista);
     api.saveMarco(marco);
     setAdicionando(false);
     setEditandoId(null);
-    setNovoTitulo(''); setNovaData(''); setNovaDescricao(''); setNovoIcone('🌟');
+    setNovoTitulo(''); setNovaData(''); setNovaDescricao(''); setNovoIcone('🌟'); setNovaCor('rose');
   };
 
   const removerMarco = () => {
@@ -144,6 +166,24 @@ const Marcos = () => {
                   </div>
                 </div>
 
+                <div className="input-group" style={{ marginTop: '1rem' }}>
+                  <label className="input-label">Escolhe a cor do marco</label>
+                  <div className="marco-color-picker">
+                    {MARCO_COLORS.map(c => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className={`marco-color-btn ${novaCor === c.id ? 'selected' : ''}`}
+                        style={{ background: c.accent }}
+                        onClick={() => setNovaCor(c.id)}
+                        title={c.name}
+                      >
+                        {novaCor === c.id && <span className="color-check">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                   <button type="submit" className="btn-primary" style={{ flex: 1 }}>
                     <Star size={18} /> Guardar Marco
@@ -166,16 +206,32 @@ const Marcos = () => {
           ) : (
             <div className="timeline-container">
               {marcos.map((marco, index) => {
+                const colorObj = MARCO_COLORS.find(c => c.id === marco.cor) || MARCO_COLORS[index % MARCO_COLORS.length];
                 const dateObj = new Date(marco.data);
                 const distancia = formatDistanceToNow(dateObj, { addSuffix: true, locale: ptBR });
 
                 return (
                   <div key={marco.id} className="marco-item" style={{ animationDelay: `${index * 0.07}s` }}>
                     {/* Icon dot */}
-                    <div className="marco-dot">{marco.icone}</div>
+                    <div
+                      className="marco-dot"
+                      style={{
+                        background: colorObj.dotBg,
+                        borderColor: colorObj.accent,
+                        boxShadow: `0 0 0 4px ${colorObj.border}, 0 4px 12px rgba(0,0,0,0.08)`
+                      }}
+                    >
+                      {marco.icone}
+                    </div>
 
                     {/* Card */}
-                    <div className="marco-card">
+                    <div
+                      className="marco-card"
+                      style={{
+                        background: colorObj.bg,
+                        borderColor: colorObj.border
+                      }}
+                    >
                       <div className="btn-action-group" style={{ position: 'absolute', top: '1.25rem', right: '1.25rem' }}>
                         <button
                           className="btn-action-edit"
@@ -194,7 +250,13 @@ const Marcos = () => {
                         </button>
                       </div>
 
-                      <div className="marco-date-badge">
+                      <div
+                        className="marco-date-badge"
+                        style={{
+                          background: colorObj.dotBg,
+                          color: colorObj.accent
+                        }}
+                      >
                         <Calendar size={12} />
                         {format(dateObj, "dd 'de' MMMM, yyyy", { locale: ptBR })}
                         &nbsp;·&nbsp;
