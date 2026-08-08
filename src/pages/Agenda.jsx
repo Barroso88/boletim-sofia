@@ -5,6 +5,18 @@ import { ptBR } from 'date-fns/locale';
 import { api } from '../services/api';
 import './Agenda.css';
 
+const getTipoClass = (tipo) => {
+  if (!tipo) return 'outro';
+  const t = tipo.toLowerCase();
+  if (t.includes('consulta')) return 'consulta';
+  if (t.includes('exame')) return 'exames';
+  if (t.includes('análise') || t.includes('analise')) return 'analises';
+  if (t.includes('vacin')) return 'vacina';
+  if (t.includes('mêsversário') || t.includes('mesversario')) return 'mesversario';
+  if (t.includes('aniversário') || t.includes('aniversario')) return 'aniversario';
+  return 'outro';
+};
+
 const Agenda = () => {
   const [eventos, setEventos] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -107,9 +119,13 @@ const Agenda = () => {
           {calendarDays.map((day, idx) => {
             const dayEvents = eventos.filter(ev => isSameDay(new Date(ev.data), day));
             const hasEventos = dayEvents.length > 0;
-            const hasConsultas = dayEvents.some(ev => ev.tipo === 'Consulta');
-            const hasVacinas = dayEvents.some(ev => ev.tipo === 'Vacina');
-            const hasOutros = dayEvents.some(ev => ev.tipo === 'Outro' || (!['Consulta', 'Vacina'].includes(ev.tipo)));
+            const hasConsultas = dayEvents.some(ev => getTipoClass(ev.tipo) === 'consulta');
+            const hasExames = dayEvents.some(ev => getTipoClass(ev.tipo) === 'exames');
+            const hasAnalises = dayEvents.some(ev => getTipoClass(ev.tipo) === 'analises');
+            const hasVacinas = dayEvents.some(ev => getTipoClass(ev.tipo) === 'vacina');
+            const hasMesversario = dayEvents.some(ev => getTipoClass(ev.tipo) === 'mesversario');
+            const hasAniversario = dayEvents.some(ev => getTipoClass(ev.tipo) === 'aniversario');
+            const hasOutros = dayEvents.some(ev => getTipoClass(ev.tipo) === 'outro');
 
             const isSelected = isSameDay(day, selectedDate);
             const isCurrentMonth = isSameMonth(day, monthStart);
@@ -128,8 +144,12 @@ const Agenda = () => {
                 {hasEventos && (
                   <div className="calendar-indicators">
                     {hasConsultas && <span className="dot dot-consulta" title="Consulta"></span>}
-                    {hasVacinas && <span className="dot dot-vacina" title="Vacina"></span>}
-                    {hasOutros && <span className="dot dot-outro" title="Outro evento"></span>}
+                    {hasExames && <span className="dot dot-exames" title="Exames"></span>}
+                    {hasAnalises && <span className="dot dot-analises" title="Análises"></span>}
+                    {hasVacinas && <span className="dot dot-vacina" title="Vacinas"></span>}
+                    {hasMesversario && <span className="dot dot-mesversario" title="Mêsversário"></span>}
+                    {hasAniversario && <span className="dot dot-aniversario" title="Aniversário"></span>}
+                    {hasOutros && <span className="dot dot-outro" title="Outro"></span>}
                   </div>
                 )}
               </div>
@@ -177,7 +197,7 @@ const Agenda = () => {
                     className="input-field"
                     value={novoTitulo}
                     onChange={(e) => setNovoTitulo(e.target.value)}
-                    placeholder="Ex: Pediatra Dra. Maria / Vacina dos 2 meses"
+                    placeholder="Ex: Pediatra Dra. Maria / Exames de Sangue / Mêsversário"
                     required
                   />
                 </div>
@@ -201,7 +221,11 @@ const Agenda = () => {
                       onChange={(e) => setNovoTipo(e.target.value)}
                     >
                       <option value="Consulta">Consulta 🩺</option>
-                      <option value="Vacina">Vacina 💉</option>
+                      <option value="Exames">Exames 🔬</option>
+                      <option value="Análises">Análises 🧪</option>
+                      <option value="Vacina">Vacinas 💉</option>
+                      <option value="Mêsversário">Mêsversário 🎂</option>
+                      <option value="Aniversário">Aniversário 🎉</option>
                       <option value="Outro">Outro 📌</option>
                     </select>
                   </div>
@@ -228,9 +252,10 @@ const Agenda = () => {
             ) : (
               eventosDoDiaSelecionado.map(evento => {
                 const dateObj = new Date(evento.data);
+                const tipoCls = getTipoClass(evento.tipo);
                 return (
                   <div key={evento.id} className="glass-card evento-card animate-fade-in">
-                    <div className={`evento-color-bar ${evento.tipo.toLowerCase()}`}></div>
+                    <div className={`evento-color-bar ${tipoCls}`}></div>
                     
                     <div className="evento-time">
                       {format(dateObj, 'HH:mm')}
@@ -238,7 +263,7 @@ const Agenda = () => {
                     
                     <div className="evento-info">
                       <h4 className="evento-title">{evento.titulo}</h4>
-                      <span className={`evento-badge ${evento.tipo.toLowerCase()}`}>
+                      <span className={`evento-badge ${tipoCls}`}>
                         {evento.tipo}
                       </span>
                     </div>
