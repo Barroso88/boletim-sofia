@@ -262,7 +262,7 @@
 }
 
 /* ─── Mobile ─────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .timeline-container {
     padding-left: 2.75rem;
   }

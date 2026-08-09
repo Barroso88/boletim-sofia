@@ -245,7 +245,7 @@
   opacity: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .vacina-card {
     padding: 1.25rem;
     gap: 1rem;

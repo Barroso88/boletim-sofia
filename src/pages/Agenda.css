@@ -385,7 +385,7 @@
 }
 
 /* Responsiveness for Mobile */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .calendar-section {
     padding: 1.25rem 1rem;
   }
