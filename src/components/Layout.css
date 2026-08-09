@@ -176,61 +176,99 @@
     display: flex !important;
   }
 
+  /* Fixed 3D Premium Standout Header */
   .navbar {
-    padding: 0.65rem 0.9rem;
-    margin: 0.5rem 0.75rem 0.75rem;
-    border-radius: 1.25rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(253, 242, 248, 0.88));
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(244, 63, 94, 0.18);
-    box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
-    position: sticky;
-    top: 0.5rem;
-    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: calc(0.65rem + env(safe-area-inset-top, 0px)) 1.25rem 0.75rem 1.25rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #8b5cf6 100%);
+    border: none;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.45),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.25),
+      0 12px 28px -4px rgba(225, 29, 72, 0.45),
+      0 6px 16px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
     justify-content: space-between;
     align-items: center;
   }
 
   [data-theme="midnight"] .navbar {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 27, 75, 0.88));
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.2);
+    background: linear-gradient(135deg, #312e81 0%, #1e1b4b 50%, #4338ca 100%);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.35),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.4),
+      0 12px 28px -4px rgba(67, 56, 202, 0.5),
+      0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .main-content {
+    padding-top: calc(4.75rem + env(safe-area-inset-top, 0px));
   }
 
   .avatar-ring {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
+    padding: 2px;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .online-pulse-dot {
+    border-color: #f43f5e;
   }
 
   .brand-title {
-    font-size: 1.05rem;
+    font-size: 1.12rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #ffffff !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   }
 
   .brand-subtitle {
-    font-size: 0.68rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .btn-settings-header {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.08), rgba(139, 92, 246, 0.08));
-    border: 1.5px solid rgba(244, 63, 94, 0.2);
-    color: var(--color-primary-dark);
-    box-shadow: 0 2px 8px rgba(244, 63, 94, 0.1);
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all var(--transition-fast);
   }
 
   [data-theme="midnight"] .btn-settings-header {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
-    border: 1.5px solid rgba(99, 102, 241, 0.3);
-    color: #a5b4fc;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff;
   }
 
+  .btn-settings-header:active,
   .btn-settings-header.active {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: #ffffff;
-    border-color: transparent;
-    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+    background: #ffffff;
+    color: #e11d48;
+    border-color: #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.08) rotate(30deg);
   }
   
   .nav-links {
