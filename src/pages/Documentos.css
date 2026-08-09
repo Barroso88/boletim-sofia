@@ -52,30 +52,46 @@
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   animation: tableRowFade 0.5s ease forwards;
   opacity: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.executive-row td {
+  background: linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.85));
+  border-top: 1px solid rgba(244, 63, 94, 0.35);
+  border-bottom: 3px solid rgba(225, 29, 72, 0.8);
 }
 
 .executive-row td:first-child {
-  border-top-left-radius: 16px;
-  border-bottom-left-radius: 16px;
+  border-left: 1px solid rgba(244, 63, 94, 0.35);
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
+  box-shadow: -8px 8px 32px -4px rgba(244, 63, 94, 0.25), inset 4px 0 12px rgba(255, 255, 255, 0.7);
+}
+
+.executive-row td:not(:first-child):not(:last-child) {
+  box-shadow: 0 8px 32px -4px rgba(244, 63, 94, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.7);
 }
 
 .executive-row td:last-child {
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-right: 1px solid rgba(244, 63, 94, 0.35);
+  border-top-right-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  box-shadow: 8px 8px 32px -4px rgba(244, 63, 94, 0.25), inset -4px 0 12px rgba(255, 255, 255, 0.7);
 }
 
-.executive-row:not(:last-child) td {
-  border-bottom: none;
-}
-
-.executive-row:hover {
+.executive-row:hover td {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(135deg, rgba(253, 242, 248, 1), rgba(252, 231, 243, 0.95));
 }
 
-.editing-row {
-  box-shadow: 0 0 0 2px var(--color-primary);
+.editing-row td {
+  border-top: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+}
+.editing-row td:first-child {
+  border-left: 2px solid var(--color-primary);
+}
+.editing-row td:last-child {
+  border-right: 2px solid var(--color-primary);
 }
 
 .executive-table td {
