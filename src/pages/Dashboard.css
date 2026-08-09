@@ -192,15 +192,22 @@
 }
 
 .health-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-primary-dark);
-  margin-bottom: 1.25rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid rgba(15, 23, 42, 0.03);
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: 50px;
+  box-shadow: 0 8px 20px -6px var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: max-content;
+  margin-inline: auto;
 }
 
 .event-list {

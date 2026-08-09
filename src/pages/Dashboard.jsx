@@ -298,7 +298,7 @@ const Dashboard = () => {
 
         {/* Column 2: Vacinas */}
         <div className="health-column">
-          <h2 className="health-title"><Syringe size={24} /> Vacinas do PNV</h2>
+          <h2 className="health-title"><Syringe size={24} /> Vacinas</h2>
           
           <div className="health-section section-proximas">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
