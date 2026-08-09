@@ -38,9 +38,7 @@ const Layout = ({ children }) => {
       <nav
         className="navbar glass-card"
         style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0.25)), url('${headerPattern}')`,
-          backgroundSize: '150px 150px',
-          backgroundRepeat: 'repeat',
+          '--header-pattern': `url('${headerPattern}')`
         }}
       >
         <div className="navbar-left">
