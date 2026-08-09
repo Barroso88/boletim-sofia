@@ -61,6 +61,36 @@
   box-shadow: var(--shadow-sm);
 }
 
+.stat-box.box-years {
+  background: rgba(147, 51, 234, 0.04);
+  border-color: rgba(147, 51, 234, 0.15);
+}
+.stat-box.box-years .stat-value {
+  background: linear-gradient(135deg, #7e22ce, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-box.box-months {
+  background: rgba(5, 150, 105, 0.04);
+  border-color: rgba(5, 150, 105, 0.15);
+}
+.stat-box.box-months .stat-value {
+  background: linear-gradient(135deg, #047857, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-box.box-days {
+  background: rgba(234, 88, 12, 0.04);
+  border-color: rgba(234, 88, 12, 0.15);
+}
+.stat-box.box-days .stat-value {
+  background: linear-gradient(135deg, #c2410c, #fb923c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .stat-value {
   font-size: 2rem;
   font-weight: 800;
@@ -106,6 +136,16 @@
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition-normal);
+}
+
+.health-section.section-proximas {
+  background: rgba(14, 165, 233, 0.04);
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+.health-section.section-ultimas {
+  background: rgba(148, 163, 184, 0.06);
+  border-color: rgba(148, 163, 184, 0.2);
 }
 
 .health-section:hover {

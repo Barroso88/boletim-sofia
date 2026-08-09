@@ -192,15 +192,15 @@ const Dashboard = () => {
         <p className="text-body text-light">A crescer todos os dias com muito amor.</p>
         
         <div className="age-stats">
-          <div className="stat-box">
+          <div className="stat-box box-years">
             <span className="stat-value">{age.years}</span>
             <span className="stat-label">Anos</span>
           </div>
-          <div className="stat-box">
+          <div className="stat-box box-months">
             <span className="stat-value">{age.months}</span>
             <span className="stat-label">Meses</span>
           </div>
-          <div className="stat-box">
+          <div className="stat-box box-days">
             <span className="stat-value">{age.days}</span>
             <span className="stat-label">Dias</span>
           </div>
@@ -284,14 +284,14 @@ const Dashboard = () => {
         <div className="health-column">
           <h2 className="health-title"><Calendar size={24} /> Consultas</h2>
           
-          <div className="health-section">
+          <div className="health-section section-proximas">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
               Próximas (5)
             </h3>
             {renderList(consultasFuturas, "Sem consultas agendadas.", false)}
           </div>
           
-          <div className="health-section">
+          <div className="health-section section-ultimas">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
               Últimas (5)
             </h3>
@@ -301,20 +301,20 @@ const Dashboard = () => {
 
         {/* Column 2: Vacinas */}
         <div className="health-column">
-          <h2 className="health-title"><Syringe size={24} /> Vacinas</h2>
+          <h2 className="health-title"><Syringe size={24} /> Vacinas do PNV</h2>
           
-          <div className="health-section">
+          <div className="health-section section-proximas">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
               Próximas (5)
             </h3>
-            {renderList(vacinasFuturas, "Sem vacinas agendadas.", false)}
+            {renderList(vacinasFuturas, "Sem vacinas pendentes.", false)}
           </div>
           
-          <div className="health-section">
+          <div className="health-section section-ultimas">
             <h3 className="text-body text-light mb-4" style={{ fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
               Últimas (5)
             </h3>
-            {renderList(vacinasPassadas, "Sem histórico registado.", true)}
+            {renderList(vacinasPassadas, "Sem histórico de vacinas.", true)}
           </div>
         </div>
       </div>
