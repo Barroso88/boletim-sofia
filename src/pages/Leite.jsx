@@ -1079,42 +1079,45 @@ const Leite = () => {
                   const hrs = Math.floor(reg.duracao_minutos / 60);
                   const mins = reg.duracao_minutos % 60;
                   return (
-                    <div key={reg.id} className="feeding-card" style={{ borderLeft: '4px solid #8b5cf6' }}>
-                      <div className="feeding-left">
-                        <div className="feeding-icon-box" style={{ color: '#8b5cf6', background: 'rgba(139,92,246,0.1)' }}>
-                          <Clock size={20} />
+                    <div key={reg.id} className="feeding-card" style={{ borderLeft: '4px solid #8b5cf6', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'stretch' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                        <div className="feeding-left">
+                          <div className="feeding-icon-box" style={{ color: '#8b5cf6', background: 'rgba(139,92,246,0.1)' }}>
+                            <Clock size={20} />
+                          </div>
+                          <div>
+                            <div className="feeding-time">
+                              {reg.hora_inicio} - {reg.hora_fim ? reg.hora_fim : <span style={{ color: '#8b5cf6', fontSize: '0.9rem', fontStyle: 'italic' }}>A dormir...</span>}
+                            </div>
+                            <div className="text-secondary" style={{ fontSize: '0.85rem' }}>
+                              {reg.hora_fim ? (
+                                <>{hrs > 0 ? `${hrs}h ` : ''}{mins}m</>
+                              ) : (
+                                'Em curso'
+                              )}
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="feeding-time">
-                            {reg.hora_inicio} - {reg.hora_fim ? reg.hora_fim : <span style={{ color: '#8b5cf6', fontSize: '0.9rem', fontStyle: 'italic' }}>A dormir...</span>}
-                          </div>
-                          <div className="text-secondary" style={{ fontSize: '0.85rem' }}>
-                            {reg.hora_fim ? (
-                              <>{hrs > 0 ? `${hrs}h ` : ''}{mins}m</>
-                            ) : (
-                              'Em curso'
-                            )}
-                          </div>
+                        
+                        <div className="btn-action-group">
+                          <button className="btn-action-edit" onClick={() => abrirEdicaoSono(reg)} title="Editar">
+                            <Pencil size={18} />
+                          </button>
+                          <button className="btn-action-delete" onClick={() => setConfirmarDelete({ id: reg.id, type: 'sono' })} title="Apagar">
+                            <Trash2 size={18} />
+                          </button>
                         </div>
                       </div>
                       
-                      <div className="btn-action-group">
-                        {!reg.hora_fim && (
-                          <button 
-                            className="btn-action-edit" 
-                            style={{ background: '#8b5cf6', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }} 
-                            onClick={() => terminarSono(reg)}
-                          >
-                            Acordou
-                          </button>
-                        )}
-                        <button className="btn-action-edit" onClick={() => abrirEdicaoSono(reg)} title="Editar">
-                          <Pencil size={18} />
+                      {!reg.hora_fim && (
+                        <button 
+                          className="btn-primary" 
+                          style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', width: '100%', padding: '0.75rem', borderRadius: '14px', fontSize: '0.95rem', fontWeight: 'bold', border: 'none', color: '#fff', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.25)' }} 
+                          onClick={() => terminarSono(reg)}
+                        >
+                          Acordou
                         </button>
-                        <button className="btn-action-delete" onClick={() => setConfirmarDelete({ id: reg.id, type: 'sono' })} title="Apagar">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
+                      )}
                     </div>
                   );
                 })}
