@@ -244,20 +244,48 @@
 }
 
 .quick-snapshot-card.milk-card {
-  background: linear-gradient(135deg, rgba(253, 242, 248, 0.92), rgba(252, 231, 243, 0.75));
-  border: 1px solid rgba(244, 63, 94, 0.25);
-  box-shadow: 0 4px 20px rgba(244, 63, 94, 0.08);
+  background: linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.85));
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  box-shadow: 
+    0 8px 32px -4px rgba(244, 63, 94, 0.25),
+    inset 0 0 12px rgba(255, 255, 255, 0.7);
 }
 
 .quick-snapshot-card.diaper-card {
-  background: linear-gradient(135deg, rgba(240, 249, 255, 0.92), rgba(224, 242, 254, 0.75));
-  border: 1px solid rgba(2, 132, 199, 0.25);
-  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.08);
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(224, 242, 254, 0.85));
+  border: 1px solid rgba(2, 132, 199, 0.35);
+  box-shadow: 
+    0 8px 32px -4px rgba(2, 132, 199, 0.25),
+    inset 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="midnight"] .quick-snapshot-card.milk-card {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.6), rgba(15, 23, 42, 0.8));
+  border: 1px solid rgba(244, 63, 94, 0.5);
+  box-shadow: 
+    0 10px 40px -6px rgba(244, 63, 94, 0.4),
+    inset 0 2px 12px rgba(244, 63, 94, 0.15);
+}
+
+[data-theme="midnight"] .quick-snapshot-card.diaper-card {
+  background: linear-gradient(135deg, rgba(12, 74, 110, 0.4), rgba(15, 23, 42, 0.8));
+  border: 1px solid rgba(2, 132, 199, 0.5);
+  box-shadow: 
+    0 10px 40px -6px rgba(2, 132, 199, 0.4),
+    inset 0 2px 12px rgba(2, 132, 199, 0.15);
 }
 
 .quick-snapshot-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 40px -8px var(--color-primary),
+    inset 0 0 16px rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="midnight"] .quick-snapshot-card:hover {
+  box-shadow: 
+    0 12px 40px -8px var(--color-primary),
+    inset 0 2px 16px rgba(255, 255, 255, 0.1);
 }
 
 .snapshot-header {
