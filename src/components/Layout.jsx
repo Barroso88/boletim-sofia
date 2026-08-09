@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
     { path: '/documentos', label: 'Documentos', icon: <FileText size={20} /> },
     { path: '/peso', label: 'Peso', icon: <Scale size={20} /> },
     { path: '/vacinas', label: 'Vacinas', icon: <Syringe size={20} /> },
-    { path: '/leite', label: 'Leite', icon: <Milk size={20} /> },
+    { path: '/leite', label: 'Registos', icon: <Milk size={20} /> },
   ];
 
   return (

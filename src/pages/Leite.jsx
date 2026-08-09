@@ -323,15 +323,15 @@ const Leite = () => {
 
   const adicionarRegistoSono = (e) => {
     e.preventDefault();
-    if (!novaHoraInicioSono || !novaHoraFimSono) return;
-    const duracao = calcularDuracao(novaHoraInicioSono, novaHoraFimSono);
-    if (duracao === 0) return; // Evitar registos de 0 min
+    if (!novaHoraInicioSono) return;
+    const duracao = novaHoraFimSono ? calcularDuracao(novaHoraInicioSono, novaHoraFimSono) : 0;
+    if (novaHoraFimSono && duracao === 0) return; // Evitar registos de 0 min se tiver hora fim
     
     const registo = {
       id: editandoIdSono || Date.now(),
       data: dataSelecionada,
       hora_inicio: novaHoraInicioSono,
-      hora_fim: novaHoraFimSono,
+      hora_fim: novaHoraFimSono || "",
       duracao_minutos: duracao,
     };
     setRegistosSonos(prev => {
@@ -342,6 +342,15 @@ const Leite = () => {
     api.saveSono(registo);
     setAdicionandoSono(false);
     setEditandoIdSono(null);
+  };
+
+  const terminarSono = (reg) => {
+    const horaAtual = format(new Date(), 'HH:mm');
+    const duracao = calcularDuracao(reg.hora_inicio, horaAtual);
+    const novoRegisto = { ...reg, hora_fim: horaAtual, duracao_minutos: duracao };
+    
+    setRegistosSonos(prev => prev.map(r => r.id === reg.id ? novoRegisto : r));
+    api.saveSono(novoRegisto);
   };
 
   const [confirmarDelete, setConfirmarDelete] = useState(null); // { id, type }
@@ -449,8 +458,8 @@ const Leite = () => {
     <div className="page-container leite-container">
       {/* Header */}
       <header className="page-header mb-2">
-        <h1 className="h1" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <span>Leite & Fraldas</span>
+        <h1 className="page-title">
+          <span>Leite & Fraldas & Sono</span>
           <Sparkles size={24} style={{ color: 'var(--color-secondary)' }} />
         </h1>
         <p className="text-secondary" style={{ marginTop: '0.2rem' }}>Acompanhamento diário da Sofia</p>
@@ -995,32 +1004,44 @@ const Leite = () => {
               <div className="time-input-group" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>
                   <div className="form-section-title">Hora Início</div>
-                  <input
-                    type="time"
-                    className="time-input"
-                    value={novaHoraInicioSono}
-                    onChange={(e) => setNovaHoraInicioSono(e.target.value)}
-                    required
-                  />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.75rem 1rem', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
+                    <Clock size={18} className="text-secondary" />
+                    <input
+                      type="time"
+                      value={novaHoraInicioSono}
+                      onChange={(e) => setNovaHoraInicioSono(e.target.value)}
+                      style={{ border: 'none', background: 'transparent', width: '100%', fontSize: '1.1rem', fontWeight: '700', outline: 'none', color: 'var(--color-text)' }}
+                      required
+                    />
+                  </div>
                 </div>
                 <div style={{ flex: 1 }}>
                   <div className="form-section-title">Hora Fim</div>
-                  <input
-                    type="time"
-                    className="time-input"
-                    value={novaHoraFimSono}
-                    onChange={(e) => setNovaHoraFimSono(e.target.value)}
-                    required
-                  />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.75rem 1rem', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
+                    <Clock size={18} className="text-secondary" />
+                    <input
+                      type="time"
+                      value={novaHoraFimSono}
+                      onChange={(e) => setNovaHoraFimSono(e.target.value)}
+                      style={{ border: 'none', background: 'transparent', width: '100%', fontSize: '1.1rem', fontWeight: '700', outline: 'none', color: 'var(--color-text)' }}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="duracao-estimada" style={{ background: '#f3f4f6', borderRadius: '12px', padding: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-                <span style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>Duração do Sono</span>
-                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#8b5cf6' }}>
-                  {horasPrevistas}h {minutosPrevistos}m
-                </span>
-              </div>
+              {novaHoraFimSono ? (
+                <div className="duracao-estimada" style={{ background: '#f3f4f6', borderRadius: '12px', padding: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+                  <span style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>Duração do Sono</span>
+                  <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#8b5cf6' }}>
+                    {horasPrevistas}h {minutosPrevistos}m
+                  </span>
+                </div>
+              ) : (
+                <div className="duracao-estimada" style={{ background: 'rgba(139,92,246,0.1)', borderRadius: '12px', padding: '1rem', textAlign: 'center', marginBottom: '1.5rem', color: '#8b5cf6' }}>
+                  <span style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem', fontWeight: 600 }}>Em curso...</span>
+                  <span style={{ fontSize: '0.85rem' }}>A duração será calculada quando a Sofia acordar.</span>
+                </div>
+              )}
 
               <div className="form-actions">
                 <button type="button" className="btn-outline" onClick={() => {
@@ -1064,14 +1085,29 @@ const Leite = () => {
                           <Clock size={20} />
                         </div>
                         <div>
-                          <div className="feeding-time">{reg.hora_inicio} - {reg.hora_fim}</div>
+                          <div className="feeding-time">
+                            {reg.hora_inicio} - {reg.hora_fim ? reg.hora_fim : <span style={{ color: '#8b5cf6', fontSize: '0.9rem', fontStyle: 'italic' }}>A dormir...</span>}
+                          </div>
                           <div className="text-secondary" style={{ fontSize: '0.85rem' }}>
-                            {hrs > 0 ? `${hrs}h ` : ''}{mins}m
+                            {reg.hora_fim ? (
+                              <>{hrs > 0 ? `${hrs}h ` : ''}{mins}m</>
+                            ) : (
+                              'Em curso'
+                            )}
                           </div>
                         </div>
                       </div>
                       
-                      <div className="feeding-actions">
+                      <div className="btn-action-group">
+                        {!reg.hora_fim && (
+                          <button 
+                            className="btn-action-edit" 
+                            style={{ background: '#8b5cf6', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }} 
+                            onClick={() => terminarSono(reg)}
+                          >
+                            Acordou
+                          </button>
+                        )}
                         <button className="btn-action-edit" onClick={() => abrirEdicaoSono(reg)} title="Editar">
                           <Pencil size={18} />
                         </button>
