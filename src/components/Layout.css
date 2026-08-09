@@ -73,8 +73,8 @@
 
 .avatar-ring {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   padding: 3px;
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
@@ -224,9 +224,9 @@
   }
 
   .avatar-ring {
-    width: 46px;
-    height: 46px;
-    padding: 2.5px;
+    width: 72px;
+    height: 72px;
+    padding: 3px;
     background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
     box-shadow: 0 4px 10px var(--color-border);
   }
