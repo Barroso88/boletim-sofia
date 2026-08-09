@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
@@ -5,6 +6,21 @@ import './Layout.css';
 
 const Layout = ({ children }) => {
   const location = useLocation();
+  const [headerPattern, setHeaderPattern] = useState('/cabecalho.jpg');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('sofia_header_pattern');
+    if (saved) {
+      setHeaderPattern(saved);
+    }
+    
+    const handlePatternChange = (e) => {
+      setHeaderPattern(e.detail);
+    };
+    
+    window.addEventListener('headerPatternChanged', handlePatternChange);
+    return () => window.removeEventListener('headerPatternChanged', handlePatternChange);
+  }, []);
 
   const navItems = [
     { path: '/', label: 'Início', icon: <Baby size={20} /> },
@@ -22,7 +38,7 @@ const Layout = ({ children }) => {
       <nav
         className="navbar glass-card"
         style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0.25)), url('/cabecalho.jpg')`,
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0.25)), url('${headerPattern}')`,
           backgroundSize: '150px 150px',
           backgroundRepeat: 'repeat',
         }}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles } from 'lucide-react';
+import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image } from 'lucide-react';
 import './Definicoes.css';
 
 const BABY_THEMES = [
@@ -26,6 +26,7 @@ const STANDARD_THEMES = [
 
 const Definicoes = () => {
   const [activeTheme, setActiveTheme] = useState('rosegold');
+  const [headerPattern, setHeaderPattern] = useState('/cabecalho.jpg');
   const [mensagemSucesso, setMensagemSucesso] = useState('');
 
   useEffect(() => {
@@ -33,12 +34,29 @@ const Definicoes = () => {
     if (savedTheme) {
       setActiveTheme(savedTheme);
     }
+    const savedPattern = localStorage.getItem('sofia_header_pattern');
+    if (savedPattern) {
+      setHeaderPattern(savedPattern);
+    }
   }, []);
 
   const changeTheme = (themeId) => {
     setActiveTheme(themeId);
     localStorage.setItem('sofia_theme', themeId);
     document.documentElement.setAttribute('data-theme', themeId);
+  };
+
+  const changeHeaderPattern = (pattern) => {
+    let finalPattern = pattern.trim();
+    if (!finalPattern.startsWith('/') && !finalPattern.startsWith('http')) {
+      finalPattern = '/' + finalPattern;
+    }
+    setHeaderPattern(finalPattern);
+    localStorage.setItem('sofia_header_pattern', finalPattern);
+    window.dispatchEvent(new CustomEvent('headerPatternChanged', { detail: finalPattern }));
+    
+    setMensagemSucesso('Padrão do cabeçalho atualizado!');
+    setTimeout(() => setMensagemSucesso(''), 4000);
   };
 
   const testarPopUpVitamina = () => {
@@ -60,6 +78,47 @@ const Definicoes = () => {
       </div>
 
       <div className="settings-grid" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        
+        {/* Selector de Padrão do Cabeçalho */}
+        <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(2,132,199,0.25)', background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(224,242,254,0.5))' }}>
+          <div className="settings-header">
+            <Image size={24} color="var(--color-primary)" />
+            <h3 className="h3" style={{ color: 'var(--color-primary-dark)' }}>🖼️ Padrão do Cabeçalho</h3>
+          </div>
+          <p className="text-small mb-4">
+            Pode ter vários padrões na pasta <code>public/</code> do servidor. Digite o nome do ficheiro que quer aplicar ao cabeçalho (ou escolha um dos predefinidos).
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+             <div className="input-group">
+                <label style={{ fontSize: '0.9rem', color: 'var(--color-text-light)', marginBottom: '0.5rem', display: 'block' }}>Nome do Ficheiro (ex: cabecalho.jpg, padrao2.png)</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                   <input 
+                      type="text" 
+                      className="form-input" 
+                      value={headerPattern.replace(/^\//, '')} 
+                      onChange={(e) => setHeaderPattern(e.target.value)} 
+                      placeholder="cabecalho.jpg"
+                      style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none' }}
+                   />
+                   <button className="btn-primary" onClick={() => changeHeaderPattern(headerPattern)} style={{ padding: '0 1.5rem', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>
+                      Aplicar
+                   </button>
+                </div>
+             </div>
+             
+             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                <button 
+                  className={`btn-secondary ${headerPattern === '/cabecalho.jpg' ? 'active' : ''}`} 
+                  onClick={() => changeHeaderPattern('cabecalho.jpg')} 
+                  style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-primary)', background: headerPattern === '/cabecalho.jpg' ? 'var(--color-primary)' : 'transparent', color: headerPattern === '/cabecalho.jpg' ? 'white' : 'var(--color-primary)' }}
+                >
+                  Arco-Íris Original (cabecalho.jpg)
+                </button>
+             </div>
+          </div>
+        </div>
+
         {/* Temas Especiais Bebé com Fundo Ilustrado */}
         <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(244,63,94,0.25)', background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(254,243,199,0.5))' }}>
           <div className="settings-header">
