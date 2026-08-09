@@ -148,6 +148,14 @@ async function setupTables() {
         tipo TEXT NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS sonos (
+        id BIGINT PRIMARY KEY,
+        data TEXT NOT NULL,
+        hora_inicio TEXT NOT NULL,
+        hora_fim TEXT NOT NULL,
+        duracao_minutos INTEGER NOT NULL
+      );
+
       CREATE TABLE IF NOT EXISTS perfil (
         id INT PRIMARY KEY DEFAULT 1,
         nome_completo TEXT,
@@ -480,8 +488,42 @@ app.post('/api/fraldas', async (req, res) => {
 });
 
 app.delete('/api/fraldas/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    await pool.query('DELETE FROM fraldas WHERE id = $1', [req.params.id]);
+    await pool.query('DELETE FROM fraldas WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- SONOS ---
+app.get('/api/sonos', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM sonos ORDER BY data DESC, hora_inicio DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/sonos', async (req, res) => {
+  const { id, data, hora_inicio, hora_fim, duracao_minutos } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO sonos (id, data, hora_inicio, hora_fim, duracao_minutos) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET data = $2, hora_inicio = $3, hora_fim = $4, duracao_minutos = $5',
+      [id || Date.now(), data, hora_inicio, hora_fim, duracao_minutos]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/sonos/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM sonos WHERE id = $1', [id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

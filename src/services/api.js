@@ -411,5 +411,42 @@ export const api = {
       localStorage.setItem(localKey, JSON.stringify(list));
     }
     fetchWithFallback(`${API_BASE}/fraldas/${id}`, { method: 'DELETE' });
+  },
+
+  // --- SONOS ---
+  async getSonos(localKey = 'sofia_sonos') {
+    const remote = await fetchWithFallback(`${API_BASE}/sonos`);
+    if (remote && Array.isArray(remote)) {
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  async saveSono(registo, localKey = 'sofia_sonos') {
+    const saved = localStorage.getItem(localKey);
+    let list = saved ? JSON.parse(saved) : [];
+    const idx = list.findIndex(r => r.id === registo.id);
+    if (idx >= 0) list[idx] = registo;
+    else list.push(registo);
+    // Sort by hora_inicio descending
+    list.sort((a, b) => b.hora_inicio.localeCompare(a.hora_inicio));
+    localStorage.setItem(localKey, JSON.stringify(list));
+
+    fetchWithFallback(`${API_BASE}/sonos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registo)
+    });
+  },
+
+  async deleteSono(id, localKey = 'sofia_sonos') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(r => r.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/sonos/${id}`, { method: 'DELETE' });
   }
 };

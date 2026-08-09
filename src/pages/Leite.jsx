@@ -13,7 +13,7 @@ const DIAPER_TYPES = [
 ];
 
 const Leite = () => {
-  const [activeSubTab, setActiveSubTab] = useState('leite'); // 'leite' | 'fraldas'
+  const [activeSubTab, setActiveSubTab] = useState('leite'); // 'leite' | 'fraldas' | 'sonos'
 
   // Leite State
   const [registosLeite, setRegistosLeite] = useState([]);
@@ -32,9 +32,17 @@ const Leite = () => {
   const [tipoFraldaSelecionado, setTipoFraldaSelecionado] = useState('Xixi');
   const [mostrarRelatorioFraldas, setMostrarRelatorioFraldas] = useState(false);
 
+  // Sonos State
+  const [registosSonos, setRegistosSonos] = useState([]);
+  const [adicionandoSono, setAdicionandoSono] = useState(false);
+  const [editandoIdSono, setEditandoIdSono] = useState(null);
+  const [novaHoraInicioSono, setNovaHoraInicioSono] = useState(format(new Date(), 'HH:mm'));
+  const [novaHoraFimSono, setNovaHoraFimSono] = useState(format(new Date(), 'HH:mm'));
+  const [mostrarRelatorioSonos, setMostrarRelatorioSonos] = useState(false);
   useEffect(() => {
     api.getLeite().then(data => setRegistosLeite(data));
     api.getFraldas().then(data => setRegistosFraldas(data));
+    api.getSonos().then(data => setRegistosSonos(data));
   }, []);
 
   // --- RELATÓRIO SEMANAL CALCULATIONS ---
@@ -163,6 +171,63 @@ const Leite = () => {
     };
   };
 
+  // --- RELATÓRIO SEMANAL SONOS CALCULATIONS ---
+  const getDadosRelatorioSonos = () => {
+    const START_DATE_STR = '2026-08-05';
+    const hoje = new Date();
+    const dias = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = subDays(hoje, i);
+      const dateStr = format(d, 'yyyy-MM-dd');
+      if (dateStr < START_DATE_STR) continue;
+
+      const dayLabelRaw = format(d, 'eee', { locale: ptBR });
+      const dayFullLabel = format(d, "eeee (dd/MM)", { locale: ptBR });
+      
+      const registosDoDia = registosSonos.filter(r => r.data === dateStr);
+      const totalMinutos = registosDoDia.reduce((sum, r) => sum + r.duracao_minutos, 0);
+      const numSestas = registosDoDia.length;
+
+      const dayLabel = dayLabelRaw.charAt(0).toUpperCase() + dayLabelRaw.slice(1, 3);
+      const horas = Math.floor(totalMinutos / 60);
+      const minutos = totalMinutos % 60;
+      const totalFormatado = `${horas}h ${minutos}m`;
+
+      dias.push({
+        dateStr,
+        dayLabel,
+        dayFullLabel: dayFullLabel.charAt(0).toUpperCase() + dayFullLabel.slice(1),
+        totalMinutos,
+        totalFormatado,
+        numSestas
+      });
+    }
+
+    const numDiasValidos = Math.max(dias.length, 1);
+    const totalSemanalMinutos = dias.reduce((sum, d) => sum + d.totalMinutos, 0);
+    const mediaDiariaMinutos = Math.round(totalSemanalMinutos / numDiasValidos);
+    const horasMedia = Math.floor(mediaDiariaMinutos / 60);
+    const minutosMedia = mediaDiariaMinutos % 60;
+    const mediaDiariaFormatada = `${horasMedia}h ${minutosMedia}m`;
+
+    let maxDia = dias[0] || { totalMinutos: 0, dayLabel: '--' };
+    dias.forEach(d => {
+      if (d.totalMinutos > maxDia.totalMinutos) maxDia = d;
+    });
+
+    const maxMinutosGraph = Math.max(...dias.map(d => d.totalMinutos), 60); // min 1h
+
+    return {
+      dias,
+      mediaDiariaFormatada,
+      totalSemanalSestas: dias.reduce((sum, d) => sum + d.numSestas, 0),
+      maxDia,
+      maxMinutosGraph,
+      numDiasValidos
+    };
+  };
+
   // --- LEITE CALCULATIONS ---
   const registosLeiteDoDia = registosLeite
     .filter(r => r.data === dataSelecionada)
@@ -224,6 +289,61 @@ const Leite = () => {
     setEditandoIdLeite(null);
   };
 
+  // --- SONOS CALCULATIONS ---
+  const registosSonosDoDia = registosSonos
+    .filter(r => r.data === dataSelecionada)
+    .sort((a, b) => b.hora_inicio.localeCompare(a.hora_inicio));
+
+  const totalMinutosDoDia = registosSonosDoDia.reduce((sum, r) => sum + r.duracao_minutos, 0);
+  const totalHorasSono = Math.floor(totalMinutosDoDia / 60);
+  const totalMinutosResto = totalMinutosDoDia % 60;
+  const totalSonoFormatado = `${totalHorasSono}h ${totalMinutosResto}m`;
+
+  const calcularDuracao = (inicio, fim) => {
+    if (!inicio || !fim) return 0;
+    const [hI, mI] = inicio.split(':').map(Number);
+    const [hF, mF] = fim.split(':').map(Number);
+    let duracao = (hF * 60 + mF) - (hI * 60 + mI);
+    if (duracao < 0) {
+      duracao += 24 * 60; // Passou da meia-noite
+    }
+    return duracao;
+  };
+
+  const duracaoPrevista = calcularDuracao(novaHoraInicioSono, novaHoraFimSono);
+  const horasPrevistas = Math.floor(duracaoPrevista / 60);
+  const minutosPrevistos = duracaoPrevista % 60;
+
+  const abrirEdicaoSono = (reg) => {
+    setEditandoIdSono(reg.id);
+    setNovaHoraInicioSono(reg.hora_inicio);
+    setNovaHoraFimSono(reg.hora_fim);
+    setAdicionandoSono(true);
+  };
+
+  const adicionarRegistoSono = (e) => {
+    e.preventDefault();
+    if (!novaHoraInicioSono || !novaHoraFimSono) return;
+    const duracao = calcularDuracao(novaHoraInicioSono, novaHoraFimSono);
+    if (duracao === 0) return; // Evitar registos de 0 min
+    
+    const registo = {
+      id: editandoIdSono || Date.now(),
+      data: dataSelecionada,
+      hora_inicio: novaHoraInicioSono,
+      hora_fim: novaHoraFimSono,
+      duracao_minutos: duracao,
+    };
+    setRegistosSonos(prev => {
+      const exists = prev.some(r => r.id === registo.id);
+      if (exists) return prev.map(r => r.id === registo.id ? registo : r);
+      return [registo, ...prev];
+    });
+    api.saveSono(registo);
+    setAdicionandoSono(false);
+    setEditandoIdSono(null);
+  };
+
   const [confirmarDelete, setConfirmarDelete] = useState(null); // { id, type }
 
   const apagarRegistoConfirmado = () => {
@@ -235,6 +355,9 @@ const Leite = () => {
     } else if (type === 'fralda') {
       setRegistosFraldas(prev => prev.filter(f => f.id !== id));
       api.deleteFralda(id);
+    } else if (type === 'sono') {
+      setRegistosSonos(prev => prev.filter(s => s.id !== id));
+      api.deleteSono(id);
     }
     setConfirmarDelete(null);
   };
@@ -348,6 +471,13 @@ const Leite = () => {
         >
           <Layers size={18} />
           <span>Fraldas</span>
+        </button>
+        <button
+          className={`sub-tab-btn ${activeSubTab === 'sonos' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('sonos')}
+        >
+          <Clock size={18} />
+          <span>Sono</span>
         </button>
       </div>
 
@@ -804,6 +934,171 @@ const Leite = () => {
         </>
       )}
 
+      {/* ─── TAB 3: SONOS ────────────────────────────────────────────────── */}
+      {activeSubTab === 'sonos' && (
+        <>
+          {/* Hero Stats Card */}
+          <div className="leite-hero-card">
+            <div className="hero-top-row">
+              <div className="hero-title-group">
+                <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)' }}>
+                  <Clock size={26} />
+                </div>
+                <div>
+                  <h2 className="hero-day-title">{diaDaSemana}</h2>
+                  <p className="hero-day-subtitle">Resumo de sonos</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="hero-main-stat">
+              <span className="hero-stat-value">{totalSonoFormatado.split('h')[0]}</span>
+              <span className="hero-stat-unit">h {totalSonoFormatado.split(' ')[1]} de sono</span>
+            </div>
+
+            <div className="hero-grid-stats">
+              <div className="substat-card">
+                <div className="substat-val">{registosSonosDoDia.length}</div>
+                <div className="substat-lbl">Sestas/Sonos</div>
+              </div>
+              <div className="substat-card">
+                <div className="substat-val">{totalHorasSono}h {totalMinutosResto}m</div>
+                <div className="substat-lbl">Total Diário</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Add Form */}
+          {!adicionandoSono ? (
+            <button
+              className="btn-quick-add"
+              style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%)', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)' }}
+              onClick={() => {
+                setAdicionandoSono(true);
+                setNovaHoraInicioSono(format(new Date(), 'HH:mm'));
+                setNovaHoraFimSono(format(new Date(), 'HH:mm'));
+              }}
+            >
+              <Plus size={22} />
+              <span>Registar Novo Sono</span>
+            </button>
+          ) : (
+            <form className="add-form-card" onSubmit={adicionarRegistoSono}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <h3 className="h3 flex-center" style={{ gap: '0.5rem', color: '#8b5cf6' }}>
+                  <Clock size={20} />
+                  <span>Registar Sono</span>
+                </h3>
+                <span className="text-secondary" style={{ fontSize: '0.85rem' }}>{dataSelecionada}</span>
+              </div>
+
+              <div className="time-input-group" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  <div className="form-section-title">Hora Início</div>
+                  <input
+                    type="time"
+                    className="time-input"
+                    value={novaHoraInicioSono}
+                    onChange={(e) => setNovaHoraInicioSono(e.target.value)}
+                    required
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div className="form-section-title">Hora Fim</div>
+                  <input
+                    type="time"
+                    className="time-input"
+                    value={novaHoraFimSono}
+                    onChange={(e) => setNovaHoraFimSono(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="duracao-estimada" style={{ background: '#f3f4f6', borderRadius: '12px', padding: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+                <span style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>Duração do Sono</span>
+                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#8b5cf6' }}>
+                  {horasPrevistas}h {minutosPrevistos}m
+                </span>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => {
+                  setAdicionandoSono(false);
+                  setEditandoIdSono(null);
+                }}>
+                  <X size={18} /> Cancelar
+                </button>
+                <button type="submit" className="btn-primary" style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)' }}>
+                  <Clock size={18} /> Guardar Sono
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Listagem de Sonos */}
+          <div className="feedings-list">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0.5rem', marginBottom: '0.25rem' }}>
+              <h3 className="h3" style={{ fontSize: '1.1rem', margin: 0 }}>Registos de {diaDaSemana.split(',')[0]}</h3>
+              <span className="badge-ml" style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                {registosSonosDoDia.length} {registosSonosDoDia.length === 1 ? 'registo' : 'registos'}
+              </span>
+            </div>
+
+            {registosSonosDoDia.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon-wrap" style={{ background: 'rgba(139,92,246,0.1)' }}>
+                  <Clock size={32} color="#8b5cf6" />
+                </div>
+                <p>Nenhum sono registado neste dia.</p>
+              </div>
+            ) : (
+              <>
+                {registosSonosDoDia.map((reg) => {
+                  const hrs = Math.floor(reg.duracao_minutos / 60);
+                  const mins = reg.duracao_minutos % 60;
+                  return (
+                    <div key={reg.id} className="feeding-card" style={{ borderLeft: '4px solid #8b5cf6' }}>
+                      <div className="feeding-left">
+                        <div className="feeding-icon-box" style={{ color: '#8b5cf6', background: 'rgba(139,92,246,0.1)' }}>
+                          <Clock size={20} />
+                        </div>
+                        <div>
+                          <div className="feeding-time">{reg.hora_inicio} - {reg.hora_fim}</div>
+                          <div className="text-secondary" style={{ fontSize: '0.85rem' }}>
+                            {hrs > 0 ? `${hrs}h ` : ''}{mins}m
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="feeding-actions">
+                        <button className="btn-action-edit" onClick={() => abrirEdicaoSono(reg)} title="Editar">
+                          <Pencil size={18} />
+                        </button>
+                        <button className="btn-action-delete" onClick={() => setConfirmarDelete({ id: reg.id, type: 'sono' })} title="Apagar">
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+
+          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+            <button
+              className="btn-weekly-report"
+              style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', color: '#fff', borderColor: 'transparent' }}
+              onClick={() => setMostrarRelatorioSonos(true)}
+            >
+              <BarChart2 size={20} />
+              <span>Ver Relatório Semanal de Sonos</span>
+            </button>
+          </div>
+        </>
+      )}
+
       {/* Delete Confirmation Modal */}
       {confirmarDelete && (
         <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
@@ -813,7 +1108,7 @@ const Leite = () => {
             </div>
             <div>
               <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>
-                Remover {confirmarDelete.type === 'leite' ? 'Registo de Leite' : 'Registo de Fralda'}?
+                Remover {confirmarDelete.type === 'leite' ? 'Registo de Leite' : confirmarDelete.type === 'fralda' ? 'Registo de Fralda' : 'Registo de Sono'}?
               </h3>
               <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
                 Este registo será apagado permanentemente.
@@ -1043,6 +1338,107 @@ const Leite = () => {
                             <td>{d.countXixi + d.countAmbos}</td>
                             <td>{d.countCoco + d.countAmbos}</td>
                             <td className="hide-mobile">{d.countAmbos}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Modal de Relatório Semanal de Sonos */}
+      {mostrarRelatorioSonos && (() => {
+        const relatorio = getDadosRelatorioSonos();
+        return (
+          <div className="modal-overlay" onClick={() => setMostrarRelatorioSonos(false)}>
+            <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <div className="modal-title-group">
+                  <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)' }}>
+                    <BarChart2 size={22} />
+                  </div>
+                  <div>
+                    <h2 className="modal-title">Relatório Semanal de Sonos</h2>
+                    <p className="modal-subtitle">
+                      {relatorio.numDiasValidos < 7
+                        ? `Resumo dos registos (desde 05/08 · ${relatorio.numDiasValidos} ${relatorio.numDiasValidos === 1 ? 'dia' : 'dias'})`
+                        : 'Resumo dos últimos 7 dias da Sofia'}
+                    </p>
+                  </div>
+                </div>
+                <button className="btn-action-close" onClick={() => setMostrarRelatorioSonos(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="modal-body">
+                {/* Cards de Métricas */}
+                <div className="weekly-stats-grid">
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><TrendingUp size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.mediaDiariaFormatada}</div>
+                    <div className="weekly-stat-lbl">Média / Dia</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><Clock size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.totalSemanalSestas}</div>
+                    <div className="weekly-stat-lbl">Sestas na Semana</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#f59e0b' }}><Award size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.maxDia.totalFormatado}</div>
+                    <div className="weekly-stat-lbl">Dia de Pico ({relatorio.maxDia.dayLabel})</div>
+                  </div>
+                </div>
+
+                {/* Gráfico de Barras dos 7 Dias */}
+                <div className="weekly-chart-card">
+                  <h3 className="chart-title">Sonos Diários (desde 05/08)</h3>
+                  <div className="bars-container">
+                    {relatorio.dias.map(d => {
+                      const heightPct = Math.round((d.totalMinutos / relatorio.maxMinutosGraph) * 100);
+                      const isMax = d.dateStr === relatorio.maxDia.dateStr && d.totalMinutos > 0;
+                      return (
+                        <div key={d.dateStr} className="bar-column">
+                          <div className="bar-val">{d.totalMinutos > 0 ? d.totalFormatado.replace(' ', '') : ''}</div>
+                          <div className="bar-track">
+                            <div
+                              className={`bar-fill ${isMax ? 'max-bar' : ''}`}
+                              style={{ height: `${Math.max(heightPct, 6)}%`, background: isMax ? 'linear-gradient(to top, #8b5cf6, #c084fc)' : '#c4b5fd' }}
+                              title={`${d.totalFormatado} (${d.numSestas} sestas)`}
+                            />
+                          </div>
+                          <div className="bar-label">{d.dayLabel}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Tabela Detalhada por Dia */}
+                <div className="weekly-table-card">
+                  <h3 className="chart-title">Detalhamento por Dia</h3>
+                  <div className="weekly-table-wrapper">
+                    <table className="weekly-table">
+                      <thead>
+                        <tr>
+                          <th>Dia / Data</th>
+                          <th>Tempo Total</th>
+                          <th>N.º Sestas</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {relatorio.dias.slice().reverse().map(d => (
+                          <tr key={d.dateStr}>
+                            <td><strong>{d.dayFullLabel}</strong></td>
+                            <td><span className="badge-ml" style={{ background: 'rgba(139,92,246,0.1)', color: '#8b5cf6' }}>{d.totalFormatado}</span></td>
+                            <td>{d.numSestas} sestas</td>
                           </tr>
                         ))}
                       </tbody>
