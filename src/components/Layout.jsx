@@ -77,7 +77,7 @@ const Layout = ({ children }) => {
             </div>
           </Link>
         </div>
-        <div className="navbar-right">
+        <div className="navbar-right mobile-only">
           <Link
             to="/definicoes"
             className={`btn-settings-header ${location.pathname === '/definicoes' ? 'active' : ''}`}
