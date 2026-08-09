@@ -147,6 +147,20 @@ async function setupTables() {
         hora TEXT NOT NULL,
         tipo TEXT NOT NULL
       );
+
+      CREATE TABLE IF NOT EXISTS perfil (
+        id INT PRIMARY KEY DEFAULT 1,
+        nome_completo TEXT,
+        data_nascimento TEXT,
+        morada TEXT,
+        nome_pai TEXT,
+        nome_mae TEXT,
+        local_nascimento TEXT,
+        peso_nascimento TEXT,
+        altura_nascimento TEXT,
+        grupo_sanguineo TEXT,
+        notas TEXT
+      );
     `);
 
     client.release();
@@ -172,6 +186,40 @@ app.get('/api/health', async (req, res) => {
     isDbConnected = false;
   }
   res.json({ status: 'ok', db: 'disconnected' });
+});
+
+// --- PERFIL ---
+app.get('/api/perfil', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM perfil WHERE id = 1');
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.json(null);
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/perfil', async (req, res) => {
+  const {
+    nome_completo, data_nascimento, morada, nome_pai, nome_mae,
+    local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas
+  } = req.body;
+  try {
+    await pool.query(
+      `INSERT INTO perfil (id, nome_completo, data_nascimento, morada, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas)
+       VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       ON CONFLICT (id) DO UPDATE SET 
+         nome_completo = $1, data_nascimento = $2, morada = $3, nome_pai = $4, nome_mae = $5,
+         local_nascimento = $6, peso_nascimento = $7, altura_nascimento = $8, grupo_sanguineo = $9, notas = $10`,
+      [nome_completo, data_nascimento, morada, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // --- AGENDA ---

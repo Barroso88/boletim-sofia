@@ -139,13 +139,13 @@
 }
 
 .health-section.section-proximas {
-  background: #E0F2FE; /* Solid Light Sky Blue */
-  border-color: #BAE6FD;
+  background: #FCE7F3; /* Solid Pink */
+  border-color: #FBCFE8;
 }
 
 .health-section.section-ultimas {
-  background: #F1F5F9; /* Solid Light Slate Gray */
-  border-color: #E2E8F0;
+  background: #FFEDD5; /* Solid Orange */
+  border-color: #FED7AA;
 }
 
 .health-section:hover {

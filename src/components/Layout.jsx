@@ -21,7 +21,7 @@ const Layout = ({ children }) => {
       <VitaminaModal />
       <nav className="navbar glass-card">
         <div className="navbar-left">
-          <div className="navbar-brand">
+          <Link to="/perfil" className="navbar-brand brand-link">
             <div className="avatar-ring">
               <div className="avatar">
                 <img src="/favicon.png" alt="Sofia" />
@@ -30,9 +30,9 @@ const Layout = ({ children }) => {
             </div>
             <div className="brand-text-group">
               <span className="brand-title">Boletim da Sofia</span>
-              <span className="brand-subtitle">Diário Digital da Bebé</span>
+              <span className="brand-subtitle">Perfil da Bebé</span>
             </div>
-          </div>
+          </Link>
         </div>
 
         <div className="navbar-right">

@@ -43,6 +43,38 @@ export const api = {
     return data && data.db === 'connected';
   },
 
+  // --- PERFIL ---
+  async getPerfil(localKey = 'sofia_perfil') {
+    const defaultPerfil = {
+      nome_completo: '',
+      data_nascimento: '',
+      morada: '',
+      nome_pai: '',
+      nome_mae: '',
+      local_nascimento: '',
+      peso_nascimento: '',
+      altura_nascimento: '',
+      grupo_sanguineo: '',
+      notas: ''
+    };
+    const remote = await fetchWithFallback(`${API_BASE}/perfil`);
+    if (remote) {
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : defaultPerfil;
+  },
+
+  async savePerfil(perfilData, localKey = 'sofia_perfil') {
+    localStorage.setItem(localKey, JSON.stringify(perfilData));
+    fetchWithFallback(`${API_BASE}/perfil`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(perfilData)
+    });
+  },
+
   // --- PESO ---
   async getPesos(localKey = 'sofia_peso') {
     const remote = await fetchWithFallback(`${API_BASE}/peso`);

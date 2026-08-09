@@ -9,6 +9,7 @@ import Peso from './pages/Peso';
 import Vacinas from './pages/Vacinas';
 import Leite from './pages/Leite';
 import Definicoes from './pages/Definicoes';
+import Perfil from './pages/Perfil';
 
 function App() {
   useEffect(() => {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/vacinas" element={<Vacinas />} />
           <Route path="/leite" element={<Leite />} />
           <Route path="/definicoes" element={<Definicoes />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Routes>
       </Layout>
     </BrowserRouter>

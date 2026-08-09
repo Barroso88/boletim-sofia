@@ -58,7 +58,17 @@
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1rem;
+}
+
+.brand-link {
+  text-decoration: none;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.brand-link:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
 }
 
 .avatar-ring {
