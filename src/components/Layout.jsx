@@ -21,6 +21,21 @@ const Layout = ({ children }) => {
       <VitaminaModal />
       <nav className="navbar glass-card">
         <div className="navbar-left">
+          <div className="navbar-brand">
+            <div className="avatar-ring">
+              <div className="avatar">
+                <img src="/favicon.png" alt="Sofia" />
+              </div>
+              <span className="online-pulse-dot" title="Sofia Morais Barroso" />
+            </div>
+            <div className="brand-text-group">
+              <span className="brand-title">Boletim da Sofia</span>
+              <span className="brand-subtitle">Diário Digital da Bebé</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="navbar-right">
           <Link
             to="/definicoes"
             className={`btn-settings-header ${location.pathname === '/definicoes' ? 'active' : ''}`}
@@ -28,12 +43,6 @@ const Layout = ({ children }) => {
           >
             <Settings size={20} />
           </Link>
-          <div className="navbar-brand">
-            <div className="avatar" style={{ padding: '3px', background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
-              <img src="/favicon.png" alt="Sofia" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
-            </div>
-            <span className="h3 text-gradient">Boletim da Sofia</span>
-          </div>
         </div>
 
         <div className="nav-links desktop-only">
