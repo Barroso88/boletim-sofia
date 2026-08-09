@@ -189,7 +189,7 @@ const Documentos = () => {
       </div>
 
       {/* Table — visible on all screen sizes */}
-      <div className="executive-table-wrapper glass-card">
+      <div className="executive-table-wrapper">
         <table className="executive-table">
           <colgroup>
             <col style={{ width: '65%' }} />   {/* Document name & number */}
