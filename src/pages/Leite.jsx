@@ -37,7 +37,7 @@ const Leite = () => {
   const [adicionandoSono, setAdicionandoSono] = useState(false);
   const [editandoIdSono, setEditandoIdSono] = useState(null);
   const [novaHoraInicioSono, setNovaHoraInicioSono] = useState(format(new Date(), 'HH:mm'));
-  const [novaHoraFimSono, setNovaHoraFimSono] = useState(format(new Date(), 'HH:mm'));
+  const [novaHoraFimSono, setNovaHoraFimSono] = useState('');
   const [mostrarRelatorioSonos, setMostrarRelatorioSonos] = useState(false);
   useEffect(() => {
     api.getLeite().then(data => setRegistosLeite(data));
@@ -985,7 +985,7 @@ const Leite = () => {
               onClick={() => {
                 setAdicionandoSono(true);
                 setNovaHoraInicioSono(format(new Date(), 'HH:mm'));
-                setNovaHoraFimSono(format(new Date(), 'HH:mm'));
+                setNovaHoraFimSono('');
               }}
             >
               <Plus size={22} />
