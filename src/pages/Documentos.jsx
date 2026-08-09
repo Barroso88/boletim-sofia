@@ -204,19 +204,6 @@ const Documentos = () => {
           <tbody>
             {documentos.map((doc, index) => {
               const isPreenchido = doc.numero && doc.numero.trim() !== '';
-              const pastelColors = [
-                '#FEE2E2', // Light Red / Rose
-                '#DBEAFE', // Light Blue
-                '#D1FAE5', // Light Emerald
-                '#FEF9C3', // Light Yellow
-                '#F3E8FF', // Light Purple
-                '#FFEDD5', // Light Orange
-                '#FCE7F3', // Light Pink
-                '#CCFBF1', // Light Teal
-                '#E0E7FF', // Light Indigo
-              ];
-              const rowColor = pastelColors[index % pastelColors.length];
-              
               return (
                 <tr
                   key={doc.id}
@@ -225,7 +212,7 @@ const Documentos = () => {
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, index)}
-                  style={{ animationDelay: `${index * 0.04}s`, backgroundColor: rowColor }}
+                  style={{ animationDelay: `${index * 0.04}s` }}
                 >
                   {/* Doc name + drag handle + icon + number */}
                   <td className="cell-doc">
