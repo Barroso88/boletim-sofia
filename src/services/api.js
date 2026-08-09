@@ -81,7 +81,13 @@ export const api = {
   async getPesos(localKey = 'sofia_peso') {
     const remote = await fetchWithFallback(`${API_BASE}/peso`);
     if (remote && Array.isArray(remote)) {
-      // Sync to localStorage as backup
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        // Sync to backend
+        localList.forEach(r => this.savePeso(r, localKey));
+        return localList;
+      }
       localStorage.setItem(localKey, JSON.stringify(remote));
       return remote;
     }
@@ -161,6 +167,12 @@ export const api = {
   async getAgenda(localKey = 'sofia_agenda') {
     const remote = await fetchWithFallback(`${API_BASE}/agenda`);
     if (remote && Array.isArray(remote)) {
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        localList.forEach(r => this.saveEvento(r, localKey));
+        return localList;
+      }
       localStorage.setItem(localKey, JSON.stringify(remote));
       return remote;
     }
@@ -197,6 +209,12 @@ export const api = {
   async getMarcos(localKey = 'sofia_marcos') {
     const remote = await fetchWithFallback(`${API_BASE}/marcos`);
     if (remote && Array.isArray(remote)) {
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        localList.forEach(r => this.saveMarco(r, localKey));
+        return localList;
+      }
       localStorage.setItem(localKey, JSON.stringify(remote));
       return remote;
     }
@@ -344,6 +362,12 @@ export const api = {
   async getLeite(localKey = 'sofia_leite') {
     const remote = await fetchWithFallback(`${API_BASE}/leite`);
     if (remote && Array.isArray(remote)) {
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        localList.forEach(r => this.saveLeite(r, localKey));
+        return localList;
+      }
       localStorage.setItem(localKey, JSON.stringify(remote));
       return remote;
     }
@@ -381,6 +405,12 @@ export const api = {
   async getFraldas(localKey = 'sofia_fraldas') {
     const remote = await fetchWithFallback(`${API_BASE}/fraldas`);
     if (remote && Array.isArray(remote)) {
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        localList.forEach(r => this.saveFralda(r, localKey));
+        return localList;
+      }
       localStorage.setItem(localKey, JSON.stringify(remote));
       return remote;
     }
@@ -417,6 +447,12 @@ export const api = {
   async getSonos(localKey = 'sofia_sonos') {
     const remote = await fetchWithFallback(`${API_BASE}/sonos`);
     if (remote && Array.isArray(remote)) {
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        localList.forEach(r => this.saveSono(r, localKey));
+        return localList;
+      }
       localStorage.setItem(localKey, JSON.stringify(remote));
       return remote;
     }
