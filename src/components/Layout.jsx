@@ -24,7 +24,7 @@ const Layout = ({ children }) => {
           <Link to="/perfil" className="navbar-brand brand-link">
             <div className="avatar-ring">
               <div className="avatar">
-                <img src="/favicon.png?v=2" alt="Sofia" />
+                <img src="/favicon.png?v=3" alt="Sofia" />
               </div>
               <span className="online-pulse-dot" title="Sofia Morais Barroso" />
             </div>
