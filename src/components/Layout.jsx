@@ -41,21 +41,21 @@ const Layout = ({ children }) => {
           '--header-pattern': `url('${headerPattern}')`
         }}
       >
-        <div className="navbar-left">
-          <Link to="/perfil" className="navbar-brand brand-link">
-            <div className="avatar-ring">
-              <div className="avatar">
-                <img src="/favicon.png?v=4" alt="Sofia" />
-              </div>
-              <span className="online-pulse-dot" title="Sofia Morais Barroso" />
-            </div>
-            <div className="brand-text-group">
-              <span className="brand-title">Boletim da Sofia</span>
-              <span className="brand-subtitle">Perfil da Bebé</span>
-            </div>
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
+          <Link to="/perfil" className="brand-link" style={{ textDecoration: 'none' }}>
+            <span className="brand-title" style={{ 
+              fontFamily: "'Sweet Cucumber Mocktail', cursive", 
+              fontSize: '3.5rem', 
+              lineHeight: 1,
+              padding: '0.5rem 1rem'
+            }}>
+              Sofia
+            </span>
           </Link>
         </div>
-
+        
+        {/* Empty div to maintain flex space-between balance since left is absolute now */}
+        <div className="navbar-left" style={{ width: '42px' }}></div>
         <div className="navbar-right">
           <Link
             to="/definicoes"

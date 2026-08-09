@@ -188,9 +188,6 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="hero-card glass-card">
-        <h1 className="h1 text-gradient mb-2">Olá, Sofia! 🌸</h1>
-        <p className="text-body text-light">A crescer todos os dias com muito amor.</p>
-        
         <div className="age-stats">
           <div className="stat-box box-years">
             <span className="stat-value">{age.years}</span>
