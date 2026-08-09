@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Check, X, Sun, BellRing } from 'lucide-react';
 import { format } from 'date-fns';
-import api from '../services/api';
+import { api } from '../services/api';
 import './VitaminaModal.css';
 
 const VitaminaModal = () => {

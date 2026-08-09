@@ -448,5 +448,28 @@ export const api = {
       localStorage.setItem(localKey, JSON.stringify(list));
     }
     fetchWithFallback(`${API_BASE}/sonos/${id}`, { method: 'DELETE' });
+  },
+
+  // --- CONFIGURACOES ---
+  async getConfiguracao(chave) {
+    try {
+      const result = await fetchWithFallback(`${API_BASE}/configuracoes/${chave}`);
+      return result ? result.valor : null;
+    } catch (e) {
+      console.error('Error fetching config:', e);
+      return null;
+    }
+  },
+
+  async saveConfiguracao(chave, valor) {
+    try {
+      await fetchWithFallback(`${API_BASE}/configuracoes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chave, valor })
+      });
+    } catch (e) {
+      console.error('Error saving config:', e);
+    }
   }
 };
