@@ -114,6 +114,18 @@ async function setupTables() {
         data TEXT NOT NULL,
         peso NUMERIC(6, 3) NOT NULL
       );
+      ALTER TABLE peso ADD COLUMN IF NOT EXISTS altura NUMERIC(5, 1);
+
+      CREATE TABLE IF NOT EXISTS altura (
+        id BIGINT PRIMARY KEY,
+        data TEXT NOT NULL,
+        altura NUMERIC(5, 1) NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS configuracoes (
+        chave TEXT PRIMARY KEY,
+        valor TEXT NOT NULL
+      );
 
       CREATE TABLE IF NOT EXISTS vacinas (
         id BIGINT PRIMARY KEY,
@@ -325,6 +337,65 @@ app.post('/api/peso', async (req, res) => {
 app.delete('/api/peso/:id', async (req, res) => {
   try {
     await pool.query('DELETE FROM peso WHERE id = $1', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- ALTURA ---
+app.get('/api/altura', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, data, altura::float FROM altura ORDER BY data ASC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/altura', async (req, res) => {
+  const { id, data, altura } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO altura (id, data, altura) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET data = $2, altura = $3',
+      [id || Date.now(), data, altura]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/altura/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM altura WHERE id = $1', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- CONFIGURACOES ---
+app.get('/api/configuracoes/:chave', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT valor FROM configuracoes WHERE chave = $1', [req.params.chave]);
+    if (result.rows.length > 0) {
+      res.json({ valor: result.rows[0].valor });
+    } else {
+      res.json({ valor: null });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/configuracoes', async (req, res) => {
+  const { chave, valor } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO configuracoes (chave, valor) VALUES ($1, $2) ON CONFLICT (chave) DO UPDATE SET valor = $2',
+      [chave, valor]
+    );
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

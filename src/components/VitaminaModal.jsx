@@ -1,17 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Check, X, Sun, BellRing } from 'lucide-react';
 import { format } from 'date-fns';
+import api from '../services/api';
 import './VitaminaModal.css';
 
 const VitaminaModal = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
 
   useEffect(() => {
-    const verificarVitamina = () => {
+    const verificarVitamina = async () => {
       const agora = new Date();
       const hora = agora.getHours();
       const hojeStr = format(agora, 'yyyy-MM-dd');
-      const dataConfirmada = localStorage.getItem('sofia_vitamina_confirmada_data');
+      
+      let dataConfirmada = localStorage.getItem('sofia_vitamina_confirmada_data');
+      
+      // Try to fetch from backend
+      try {
+        const backendData = await api.getConfiguracao('vitamina_confirmada_data');
+        if (backendData) {
+          dataConfirmada = backendData;
+          localStorage.setItem('sofia_vitamina_confirmada_data', backendData);
+        }
+      } catch (err) {
+        console.error("Failed to fetch vitamin data from backend", err);
+      }
       
       const searchParams = new URLSearchParams(window.location.search);
       const isForcePreview = searchParams.get('previewVitamina') === 'true';
@@ -38,10 +51,13 @@ const VitaminaModal = () => {
     };
   }, []);
 
-  const confirmarVitamina = () => {
+  const confirmarVitamina = async () => {
     const hojeStr = format(new Date(), 'yyyy-MM-dd');
     localStorage.setItem('sofia_vitamina_confirmada_data', hojeStr);
     setMostrarModal(false);
+    
+    // Save to backend so all devices are synced
+    await api.saveConfiguracao('vitamina_confirmada_data', hojeStr);
   };
 
   const fecharTemporariamente = () => {
