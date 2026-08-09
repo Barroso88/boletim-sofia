@@ -52,6 +52,31 @@
   box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
 
+/* Read Only Mode Styles */
+.read-only-group {
+  background: rgba(15, 23, 42, 0.02);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.read-only-value {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-top: 0.25rem;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.empty-val {
+  color: var(--color-text-light);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+/* Save messages */
 .save-message {
   padding: 1rem;
   border-radius: var(--radius-md);

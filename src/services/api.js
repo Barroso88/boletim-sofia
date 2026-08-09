@@ -49,6 +49,8 @@ export const api = {
       nome_completo: '',
       data_nascimento: '',
       morada: '',
+      codigo_postal: '',
+      cidade: '',
       nome_pai: '',
       nome_mae: '',
       local_nascimento: '',

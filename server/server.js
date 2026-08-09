@@ -153,6 +153,8 @@ async function setupTables() {
         nome_completo TEXT,
         data_nascimento TEXT,
         morada TEXT,
+        codigo_postal TEXT,
+        cidade TEXT,
         nome_pai TEXT,
         nome_mae TEXT,
         local_nascimento TEXT,
@@ -161,6 +163,9 @@ async function setupTables() {
         grupo_sanguineo TEXT,
         notas TEXT
       );
+      
+      ALTER TABLE perfil ADD COLUMN IF NOT EXISTS codigo_postal TEXT;
+      ALTER TABLE perfil ADD COLUMN IF NOT EXISTS cidade TEXT;
     `);
 
     client.release();
@@ -204,17 +209,17 @@ app.get('/api/perfil', async (req, res) => {
 
 app.post('/api/perfil', async (req, res) => {
   const {
-    nome_completo, data_nascimento, morada, nome_pai, nome_mae,
+    nome_completo, data_nascimento, morada, codigo_postal, cidade, nome_pai, nome_mae,
     local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas
   } = req.body;
   try {
     await pool.query(
-      `INSERT INTO perfil (id, nome_completo, data_nascimento, morada, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas)
-       VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `INSERT INTO perfil (id, nome_completo, data_nascimento, morada, codigo_postal, cidade, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas)
+       VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
        ON CONFLICT (id) DO UPDATE SET 
-         nome_completo = $1, data_nascimento = $2, morada = $3, nome_pai = $4, nome_mae = $5,
-         local_nascimento = $6, peso_nascimento = $7, altura_nascimento = $8, grupo_sanguineo = $9, notas = $10`,
-      [nome_completo, data_nascimento, morada, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas]
+         nome_completo = $1, data_nascimento = $2, morada = $3, codigo_postal = $4, cidade = $5, nome_pai = $6, nome_mae = $7,
+         local_nascimento = $8, peso_nascimento = $9, altura_nascimento = $10, grupo_sanguineo = $11, notas = $12`,
+      [nome_completo, data_nascimento, morada, codigo_postal, cidade, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas]
     );
     res.json({ success: true });
   } catch (err) {

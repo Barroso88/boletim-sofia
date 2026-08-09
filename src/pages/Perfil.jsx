@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, UserCircle, Calendar, MapPin, Users, Hash, Droplet, FileText } from 'lucide-react';
+import { Save, UserCircle, Calendar, MapPin, Users, Hash, Droplet, FileText, Edit3, Map } from 'lucide-react';
 import { api } from '../services/api';
 import './Perfil.css';
 
@@ -8,6 +8,8 @@ const Perfil = () => {
     nome_completo: '',
     data_nascimento: '',
     morada: '',
+    codigo_postal: '',
+    cidade: '',
     nome_pai: '',
     nome_mae: '',
     local_nascimento: '',
@@ -16,6 +18,7 @@ const Perfil = () => {
     grupo_sanguineo: '',
     notas: ''
   });
+  const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
 
@@ -29,16 +32,27 @@ const Perfil = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPerfil(prev => ({ ...prev, [name]: value }));
+    
+    // Postal code validation/formatting (1111-111)
+    if (name === 'codigo_postal') {
+      let val = value.replace(/\D/g, ''); // keep only numbers
+      if (val.length > 4) {
+        val = val.substring(0, 4) + '-' + val.substring(4, 7);
+      }
+      setPerfil(prev => ({ ...prev, [name]: val }));
+    } else {
+      setPerfil(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setIsSaving(true);
     setSaveMessage('');
     try {
       await api.savePerfil(perfil);
       setSaveMessage('Perfil guardado com sucesso!');
+      setIsEditing(false); // Switch to read-only after saving
       setTimeout(() => setSaveMessage(''), 3000);
     } catch (err) {
       setSaveMessage('Erro ao guardar o perfil.');
@@ -47,19 +61,70 @@ const Perfil = () => {
     }
   };
 
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const renderField = (icon, label, name, type = "text", placeholder, isFullWidth = false, isTextarea = false) => {
+    const value = perfil[name];
+
+    if (!isEditing) {
+      return (
+        <div className={`form-group read-only-group ${isFullWidth ? 'full-width' : ''}`}>
+          <label>{icon} {label}</label>
+          <div className="read-only-value">
+            {value ? value : <span className="empty-val">Não preenchido</span>}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className={`form-group ${isFullWidth ? 'full-width' : ''}`}>
+        <label>{icon} {label}</label>
+        {isTextarea ? (
+          <textarea 
+            name={name} 
+            value={value} 
+            onChange={handleChange} 
+            placeholder={placeholder}
+            rows="4"
+          />
+        ) : (
+          <input 
+            type={type} 
+            name={name} 
+            value={value} 
+            onChange={handleChange} 
+            placeholder={placeholder} 
+            maxLength={name === 'codigo_postal' ? 8 : undefined}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="page-container perfil-page">
       <div className="flex-between mb-4 flex-wrap gap-3">
         <div>
           <h2 className="h2 text-gradient">Perfil da Sofia</h2>
           <p style={{ color: 'var(--color-text-light)', fontSize: '0.9rem', marginTop: '2px' }}>
-            Informações pessoais e de nascimento
+            {isEditing ? 'A editar informações...' : 'Informações pessoais e de nascimento'}
           </p>
         </div>
-        <button className="btn-primary doc-add-btn" onClick={handleSave} disabled={isSaving}>
-          <Save size={18} />
-          <span>{isSaving ? 'A Guardar...' : 'Guardar Perfil'}</span>
-        </button>
+        
+        {isEditing ? (
+          <button className="btn-primary doc-add-btn" onClick={handleSave} disabled={isSaving}>
+            <Save size={18} />
+            <span>{isSaving ? 'A Guardar...' : 'Guardar Perfil'}</span>
+          </button>
+        ) : (
+          <button className="btn-primary doc-add-btn" onClick={toggleEdit}>
+            <Edit3 size={18} />
+            <span>Editar Perfil</span>
+          </button>
+        )}
       </div>
 
       {saveMessage && (
@@ -71,114 +136,22 @@ const Perfil = () => {
       <form className="perfil-form glass-card" onSubmit={handleSave}>
         <div className="form-grid">
           
-          <div className="form-group full-width">
-            <label><UserCircle size={16} /> Nome Completo</label>
-            <input 
-              type="text" 
-              name="nome_completo" 
-              value={perfil.nome_completo} 
-              onChange={handleChange} 
-              placeholder="Ex: Sofia Morais Barroso" 
-            />
-          </div>
-
-          <div className="form-group">
-            <label><Calendar size={16} /> Data de Nascimento</label>
-            <input 
-              type="date" 
-              name="data_nascimento" 
-              value={perfil.data_nascimento} 
-              onChange={handleChange} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label><MapPin size={16} /> Local de Nascimento</label>
-            <input 
-              type="text" 
-              name="local_nascimento" 
-              value={perfil.local_nascimento} 
-              onChange={handleChange} 
-              placeholder="Ex: Maternidade Alfredo da Costa" 
-            />
-          </div>
-
-          <div className="form-group">
-            <label><Users size={16} /> Nome da Mãe</label>
-            <input 
-              type="text" 
-              name="nome_mae" 
-              value={perfil.nome_mae} 
-              onChange={handleChange} 
-              placeholder="Nome da mãe" 
-            />
-          </div>
-
-          <div className="form-group">
-            <label><Users size={16} /> Nome do Pai</label>
-            <input 
-              type="text" 
-              name="nome_pai" 
-              value={perfil.nome_pai} 
-              onChange={handleChange} 
-              placeholder="Nome do pai" 
-            />
-          </div>
-
-          <div className="form-group full-width">
-            <label><MapPin size={16} /> Morada</label>
-            <input 
-              type="text" 
-              name="morada" 
-              value={perfil.morada} 
-              onChange={handleChange} 
-              placeholder="Morada completa" 
-            />
-          </div>
-
-          <div className="form-group">
-            <label><Hash size={16} /> Peso à Nascença</label>
-            <input 
-              type="text" 
-              name="peso_nascimento" 
-              value={perfil.peso_nascimento} 
-              onChange={handleChange} 
-              placeholder="Ex: 3.250 kg" 
-            />
-          </div>
-
-          <div className="form-group">
-            <label><Hash size={16} /> Altura à Nascença</label>
-            <input 
-              type="text" 
-              name="altura_nascimento" 
-              value={perfil.altura_nascimento} 
-              onChange={handleChange} 
-              placeholder="Ex: 50 cm" 
-            />
-          </div>
-
-          <div className="form-group">
-            <label><Droplet size={16} /> Grupo Sanguíneo</label>
-            <input 
-              type="text" 
-              name="grupo_sanguineo" 
-              value={perfil.grupo_sanguineo} 
-              onChange={handleChange} 
-              placeholder="Ex: O+" 
-            />
-          </div>
-
-          <div className="form-group full-width">
-            <label><FileText size={16} /> Notas Adicionais</label>
-            <textarea 
-              name="notas" 
-              value={perfil.notas} 
-              onChange={handleChange} 
-              placeholder="Outras informações relevantes..."
-              rows="4"
-            />
-          </div>
+          {renderField(<UserCircle size={16} />, "Nome Completo", "nome_completo", "text", "Ex: Sofia Morais Barroso", true)}
+          {renderField(<Calendar size={16} />, "Data de Nascimento", "data_nascimento", "date", "")}
+          {renderField(<MapPin size={16} />, "Local de Nascimento", "local_nascimento", "text", "Ex: Maternidade Alfredo da Costa")}
+          
+          {renderField(<Users size={16} />, "Nome da Mãe", "nome_mae", "text", "Nome da mãe")}
+          {renderField(<Users size={16} />, "Nome do Pai", "nome_pai", "text", "Nome do pai")}
+          
+          {renderField(<MapPin size={16} />, "Morada", "morada", "text", "Morada completa", true)}
+          {renderField(<Map size={16} />, "Código Postal", "codigo_postal", "text", "1111-111")}
+          {renderField(<MapPin size={16} />, "Cidade", "cidade", "text", "Ex: Lisboa")}
+          
+          {renderField(<Hash size={16} />, "Peso à Nascença", "peso_nascimento", "text", "Ex: 3.250 kg")}
+          {renderField(<Hash size={16} />, "Altura à Nascença", "altura_nascimento", "text", "Ex: 50 cm")}
+          {renderField(<Droplet size={16} />, "Grupo Sanguíneo", "grupo_sanguineo", "text", "Ex: O+")}
+          
+          {renderField(<FileText size={16} />, "Notas Adicionais", "notas", "text", "Outras informações relevantes...", true, true)}
 
         </div>
       </form>
