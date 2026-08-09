@@ -86,36 +86,40 @@ const Definicoes = () => {
             <h3 className="h3" style={{ color: 'var(--color-primary-dark)' }}>🖼️ Padrão do Cabeçalho</h3>
           </div>
           <p className="text-small mb-4">
-            Pode ter vários padrões na pasta <code>public/</code> do servidor. Digite o nome do ficheiro que quer aplicar ao cabeçalho (ou escolha um dos predefinidos).
+            Escolha abaixo um dos padrões disponíveis para preencher o fundo do cabeçalho da aplicação.
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-             <div className="input-group">
-                <label style={{ fontSize: '0.9rem', color: 'var(--color-text-light)', marginBottom: '0.5rem', display: 'block' }}>Nome do Ficheiro (ex: cabecalho.jpg, padrao2.png)</label>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                   <input 
-                      type="text" 
-                      className="form-input" 
-                      value={headerPattern.replace(/^\//, '')} 
-                      onChange={(e) => setHeaderPattern(e.target.value)} 
-                      placeholder="cabecalho.jpg"
-                      style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none' }}
-                   />
-                   <button className="btn-primary" onClick={() => changeHeaderPattern(headerPattern)} style={{ padding: '0 1.5rem', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>
-                      Aplicar
-                   </button>
-                </div>
-             </div>
-             
-             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
-                <button 
-                  className={`btn-secondary ${headerPattern === '/cabecalho.jpg' ? 'active' : ''}`} 
-                  onClick={() => changeHeaderPattern('cabecalho.jpg')} 
-                  style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-primary)', background: headerPattern === '/cabecalho.jpg' ? 'var(--color-primary)' : 'transparent', color: headerPattern === '/cabecalho.jpg' ? 'white' : 'var(--color-primary)' }}
+          <div className="themes-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '1rem' }}>
+            {['cabecalho.jpg', 'cabecalho2.jpg', 'cabecalho3.jpg', 'cabecalho4.jpg', 'cabecalho5.jpg', 'cabecalho6.jpg', 'cabecalho7.jpg', 'cabecalho8.jpg', 'cabecalho9.jpg', 'cabecalho10.jpg'].map((pattern) => (
+              <div 
+                key={pattern}
+                className={`theme-card ${headerPattern === '/' + pattern ? 'active' : ''}`}
+                onClick={() => changeHeaderPattern(pattern)}
+                style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center' }}
+              >
+                <div 
+                  className="theme-preview"
+                  style={{ 
+                    backgroundImage: `url('/${pattern}')`, 
+                    backgroundSize: 'cover', 
+                    backgroundPosition: 'center',
+                    height: '80px',
+                    width: '100%',
+                    borderRadius: 'var(--radius-md)',
+                    border: headerPattern === '/' + pattern ? '2px solid var(--color-primary)' : '1px solid var(--color-border)'
+                  }}
                 >
-                  Arco-Íris Original (cabecalho.jpg)
-                </button>
-             </div>
+                  {headerPattern === '/' + pattern && (
+                    <div className="theme-check" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.8)', borderRadius: '50%', padding: '2px' }}>
+                      <CheckCircle size={24} color="var(--color-primary)" fill="white" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-small" style={{ fontSize: '0.75rem', fontWeight: 600, textAlign: 'center' }}>
+                  {pattern.replace('.jpg', '').replace('cabecalho', 'Padrão ')}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
