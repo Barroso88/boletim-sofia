@@ -468,21 +468,21 @@ const Leite = () => {
       {/* Sub Tabs Switcher */}
       <div className="sub-tabs-container">
         <button
-          className={`sub-tab-btn ${activeSubTab === 'leite' ? 'active' : ''}`}
+          className={`sub-tab-btn btn-leite ${activeSubTab === 'leite' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('leite')}
         >
           <Milk size={18} />
           <span>Leite</span>
         </button>
         <button
-          className={`sub-tab-btn ${activeSubTab === 'fraldas' ? 'active' : ''}`}
+          className={`sub-tab-btn btn-fraldas ${activeSubTab === 'fraldas' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('fraldas')}
         >
           <Layers size={18} />
           <span>Fraldas</span>
         </button>
         <button
-          className={`sub-tab-btn ${activeSubTab === 'sonos' ? 'active' : ''}`}
+          className={`sub-tab-btn btn-sono ${activeSubTab === 'sonos' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('sonos')}
         >
           <Clock size={18} />
