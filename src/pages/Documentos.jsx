@@ -205,15 +205,15 @@ const Documentos = () => {
             {documentos.map((doc, index) => {
               const isPreenchido = doc.numero && doc.numero.trim() !== '';
               const pastelColors = [
-                'rgba(244, 63, 94, 0.04)',  /* rose */
-                'rgba(56, 189, 248, 0.05)', /* sky */
-                'rgba(52, 211, 153, 0.05)', /* emerald */
-                'rgba(251, 191, 36, 0.06)', /* amber */
-                'rgba(167, 139, 250, 0.05)',/* violet */
-                'rgba(251, 146, 60, 0.04)', /* orange */
-                'rgba(244, 114, 182, 0.04)',/* pink */
-                'rgba(45, 212, 191, 0.05)', /* teal */
-                'rgba(14, 165, 233, 0.05)', /* ocean */
+                '#FEE2E2', // Light Red / Rose
+                '#DBEAFE', // Light Blue
+                '#D1FAE5', // Light Emerald
+                '#FEF9C3', // Light Yellow
+                '#F3E8FF', // Light Purple
+                '#FFEDD5', // Light Orange
+                '#FCE7F3', // Light Pink
+                '#CCFBF1', // Light Teal
+                '#E0E7FF', // Light Indigo
               ];
               const rowColor = pastelColors[index % pastelColors.length];
               
