@@ -54,7 +54,18 @@ const Layout = ({ children }) => {
           '--header-pattern': `url('${headerPattern}')`
         }}
       >
-        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
+        <div className="navbar-left">
+          <Link to="/perfil" className="navbar-brand brand-link">
+            <div className="avatar-ring">
+              <div className="avatar">
+                <img src="/favicon.png?v=4" alt="Sofia" />
+              </div>
+              <span className="online-pulse-dot" title="Sofia Morais Barroso" />
+            </div>
+          </Link>
+        </div>
+
+        <div className="navbar-center" style={{ display: 'flex', justifyContent: 'center', flex: 1 }}>
           <Link to="/perfil" className="brand-link" style={{ textDecoration: 'none' }}>
             <span className="brand-title" style={{ 
               fontFamily: headerFont, 
@@ -64,17 +75,6 @@ const Layout = ({ children }) => {
             }}>
               Sofia
             </span>
-          </Link>
-        </div>
-        
-        <div className="navbar-left">
-          <Link to="/perfil" className="navbar-brand brand-link">
-            <div className="avatar-ring">
-              <div className="avatar">
-                <img src="/favicon.png?v=4" alt="Sofia" />
-              </div>
-              <span className="online-pulse-dot" title="Sofia Morais Barroso" />
-            </div>
           </Link>
         </div>
         <div className="navbar-right mobile-only">
