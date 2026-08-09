@@ -254,13 +254,22 @@ const Marcos = () => {
                         className="marco-date-badge"
                         style={{
                           background: colorObj.dotBg,
-                          color: colorObj.accent
+                          color: colorObj.accent,
+                          display: 'inline-flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          borderRadius: '12px',
+                          gap: '0.2rem',
+                          padding: '0.4rem 0.75rem'
                         }}
                       >
-                        <Calendar size={12} />
-                        {format(dateObj, "dd 'de' MMMM, yyyy", { locale: ptBR })}
-                        &nbsp;·&nbsp;
-                        <span style={{ fontWeight: 500, textTransform: 'none' }}>{distancia}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <Calendar size={12} />
+                          {format(dateObj, "dd 'de' MMMM, yyyy", { locale: ptBR })}
+                        </div>
+                        <span style={{ fontWeight: 500, textTransform: 'none', opacity: 0.85, fontSize: '0.7rem' }}>
+                          {distancia}
+                        </span>
                       </div>
 
                       <h3 className="marco-title">{marco.titulo}</h3>
