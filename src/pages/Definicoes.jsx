@@ -24,9 +24,23 @@ const STANDARD_THEMES = [
   { id: 'cherry', name: 'Cherry Ruby', primary: '#E11D48', secondary: '#F43F5E', bg: '#FFE4E6' },
 ];
 
+const HEADER_FONTS = [
+  { id: 'font-1', name: 'Sweet Cucumber', family: "'Sweet Cucumber Mocktail', cursive" },
+  { id: 'font-2', name: 'Pacifico', family: "'Pacifico', cursive" },
+  { id: 'font-3', name: 'Caveat', family: "'Caveat', cursive" },
+  { id: 'font-4', name: 'Dancing Script', family: "'Dancing Script', cursive" },
+  { id: 'font-5', name: 'Great Vibes', family: "'Great Vibes', cursive" },
+  { id: 'font-6', name: 'Satisfy', family: "'Satisfy', cursive" },
+  { id: 'font-7', name: 'Amatic SC', family: "'Amatic SC', cursive" },
+  { id: 'font-8', name: 'Cookie', family: "'Cookie', cursive" },
+  { id: 'font-9', name: 'Sacramento', family: "'Sacramento', cursive" },
+  { id: 'font-10', name: 'Parisienne', family: "'Parisienne', cursive" },
+];
+
 const Definicoes = () => {
   const [activeTheme, setActiveTheme] = useState('rosegold');
   const [headerPattern, setHeaderPattern] = useState('/cabecalho.jpg');
+  const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
   const [mensagemSucesso, setMensagemSucesso] = useState('');
 
   useEffect(() => {
@@ -37,6 +51,10 @@ const Definicoes = () => {
     const savedPattern = localStorage.getItem('sofia_header_pattern');
     if (savedPattern) {
       setHeaderPattern(savedPattern);
+    }
+    const savedFont = localStorage.getItem('sofia_header_font');
+    if (savedFont) {
+      setHeaderFont(savedFont);
     }
   }, []);
 
@@ -56,6 +74,15 @@ const Definicoes = () => {
     window.dispatchEvent(new CustomEvent('headerPatternChanged', { detail: finalPattern }));
     
     setMensagemSucesso('Padrão do cabeçalho atualizado!');
+    setTimeout(() => setMensagemSucesso(''), 4000);
+  };
+
+  const changeHeaderFont = (font) => {
+    setHeaderFont(font);
+    localStorage.setItem('sofia_header_font', font);
+    window.dispatchEvent(new CustomEvent('headerFontChanged', { detail: font }));
+    
+    setMensagemSucesso('Tipo de letra atualizado!');
     setTimeout(() => setMensagemSucesso(''), 4000);
   };
 

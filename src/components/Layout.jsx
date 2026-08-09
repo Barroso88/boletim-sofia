@@ -7,19 +7,32 @@ import './Layout.css';
 const Layout = ({ children }) => {
   const location = useLocation();
   const [headerPattern, setHeaderPattern] = useState('/cabecalho.jpg');
+  const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
 
   useEffect(() => {
-    const saved = localStorage.getItem('sofia_header_pattern');
-    if (saved) {
-      setHeaderPattern(saved);
+    const savedPattern = localStorage.getItem('sofia_header_pattern');
+    if (savedPattern) {
+      setHeaderPattern(savedPattern);
+    }
+    const savedFont = localStorage.getItem('sofia_header_font');
+    if (savedFont) {
+      setHeaderFont(savedFont);
     }
     
     const handlePatternChange = (e) => {
       setHeaderPattern(e.detail);
     };
     
+    const handleFontChange = (e) => {
+      setHeaderFont(e.detail);
+    };
+    
     window.addEventListener('headerPatternChanged', handlePatternChange);
-    return () => window.removeEventListener('headerPatternChanged', handlePatternChange);
+    window.addEventListener('headerFontChanged', handleFontChange);
+    return () => {
+      window.removeEventListener('headerPatternChanged', handlePatternChange);
+      window.removeEventListener('headerFontChanged', handleFontChange);
+    };
   }, []);
 
   const navItems = [
@@ -44,7 +57,7 @@ const Layout = ({ children }) => {
         <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
           <Link to="/perfil" className="brand-link" style={{ textDecoration: 'none' }}>
             <span className="brand-title" style={{ 
-              fontFamily: "'Sweet Cucumber Mocktail', cursive", 
+              fontFamily: headerFont, 
               fontSize: '3.5rem', 
               lineHeight: 1,
               padding: '0.5rem 1rem'
