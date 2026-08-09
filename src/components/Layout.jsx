@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, Milk } from 'lucide-react';
+import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
 import './Layout.css';
 
@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
     { path: '/documentos', label: 'Documentos', icon: <FileText size={20} /> },
     { path: '/peso', label: 'Peso', icon: <Scale size={20} /> },
     { path: '/vacinas', label: 'Vacinas', icon: <Syringe size={20} /> },
-    { path: '/leite', label: 'Registos', icon: <Milk size={20} /> },
+    { path: '/leite', label: 'Registos', icon: <ClipboardList size={20} /> },
   ];
 
   return (
