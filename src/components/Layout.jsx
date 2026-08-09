@@ -54,8 +54,16 @@ const Layout = ({ children }) => {
           </Link>
         </div>
         
-        {/* Empty div to maintain flex space-between balance since left is absolute now */}
-        <div className="navbar-left" style={{ width: '42px' }}></div>
+        <div className="navbar-left">
+          <Link to="/perfil" className="navbar-brand brand-link">
+            <div className="avatar-ring">
+              <div className="avatar">
+                <img src="/favicon.png?v=4" alt="Sofia" />
+              </div>
+              <span className="online-pulse-dot" title="Sofia Morais Barroso" />
+            </div>
+          </Link>
+        </div>
         <div className="navbar-right">
           <Link
             to="/definicoes"
