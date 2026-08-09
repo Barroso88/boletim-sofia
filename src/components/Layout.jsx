@@ -19,7 +19,14 @@ const Layout = ({ children }) => {
   return (
     <div className="layout">
       <VitaminaModal />
-      <nav className="navbar glass-card">
+      <nav
+        className="navbar glass-card"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0.25)), url('/cabecalho.jpg')`,
+          backgroundSize: '150px 150px',
+          backgroundRepeat: 'repeat',
+        }}
+      >
         <div className="navbar-left">
           <Link to="/perfil" className="navbar-brand brand-link">
             <div className="avatar-ring">
