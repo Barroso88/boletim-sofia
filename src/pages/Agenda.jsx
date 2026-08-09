@@ -100,7 +100,7 @@ const Agenda = () => {
   return (
     <div className="page-container agenda-layout">
       {/* 1. Calendar Section */}
-      <div className="calendar-section glass-card">
+      <div className="calendar-section">
         <div className="calendar-header">
           <button onClick={prevMonth} className="btn-nav"><ChevronLeft size={24} /></button>
           <h2 className="calendar-title text-gradient">
