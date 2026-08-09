@@ -13,9 +13,7 @@
   padding: 2.5rem 2rem; /* Reduced padding for a more compact hero card */
   text-align: center;
   border-radius: var(--radius-lg);
-  background-image: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)), url('/cabecalho.jpg');
-  background-size: cover;
-  background-position: center;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
   position: relative;
@@ -427,8 +425,4 @@
   .health-summary {
     grid-template-columns: 1fr;
   }
-}
-
-[data-theme="midnight"] .hero-card {
-  background-image: linear-gradient(rgba(30, 27, 75, 0.45), rgba(30, 27, 75, 0.45)), url('/cabecalho.jpg');
 }
