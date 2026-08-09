@@ -150,6 +150,53 @@ const Definicoes = () => {
           </div>
         </div>
 
+        {/* Selector de Tipo de Letra */}
+        <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(139,92,246,0.25)', background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(243,232,255,0.5))' }}>
+          <div className="settings-header">
+            <Sparkles size={24} color="#8b5cf6" />
+            <h3 className="h3" style={{ color: '#6d28d9' }}>✨ Tipo de Letra (Cabeçalho)</h3>
+          </div>
+          <p className="text-small mb-4">
+            Escolha o estilo de letra para o nome da Sofia na barra superior.
+          </p>
+
+          <div className="themes-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '1rem' }}>
+            {HEADER_FONTS.map((font) => (
+              <div 
+                key={font.id}
+                className={`theme-card ${headerFont === font.family ? 'active' : ''}`}
+                onClick={() => changeHeaderFont(font.family)}
+                style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center', padding: '0.5rem' }}
+              >
+                <div 
+                  className="theme-preview"
+                  style={{ 
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'var(--color-surface)',
+                    height: '60px',
+                    width: '100%',
+                    borderRadius: 'var(--radius-md)',
+                    border: headerFont === font.family ? '2px solid #8b5cf6' : '1px solid var(--color-border)',
+                    position: 'relative'
+                  }}
+                >
+                  <span style={{ fontFamily: font.family, fontSize: '1.8rem', color: 'var(--color-text)', lineHeight: 1 }}>Sofia</span>
+                  {headerFont === font.family && (
+                    <div className="theme-check" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.8)', borderRadius: '50%', padding: '2px' }}>
+                      <CheckCircle size={24} color="#8b5cf6" fill="white" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-small" style={{ fontSize: '0.75rem', fontWeight: 600, textAlign: 'center' }}>
+                  {font.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Temas Especiais Bebé com Fundo Ilustrado */}
         <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(244,63,94,0.25)', background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(254,243,199,0.5))' }}>
           <div className="settings-header">
