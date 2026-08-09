@@ -9,7 +9,7 @@
   gap: 2rem;
 }
 
-.hero-card {
+.hero-card.glass-card {
   padding: 1.5rem 2rem;
   text-align: center;
   border-radius: var(--radius-xl);
@@ -24,14 +24,14 @@
   transition: all var(--transition-normal);
 }
 
-.hero-card:hover {
+.hero-card.glass-card:hover {
   transform: translateY(-3px);
   box-shadow: 
     0 12px 40px -8px rgba(16, 185, 129, 0.6),
     inset 0 0 16px rgba(255, 255, 255, 0.9);
 }
 
-[data-theme="midnight"] .hero-card {
+[data-theme="midnight"] .hero-card.glass-card {
   background: linear-gradient(135deg, rgba(30, 27, 75, 0.6), rgba(15, 23, 42, 0.8));
   border: 1px solid rgba(16, 185, 129, 0.5);
   border-bottom: 3px solid rgba(5, 150, 105, 0.9);
@@ -40,7 +40,7 @@
     inset 0 2px 12px rgba(16, 185, 129, 0.15);
 }
 
-[data-theme="midnight"] .hero-card:hover {
+[data-theme="midnight"] .hero-card.glass-card:hover {
   box-shadow: 
     0 12px 40px -8px rgba(16, 185, 129, 0.6),
     inset 0 0 16px rgba(16, 185, 129, 0.2);
@@ -146,24 +146,49 @@
 .health-section {
   background: var(--color-surface);
   padding: 1.5rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-normal);
+  transition: all var(--transition-normal);
 }
 
 .health-section.section-proximas {
-  background: #FCE7F3; /* Solid Pink */
-  border-color: #FBCFE8;
+  background: linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(209, 250, 229, 0.85));
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-bottom: 3px solid rgba(5, 150, 105, 0.8);
+  box-shadow: 
+    0 8px 32px -4px rgba(16, 185, 129, 0.25),
+    inset 0 0 12px rgba(255, 255, 255, 0.7);
 }
 
 .health-section.section-ultimas {
-  background: #FFEDD5; /* Solid Orange */
-  border-color: #FED7AA;
+  background: linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.85));
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  border-bottom: 3px solid rgba(225, 29, 72, 0.8);
+  box-shadow: 
+    0 8px 32px -4px rgba(244, 63, 94, 0.25),
+    inset 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="midnight"] .health-section.section-proximas {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.6), rgba(15, 23, 42, 0.8));
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  border-bottom: 3px solid rgba(5, 150, 105, 0.9);
+  box-shadow: 0 10px 40px -6px rgba(16, 185, 129, 0.4), inset 0 2px 12px rgba(16, 185, 129, 0.15);
+}
+
+[data-theme="midnight"] .health-section.section-ultimas {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.6), rgba(15, 23, 42, 0.8));
+  border: 1px solid rgba(244, 63, 94, 0.5);
+  border-bottom: 3px solid rgba(225, 29, 72, 0.9);
+  box-shadow: 0 10px 40px -6px rgba(244, 63, 94, 0.4), inset 0 2px 12px rgba(244, 63, 94, 0.15);
 }
 
 .health-section:hover {
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 40px -8px var(--color-primary),
+    inset 0 0 16px rgba(255, 255, 255, 0.9);
 }
 
 .health-title {
