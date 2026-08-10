@@ -204,6 +204,7 @@ const Dashboard = () => {
         </div>
       </div>
 
+
       {/* Quick View Snapshots: Última Mamada & Última Fralda */}
       <div className="quick-snapshots-grid">
         {/* Card 1: Última Mamada */}

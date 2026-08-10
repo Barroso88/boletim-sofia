@@ -490,6 +490,13 @@
   
   .hero-card {
     padding: 1.75rem 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .quick-snapshot-card, .health-section {
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .stat-value {
