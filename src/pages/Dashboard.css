@@ -473,6 +473,10 @@
 }
 
 @media (max-width: 1024px) {
+  .dashboard {
+    padding: 1rem;
+  }
+
   .quick-snapshots-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
