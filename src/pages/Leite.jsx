@@ -197,9 +197,12 @@ const Leite = () => {
               return { ...reg, duracao_dia: duracaoHoje };
             }
             return { ...reg, duracao_dia: reg.duracao_minutos };
-          } else if (reg.data === dataAnteriorStr && reg.hora_fim && reg.hora_fim < reg.hora_inicio) {
-            const [hF, mF] = reg.hora_fim.split(':').map(Number);
-            const duracaoHoje = (hF * 60 + mF);
+          } else if (reg.data === dataAnteriorStr && (!reg.hora_fim || reg.hora_fim < reg.hora_inicio)) {
+            let duracaoHoje = 0;
+            if (reg.hora_fim) {
+              const [hF, mF] = reg.hora_fim.split(':').map(Number);
+              duracaoHoje = (hF * 60 + mF);
+            }
             return { ...reg, duracao_dia: duracaoHoje };
           }
           return null;
@@ -323,10 +326,13 @@ const Leite = () => {
           return { ...reg, duracao_dia: duracaoHoje, is_split_start: true };
         }
         return { ...reg, duracao_dia: reg.duracao_minutos };
-      } else if (reg.data === dataAnteriorStr && reg.hora_fim && reg.hora_fim < reg.hora_inicio) {
-        // Started yesterday, ended today. Split duration for today: 00:00 to end.
-        const [hF, mF] = reg.hora_fim.split(':').map(Number);
-        const duracaoHoje = (hF * 60 + mF);
+      } else if (reg.data === dataAnteriorStr && (!reg.hora_fim || reg.hora_fim < reg.hora_inicio)) {
+        // Started yesterday, ended today OR still ongoing. Split duration for today: 00:00 to end.
+        let duracaoHoje = 0;
+        if (reg.hora_fim) {
+          const [hF, mF] = reg.hora_fim.split(':').map(Number);
+          duracaoHoje = (hF * 60 + mF);
+        }
         return { ...reg, duracao_dia: duracaoHoje, is_split_end: true };
       }
       return null;
