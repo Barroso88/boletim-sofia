@@ -185,8 +185,28 @@ const Leite = () => {
       const dayLabelRaw = format(d, 'eee', { locale: ptBR });
       const dayFullLabel = format(d, "eeee (dd/MM)", { locale: ptBR });
       
-      const registosDoDia = registosSonos.filter(r => r.data === dateStr);
-      const totalMinutos = registosDoDia.reduce((sum, r) => sum + r.duracao_minutos, 0);
+      const dateObj = parseISO(dateStr);
+      const dataAnteriorStr = format(subDays(dateObj, 1), 'yyyy-MM-dd');
+
+      const registosDoDia = registosSonos
+        .map(reg => {
+          if (reg.data === dateStr) {
+            if (reg.hora_fim && reg.hora_fim < reg.hora_inicio) {
+              const [hI, mI] = reg.hora_inicio.split(':').map(Number);
+              const duracaoHoje = (24 * 60) - (hI * 60 + mI);
+              return { ...reg, duracao_dia: duracaoHoje };
+            }
+            return { ...reg, duracao_dia: reg.duracao_minutos };
+          } else if (reg.data === dataAnteriorStr && reg.hora_fim && reg.hora_fim < reg.hora_inicio) {
+            const [hF, mF] = reg.hora_fim.split(':').map(Number);
+            const duracaoHoje = (hF * 60 + mF);
+            return { ...reg, duracao_dia: duracaoHoje };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      const totalMinutos = registosDoDia.reduce((sum, r) => sum + r.duracao_dia, 0);
       const numSestas = registosDoDia.length;
 
       const dayLabel = dayLabelRaw.charAt(0).toUpperCase() + dayLabelRaw.slice(1, 3);
@@ -290,11 +310,36 @@ const Leite = () => {
   };
 
   // --- SONOS CALCULATIONS ---
-  const registosSonosDoDia = registosSonos
-    .filter(r => r.data === dataSelecionada)
-    .sort((a, b) => b.hora_inicio.localeCompare(a.hora_inicio));
+  const dataSelecionadaObj = parseISO(dataSelecionada);
+  const dataAnteriorStr = format(subDays(dataSelecionadaObj, 1), 'yyyy-MM-dd');
 
-  const totalMinutosDoDia = registosSonosDoDia.reduce((sum, r) => sum + r.duracao_minutos, 0);
+  const registosSonosDoDia = registosSonos
+    .map(reg => {
+      if (reg.data === dataSelecionada) {
+        if (reg.hora_fim && reg.hora_fim < reg.hora_inicio) {
+          // Started today, ends tomorrow. Split duration for today: start to 23:59.
+          const [hI, mI] = reg.hora_inicio.split(':').map(Number);
+          const duracaoHoje = (24 * 60) - (hI * 60 + mI);
+          return { ...reg, duracao_dia: duracaoHoje, is_split_start: true };
+        }
+        return { ...reg, duracao_dia: reg.duracao_minutos };
+      } else if (reg.data === dataAnteriorStr && reg.hora_fim && reg.hora_fim < reg.hora_inicio) {
+        // Started yesterday, ended today. Split duration for today: 00:00 to end.
+        const [hF, mF] = reg.hora_fim.split(':').map(Number);
+        const duracaoHoje = (hF * 60 + mF);
+        return { ...reg, duracao_dia: duracaoHoje, is_split_end: true };
+      }
+      return null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      // If it's a split end (started yesterday), it effectively starts at 00:00 today.
+      const timeA = a.is_split_end ? '00:00' : a.hora_inicio;
+      const timeB = b.is_split_end ? '00:00' : b.hora_inicio;
+      return timeB.localeCompare(timeA);
+    });
+
+  const totalMinutosDoDia = registosSonosDoDia.reduce((sum, r) => sum + r.duracao_dia, 0);
   const totalHorasSono = Math.floor(totalMinutosDoDia / 60);
   const totalMinutosResto = totalMinutosDoDia % 60;
   const totalSonoFormatado = `${totalHorasSono}h ${totalMinutosResto}m`;
@@ -1076,8 +1121,9 @@ const Leite = () => {
             ) : (
               <>
                 {registosSonosDoDia.map((reg) => {
-                  const hrs = Math.floor(reg.duracao_minutos / 60);
-                  const mins = reg.duracao_minutos % 60;
+                  const durationToUse = reg.duracao_dia !== undefined ? reg.duracao_dia : reg.duracao_minutos;
+                  const hrs = Math.floor(durationToUse / 60);
+                  const mins = durationToUse % 60;
                   return (
                     <div key={reg.id} className="feeding-card" style={{ borderLeft: '4px solid #8b5cf6' }}>
                       <div className="feeding-left">
@@ -1085,14 +1131,31 @@ const Leite = () => {
                           <Clock size={20} />
                         </div>
                         <div>
-                          <div className="feeding-time">
-                            {reg.hora_inicio} - {reg.hora_fim ? reg.hora_fim : <span style={{ color: '#8b5cf6', fontSize: '0.9rem', fontStyle: 'italic' }}>A dormir...</span>}
-                          </div>
-                          <div className="text-secondary" style={{ fontSize: '0.85rem' }}>
+                          <div className="feeding-time" style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                            {reg.hora_inicio}
+                            {reg.is_split_end && <span style={{fontSize: '0.75rem', opacity: 0.7}}>(ontem)</span>}
+                            {' - '}
                             {reg.hora_fim ? (
-                              <>{hrs > 0 ? `${hrs}h ` : ''}{mins}m</>
+                              <>
+                                {reg.hora_fim}
+                                {reg.is_split_start && <span style={{fontSize: '0.75rem', opacity: 0.7}}>(dia seg.)</span>}
+                              </>
                             ) : (
-                              'Em curso'
+                              <span style={{ color: '#8b5cf6', fontSize: '0.9rem', fontStyle: 'italic' }}>A dormir...</span>
+                            )}
+                          </div>
+                          <div className="text-secondary" style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span>
+                              {reg.hora_fim ? (
+                                <>{hrs > 0 ? `${hrs}h ` : ''}{mins}m</>
+                              ) : (
+                                'Em curso'
+                              )}
+                            </span>
+                            {(reg.is_split_start || reg.is_split_end) && reg.hora_fim && (
+                              <span style={{ fontSize: '0.7rem', background: 'rgba(139,92,246,0.1)', color: '#8b5cf6', padding: '1px 6px', borderRadius: '10px' }}>
+                                Parcial do dia
+                              </span>
                             )}
                           </div>
                         </div>
