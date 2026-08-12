@@ -26,6 +26,7 @@ const Leite = () => {
   const [latas, setLatas] = useState([]);
   const [modalLataAberta, setModalLataAberta] = useState(false);
   const [nomeLata, setNomeLata] = useState('');
+  const [editandoIdLata, setEditandoIdLata] = useState(null);
   const [dataSelecionada, setDataSelecionada] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [adicionandoLeite, setAdicionandoLeite] = useState(false);
   const [editandoIdLeite, setEditandoIdLeite] = useState(null);
@@ -326,18 +327,36 @@ const Leite = () => {
     };
   };
 
-  const abrirNovaLata = () => {
-    const novaLata = {
-      id: Date.now(),
-      data_abertura: format(new Date(), 'yyyy-MM-dd'),
-      capacidade_ml: 5580,
-      nome_formula: nomeLata
-    };
-    api.addLata(novaLata).then(() => {
-      setLatas([novaLata, ...latas]);
-      setModalLataAberta(false);
-      setNomeLata('');
-    });
+  const salvarLata = () => {
+    if (editandoIdLata) {
+      const original = latas.find(l => l.id === editandoIdLata);
+      if (!original) return;
+      const novaLata = { ...original, nome_formula: nomeLata };
+      api.editLata(editandoIdLata, novaLata).then(() => {
+        setLatas(latas.map(l => l.id === editandoIdLata ? novaLata : l));
+        setModalLataAberta(false);
+        setEditandoIdLata(null);
+        setNomeLata('');
+      });
+    } else {
+      const novaLata = {
+        id: Date.now(),
+        data_abertura: format(new Date(), 'yyyy-MM-dd'),
+        capacidade_ml: 5580,
+        nome_formula: nomeLata
+      };
+      api.addLata(novaLata).then(() => {
+        setLatas([novaLata, ...latas]);
+        setModalLataAberta(false);
+        setNomeLata('');
+      });
+    }
+  };
+
+  const abrirEdicaoLata = (lata) => {
+    setEditandoIdLata(lata.id);
+    setNomeLata(lata.nome_formula || '');
+    setModalLataAberta(true);
   };
 
   const abrirEdicaoLeite = (reg) => {
@@ -472,6 +491,9 @@ const Leite = () => {
     } else if (type === 'sono') {
       setRegistosSonos(prev => prev.filter(s => s.id !== id));
       api.deleteSono(id);
+    } else if (type === 'lata') {
+      setLatas(prev => prev.filter(l => l.id !== id));
+      api.deleteLata(id);
     }
     setConfirmarDelete(null);
   };
@@ -668,9 +690,17 @@ const Leite = () => {
                       <p className="hero-day-subtitle">Aberta a {stock.lata.data_abertura}</p>
                     </div>
                   </div>
-                  <button className="btn-icon" onClick={() => setModalLataAberta(true)} title="Abrir nova lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
-                    <Plus size={16} />
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="btn-icon text-secondary" onClick={() => abrirEdicaoLata(stock.lata)} title="Editar lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
+                      <Pencil size={14} />
+                    </button>
+                    <button className="btn-icon" onClick={() => setConfirmarDelete({ id: stock.lata.id, type: 'lata' })} title="Apagar lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%', color: '#ef4444' }}>
+                      <Trash2 size={14} />
+                    </button>
+                    <button className="btn-icon" onClick={() => setModalLataAberta(true)} title="Abrir nova lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
+                      <Plus size={16} />
+                    </button>
+                  </div>
                 </div>
                 
                 <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
@@ -1331,7 +1361,7 @@ const Leite = () => {
             </div>
             <div>
               <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>
-                Remover {confirmarDelete.type === 'leite' ? 'Registo de Leite' : confirmarDelete.type === 'fralda' ? 'Registo de Fralda' : 'Registo de Sono'}?
+                Remover {confirmarDelete.type === 'leite' ? 'Registo de Leite' : confirmarDelete.type === 'fralda' ? 'Registo de Fralda' : confirmarDelete.type === 'lata' ? 'Lata de Leite' : 'Registo de Sono'}?
               </h3>
               <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
                 Este registo será apagado permanentemente.
@@ -1676,11 +1706,11 @@ const Leite = () => {
 
       {/* Modal Nova Lata de Leite */}
       {modalLataAberta && (
-        <div className="modal-overlay" onClick={() => setModalLataAberta(false)}>
+        <div className="modal-overlay" onClick={() => { setModalLataAberta(false); setEditandoIdLata(null); setNomeLata(''); }}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">Abrir Nova Lata</h2>
-              <button className="btn-action-close" onClick={() => setModalLataAberta(false)}>
+              <h2 className="modal-title">{editandoIdLata ? 'Editar Lata' : 'Abrir Nova Lata'}</h2>
+              <button className="btn-action-close" onClick={() => { setModalLataAberta(false); setEditandoIdLata(null); setNomeLata(''); }}>
                 <X size={20} />
               </button>
             </div>
@@ -1695,8 +1725,8 @@ const Leite = () => {
                   onChange={(e) => setNomeLata(e.target.value)}
                 />
               </div>
-              <button className="btn-primary" onClick={abrirNovaLata} style={{ marginTop: '0.5rem' }}>
-                Registar Abertura
+              <button className="btn-primary" onClick={salvarLata} style={{ marginTop: '0.5rem' }}>
+                {editandoIdLata ? 'Guardar Alterações' : 'Registar Abertura'}
               </button>
             </div>
           </div>

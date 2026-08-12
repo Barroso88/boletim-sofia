@@ -377,6 +377,14 @@ export const api = {
     });
   },
 
+  async editLata(id, lata) {
+    return fetchWithFallback(`${API_BASE}/latas/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lata),
+    });
+  },
+
   async deleteLata(id) {
     return fetchWithFallback(`${API_BASE}/latas/${id}`, { method: 'DELETE' });
   },
