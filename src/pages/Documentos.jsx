@@ -12,6 +12,21 @@ const defaultDocs = [
   { id: 6, titulo: 'Grupo Sanguíneo', numero: '', type: 'blood' },
 ];
 
+const CATEGORY_COLORS = [
+  '#ef4444', // Vermelho
+  '#3b82f6', // Azul
+  '#10b981', // Verde
+  '#f59e0b', // Âmbar
+  '#8b5cf6', // Roxo
+  '#ec4899', // Rosa
+  '#0ea5e9', // Azul Céu
+  '#f97316', // Laranja
+  '#14b8a6', // Teal
+  '#84cc16', // Lima
+  '#6366f1', // Indigo
+  '#f43f5e'  // Rosa choque
+];
+
 const Documentos = () => {
   const [documentos, setDocumentos] = useState([]);
   const [editDoc, setEditDoc] = useState(null);
