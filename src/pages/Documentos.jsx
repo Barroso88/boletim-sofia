@@ -370,15 +370,16 @@ const Documentos = () => {
           </div>
         ) : (
           <div className="categorias-list">
-            {categorias.map(cat => {
+            {categorias.map((cat, index) => {
               const catDocs = digitalizacoes.filter(d => String(d.categoria_id) === String(cat.id));
               const isExpanded = expandedCats[cat.id];
+              const themeColor = CATEGORY_COLORS[index % CATEGORY_COLORS.length];
               return (
-                <div key={cat.id} className="categoria-card">
+                <div key={cat.id} className="categoria-card" style={{ borderLeft: `6px solid ${themeColor}` }}>
                   <div className="categoria-header" onClick={() => toggleCategoria(cat.id)}>
                     <div className="cat-title-left">
-                      {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                      <span className="cat-name">{cat.nome}</span>
+                      {isExpanded ? <ChevronUp size={20} color={themeColor} /> : <ChevronDown size={20} color={themeColor} />}
+                      <span className="cat-name" style={{ color: themeColor }}>{cat.nome}</span>
                       <span className="cat-badge">{catDocs.length} ficheiro(s)</span>
                     </div>
                     <div className="cat-actions" onClick={e => e.stopPropagation()}>
@@ -396,19 +397,21 @@ const Documentos = () => {
                       {catDocs.length === 0 ? (
                         <p className="empty-placeholder">Nenhum ficheiro anexado.</p>
                       ) : (
-                        <div className="scans-grid">
+                        <div className="scans-list">
                           {catDocs.map(doc => {
                             const isPdf = doc.filename.toLowerCase().endsWith('.pdf');
                             const fileUrl = `/uploads/${doc.filename}`;
                             return (
-                              <div key={doc.id} className="scan-item">
-                                <div className="scan-preview" onClick={() => setPreviewFile(fileUrl)}>
-                                  {isPdf ? <File size={40} color="var(--color-primary)" /> : <img src={fileUrl} alt={doc.titulo} />}
+                              <div key={doc.id} className="scan-list-item">
+                                <div className="scan-list-icon" onClick={() => setPreviewFile(fileUrl)}>
+                                  {isPdf ? <File size={26} color="var(--color-primary)" /> : <img src={fileUrl} alt={doc.titulo} />}
                                 </div>
-                                <div className="scan-info">
-                                  <span className="scan-title" title={doc.titulo}>{doc.titulo}</span>
+                                <div className="scan-list-info" onClick={() => setPreviewFile(fileUrl)}>
+                                  <span className="scan-list-title" title={doc.titulo}>{doc.titulo}</span>
+                                </div>
+                                <div className="scan-list-actions">
                                   <button className="btn-action-delete" onClick={() => handleDeleteScan(doc.id)}>
-                                    <Trash2 size={14} />
+                                    <Trash2 size={16} />
                                   </button>
                                 </div>
                               </div>
