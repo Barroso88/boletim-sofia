@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { format, parseISO, formatDistanceToNow, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X, BarChart2, TrendingUp, Award } from 'lucide-react';
+import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X, BarChart2, TrendingUp, Award, Package } from 'lucide-react';
 import { api } from '../services/api';
 import './Leite.css';
 
@@ -23,6 +23,9 @@ const Leite = () => {
 
   // Leite State
   const [registosLeite, setRegistosLeite] = useState([]);
+  const [latas, setLatas] = useState([]);
+  const [modalLataAberta, setModalLataAberta] = useState(false);
+  const [nomeLata, setNomeLata] = useState('');
   const [dataSelecionada, setDataSelecionada] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [adicionandoLeite, setAdicionandoLeite] = useState(false);
   const [editandoIdLeite, setEditandoIdLeite] = useState(null);
@@ -49,6 +52,7 @@ const Leite = () => {
     api.getLeite().then(data => setRegistosLeite(data));
     api.getFraldas().then(data => setRegistosFraldas(data));
     api.getSonos().then(data => setRegistosSonos(data));
+    api.getLatas().then(data => setLatas(data));
   }, []);
 
   // --- RELATÓRIO SEMANAL CALCULATIONS ---
@@ -290,6 +294,50 @@ const Leite = () => {
     } catch (e) {
       return null;
     }
+  };
+  const calcularStockLata = () => {
+    if (latas.length === 0) return null;
+    const lataAtual = latas[0];
+    const capacidade = lataAtual.capacidade_ml || 5580;
+    
+    const milkSince = registosLeite.filter(r => r.id >= lataAtual.id);
+    const consumido = milkSince.reduce((sum, r) => sum + r.quantidade_ml, 0);
+    const restante = Math.max(0, capacidade - consumido);
+    const percent = Math.min(100, Math.max(0, (restante / capacidade) * 100));
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const timestamp7Days = sevenDaysAgo.getTime();
+    const milk7Days = registosLeite.filter(r => r.id >= timestamp7Days);
+    const total7Days = milk7Days.reduce((sum, r) => sum + r.quantidade_ml, 0);
+    
+    // avoid divide by zero if not enough data, assume avg 800ml/day
+    const mediaDiaria = total7Days > 0 ? (total7Days / 7) : 800; 
+    
+    const diasRestantes = (restante / mediaDiaria).toFixed(1);
+
+    return {
+      lata: lataAtual,
+      consumido,
+      capacidade,
+      restante,
+      percent,
+      diasRestantes
+    };
+  };
+
+  const abrirNovaLata = () => {
+    const novaLata = {
+      id: Date.now(),
+      data_abertura: format(new Date(), 'yyyy-MM-dd'),
+      capacidade_ml: 5580,
+      nome_formula: nomeLata
+    };
+    api.addLata(novaLata).then(() => {
+      setLatas([novaLata, ...latas]);
+      setModalLataAberta(false);
+      setNomeLata('');
+    });
   };
 
   const abrirEdicaoLeite = (reg) => {
@@ -586,6 +634,67 @@ const Leite = () => {
       {/* ─── TAB 1: LEITE ────────────────────────────────────────────────── */}
       {activeSubTab === 'leite' && (
         <>
+          {/* Stock de Leite Card */}
+          {(() => {
+            const stock = calcularStockLata();
+            if (!stock) {
+              return (
+                <div className="leite-hero-card" style={{ marginBottom: '1rem', background: 'var(--color-surface)' }}>
+                  <div className="hero-title-group" style={{ marginBottom: '1rem' }}>
+                    <div className="icon-badge-glow" style={{ background: 'var(--color-secondary)' }}>
+                      <Package size={22} color="white" />
+                    </div>
+                    <div>
+                      <h2 className="hero-day-title">Despensa de Leite</h2>
+                      <p className="hero-day-subtitle">Nenhuma lata aberta de momento</p>
+                    </div>
+                  </div>
+                  <button className="btn-primary w-100" onClick={() => setModalLataAberta(true)}>
+                    <Plus size={18} /> Registar Lata Aberta
+                  </button>
+                </div>
+              );
+            }
+            
+            return (
+              <div className="leite-hero-card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--color-primary)' }}>
+                <div className="hero-title-group" style={{ marginBottom: '1rem', justifyContent: 'space-between', display: 'flex' }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div className="icon-badge-glow" style={{ background: 'var(--color-primary)' }}>
+                      <Package size={22} color="white" />
+                    </div>
+                    <div>
+                      <h2 className="hero-day-title">{stock.lata.nome_formula || 'Lata de Leite'}</h2>
+                      <p className="hero-day-subtitle">Aberta a {stock.lata.data_abertura}</p>
+                    </div>
+                  </div>
+                  <button className="btn-icon" onClick={() => setModalLataAberta(true)} title="Abrir nova lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
+                    <Plus size={16} />
+                  </button>
+                </div>
+                
+                <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                  <span style={{ fontWeight: '500' }}>{stock.consumido} ml consumidos</span>
+                  <span className="text-secondary">{stock.capacidade} ml</span>
+                </div>
+                
+                <div style={{ width: '100%', height: '12px', background: 'var(--color-border)', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                  <div style={{ 
+                    height: '100%', 
+                    width: `${stock.percent}%`, 
+                    background: stock.percent > 85 ? '#ef4444' : stock.percent > 70 ? '#f59e0b' : 'var(--color-primary)',
+                    transition: 'width 0.5s ease-in-out'
+                  }}></div>
+                </div>
+                
+                <div style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <TrendingUp size={14} />
+                  <span>Previsão: restam cerca de <strong>{stock.diasRestantes} dias</strong></span>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Hero Stats Card */}
           <div className="leite-hero-card">
             <div className="hero-top-row">
@@ -1238,6 +1347,35 @@ const Leite = () => {
                 onClick={apagarRegistoConfirmado}
               >
                 <Trash2 size={16} /> Remover
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Nova Lata de Leite */}
+      {modalLataAberta && (
+        <div className="modal-overlay" onClick={() => setModalLataAberta(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Abrir Nova Lata</h2>
+              <button className="btn-action-close" onClick={() => setModalLataAberta(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body form-grid">
+              <div className="form-group">
+                <label>Fórmula (Opcional)</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Aptamil Profutura"
+                  className="input-field"
+                  value={nomeLata}
+                  onChange={(e) => setNomeLata(e.target.value)}
+                />
+              </div>
+              <button className="btn-primary" onClick={abrirNovaLata} style={{ marginTop: '0.5rem' }}>
+                Registar Abertura
               </button>
             </div>
           </div>

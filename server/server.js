@@ -180,6 +180,13 @@ async function setupTables() {
         created_at TEXT NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS latas_leite (
+        id BIGINT PRIMARY KEY,
+        data_abertura TEXT NOT NULL,
+        capacidade_ml INTEGER DEFAULT 5580,
+        nome_formula TEXT
+      );
+
       CREATE TABLE IF NOT EXISTS leite (
         id BIGINT PRIMARY KEY,
         data TEXT NOT NULL,
@@ -722,6 +729,39 @@ app.delete('/api/digitalizacoes/:id', async (req, res) => {
     }
     
     await pool.query('DELETE FROM documentos_digitalizados WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- LATAS DE LEITE ---
+app.get('/api/latas', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM latas_leite ORDER BY id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/latas', async (req, res) => {
+  const { id, data_abertura, capacidade_ml, nome_formula } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO latas_leite (id, data_abertura, capacidade_ml, nome_formula) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data_abertura = $2, capacidade_ml = $3, nome_formula = $4',
+      [id, data_abertura, capacidade_ml || 5580, nome_formula || '']
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/latas/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM latas_leite WHERE id = $1', [id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

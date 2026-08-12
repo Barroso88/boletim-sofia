@@ -358,6 +358,29 @@ export const api = {
     fetchWithFallback(`${API_BASE}/documentos/${id}`, { method: 'DELETE' });
   },
 
+  // --- LATAS DE LEITE ---
+  async getLatas(localKey = 'sofia_latas') {
+    const data = await fetchWithFallback(`${API_BASE}/latas`);
+    if (data) {
+      localStorage.setItem(localKey, JSON.stringify(data));
+      return data;
+    }
+    const cached = localStorage.getItem(localKey);
+    return cached ? JSON.parse(cached) : [];
+  },
+
+  async addLata(lata) {
+    return safeFetch(`${API_BASE}/latas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lata),
+    });
+  },
+
+  async deleteLata(id) {
+    return safeFetch(`${API_BASE}/latas/${id}`, { method: 'DELETE' });
+  },
+
   // --- LEITE ---
   async getLeite(localKey = 'sofia_leite') {
     const remote = await fetchWithFallback(`${API_BASE}/leite`);
