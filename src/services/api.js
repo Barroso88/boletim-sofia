@@ -507,5 +507,78 @@ export const api = {
     } catch (e) {
       console.error('Error saving config:', e);
     }
+  },
+
+  // --- CATEGORIAS DIGITALIZACOES ---
+  async getCategorias(localKey = 'sofia_categorias_digi') {
+    const remote = await fetchWithFallback(`${API_BASE}/categorias`);
+    if (remote && Array.isArray(remote)) {
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  async saveCategoria(cat, localKey = 'sofia_categorias_digi') {
+    const saved = localStorage.getItem(localKey);
+    let list = saved ? JSON.parse(saved) : [];
+    const exists = list.some(r => r.id === cat.id);
+    if (exists) list = list.map(r => r.id === cat.id ? cat : r);
+    else list = [cat, ...list];
+    localStorage.setItem(localKey, JSON.stringify(list));
+
+    fetchWithFallback(`${API_BASE}/categorias`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cat)
+    });
+  },
+
+  async deleteCategoria(id, localKey = 'sofia_categorias_digi') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(c => c.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/categorias/${id}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // --- DOCUMENTOS DIGITALIZADOS ---
+  async getDigitalizacoes(localKey = 'sofia_digitalizacoes') {
+    const remote = await fetchWithFallback(`${API_BASE}/digitalizacoes`);
+    if (remote && Array.isArray(remote)) {
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  async saveDigitalizacao(formData) {
+    try {
+      const res = await fetch(`${API_BASE}/digitalizacoes`, {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      return await res.json();
+    } catch (err) {
+      console.error(err);
+      return { error: true };
+    }
+  },
+
+  async deleteDigitalizacao(id, localKey = 'sofia_digitalizacoes') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(d => d.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/digitalizacoes/${id}`, {
+      method: 'DELETE'
+    });
   }
 };
