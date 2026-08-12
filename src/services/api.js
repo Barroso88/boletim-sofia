@@ -370,7 +370,7 @@ export const api = {
   },
 
   async addLata(lata) {
-    return safeFetch(`${API_BASE}/latas`, {
+    return fetchWithFallback(`${API_BASE}/latas`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(lata),
@@ -378,7 +378,7 @@ export const api = {
   },
 
   async deleteLata(id) {
-    return safeFetch(`${API_BASE}/latas/${id}`, { method: 'DELETE' });
+    return fetchWithFallback(`${API_BASE}/latas/${id}`, { method: 'DELETE' });
   },
 
   // --- LEITE ---

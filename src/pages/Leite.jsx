@@ -1353,35 +1353,6 @@ const Leite = () => {
         </div>
       )}
 
-      {/* Modal Nova Lata de Leite */}
-      {modalLataAberta && (
-        <div className="modal-overlay" onClick={() => setModalLataAberta(false)}>
-          <div className="modal-card" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">Abrir Nova Lata</h2>
-              <button className="btn-action-close" onClick={() => setModalLataAberta(false)}>
-                <X size={20} />
-              </button>
-            </div>
-            <div className="modal-body form-grid">
-              <div className="form-group">
-                <label>Fórmula (Opcional)</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Aptamil Profutura"
-                  className="input-field"
-                  value={nomeLata}
-                  onChange={(e) => setNomeLata(e.target.value)}
-                />
-              </div>
-              <button className="btn-primary" onClick={abrirNovaLata} style={{ marginTop: '0.5rem' }}>
-                Registar Abertura
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Modal de Relatório Semanal de Mamadas */}
       {mostrarRelatorioSemanal && (() => {
         const relatorio = getDadosRelatorioSemanal();
@@ -1702,6 +1673,35 @@ const Leite = () => {
           </div>
         );
       })()}
+
+      {/* Modal Nova Lata de Leite */}
+      {modalLataAberta && (
+        <div className="modal-overlay" onClick={() => setModalLataAberta(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Abrir Nova Lata</h2>
+              <button className="btn-action-close" onClick={() => setModalLataAberta(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body form-grid">
+              <div className="form-group">
+                <label>Fórmula (Opcional)</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Aptamil Profutura"
+                  className="input-field"
+                  value={nomeLata}
+                  onChange={(e) => setNomeLata(e.target.value)}
+                />
+              </div>
+              <button className="btn-primary" onClick={abrirNovaLata} style={{ marginTop: '0.5rem' }}>
+                Registar Abertura
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
