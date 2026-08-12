@@ -580,7 +580,16 @@ app.get('/api/fraldas', async (req, res) => {
 });
 
 app.post('/api/fraldas', async (req, res) => {
-  const { id, data, hora, tipo } = req.body;
+  let { id, data, hora, tipo } = req.body;
+  
+  // Normalizar tipos vindos do Home Assistant ou minúsculas
+  if (tipo) {
+    const t = tipo.toLowerCase().trim();
+    if (t === 'xixi') tipo = 'Xixi';
+    else if (t === 'cocó' || t === 'coco') tipo = 'Cocó';
+    else if (t === 'ambos' || t === 'cocó + xixi' || t === 'coco + xixi') tipo = 'Cocó + Xixi';
+  }
+
   try {
     await pool.query(
       'INSERT INTO fraldas (id, data, hora, tipo) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, tipo = $4',
