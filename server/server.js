@@ -3,6 +3,8 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pkg from 'pg';
+import multer from 'multer';
+import fs from 'fs';
 const { Pool } = pkg;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +15,23 @@ const PORT = process.env.PORT || 80;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve uploads folder statically
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Multer config for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
 
 // PostgreSQL Pool Configuration
 const dbConfig = {
@@ -145,6 +164,21 @@ async function setupTables() {
         type TEXT
       );
       ALTER TABLE documentos ADD COLUMN IF NOT EXISTS ordem INT DEFAULT 0;
+
+      CREATE TABLE IF NOT EXISTS categorias_digitalizacoes (
+        id BIGINT PRIMARY KEY,
+        nome TEXT NOT NULL,
+        ordem INT DEFAULT 0
+      );
+
+      CREATE TABLE IF NOT EXISTS documentos_digitalizados (
+        id BIGINT PRIMARY KEY,
+        categoria_id BIGINT NOT NULL,
+        titulo TEXT NOT NULL,
+        filename TEXT NOT NULL,
+        original_name TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
 
       CREATE TABLE IF NOT EXISTS leite (
         id BIGINT PRIMARY KEY,
@@ -595,6 +629,90 @@ app.delete('/api/sonos/:id', async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query('DELETE FROM sonos WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- CATEGORIAS DIGITALIZACOES ---
+app.get('/api/categorias', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM categorias_digitalizacoes ORDER BY ordem ASC, id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/categorias', async (req, res) => {
+  const { id, nome, ordem } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO categorias_digitalizacoes (id, nome, ordem) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET nome = $2, ordem = $3',
+      [id || Date.now(), nome, ordem || 0]
+    );
+    res.json({ success: true, id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/categorias/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM categorias_digitalizacoes WHERE id = $1', [id]);
+    await pool.query('DELETE FROM documentos_digitalizados WHERE categoria_id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- DOCUMENTOS DIGITALIZADOS ---
+app.get('/api/digitalizacoes', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM documentos_digitalizados ORDER BY created_at DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/digitalizacoes', upload.single('file'), async (req, res) => {
+  const { id, categoria_id, titulo, created_at } = req.body;
+  
+  if (!req.file) {
+    return res.status(400).json({ error: 'Nenhum ficheiro enviado' });
+  }
+
+  const filename = req.file.filename;
+  const original_name = req.file.originalname;
+
+  try {
+    await pool.query(
+      'INSERT INTO documentos_digitalizados (id, categoria_id, titulo, filename, original_name, created_at) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (id) DO UPDATE SET titulo = $3',
+      [id || Date.now(), categoria_id, titulo, filename, original_name, created_at || new Date().toISOString()]
+    );
+    res.json({ success: true, filename, original_name });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/digitalizacoes/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const docResult = await pool.query('SELECT filename FROM documentos_digitalizados WHERE id = $1', [id]);
+    if (docResult.rows.length > 0) {
+      const filename = docResult.rows[0].filename;
+      const filePath = path.join(__dirname, '../uploads', filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    
+    await pool.query('DELETE FROM documentos_digitalizados WHERE id = $1', [id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

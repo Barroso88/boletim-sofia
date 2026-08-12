@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle, ChevronUp, ChevronDown, GripVertical, FileText, Upload, Image as ImageIcon, File } from 'lucide-react';
 import { api } from '../services/api';
 import './Documentos.css';
 
@@ -23,6 +23,21 @@ const Documentos = () => {
   const [copiadoId, setCopiadoId] = useState(null);
   const [confirmarDelete, setConfirmarDelete] = useState(null);
   const [draggedIndex, setDraggedIndex] = useState(null);
+
+  // Scans State
+  const [activeSubTab, setActiveSubTab] = useState('text');
+  const [categorias, setCategorias] = useState([]);
+  const [digitalizacoes, setDigitalizacoes] = useState([]);
+  const [expandedCats, setExpandedCats] = useState({});
+  const [adicionandoCat, setAdicionandoCat] = useState(false);
+  const [novaCatNome, setNovaCatNome] = useState('');
+  
+  const [adicionandoDocScan, setAdicionandoDocScan] = useState(null); // categoria_id
+  const [novoDocScanTitulo, setNovoDocScanTitulo] = useState('');
+  const [novoDocScanFicheiro, setNovoDocScanFicheiro] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const [previewFile, setPreviewFile] = useState(null); // URL of file to preview
 
   useEffect(() => {
     api.getDocumentos(defaultDocs).then(data => {
@@ -52,6 +67,71 @@ const Documentos = () => {
       api.saveDocumentos(clean);
     });
   }, []);
+
+  useEffect(() => {
+    if (activeSubTab === 'scans') {
+      api.getCategorias().then(data => setCategorias(data || []));
+      api.getDigitalizacoes().then(data => setDigitalizacoes(data || []));
+    }
+  }, [activeSubTab]);
+
+  const toggleCategoria = (id) => {
+    setExpandedCats(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleAddCategoria = async (e) => {
+    e.preventDefault();
+    if (!novaCatNome.trim()) return;
+    const nova = { id: Date.now(), nome: novaCatNome, ordem: categorias.length };
+    const newList = [...categorias, nova];
+    setCategorias(newList);
+    setExpandedCats(prev => ({ ...prev, [nova.id]: true }));
+    await api.saveCategoria(nova);
+    setAdicionandoCat(false);
+    setNovaCatNome('');
+  };
+
+  const handleDeleteCategoria = async (id) => {
+    if (!window.confirm("Remover esta categoria e todos os seus ficheiros?")) return;
+    setCategorias(prev => prev.filter(c => c.id !== id));
+    setDigitalizacoes(prev => prev.filter(d => d.categoria_id !== id));
+    await api.deleteCategoria(id);
+  };
+
+  const handleAddScan = async (e) => {
+    e.preventDefault();
+    if (!novoDocScanTitulo.trim() || !novoDocScanFicheiro) return;
+
+    const formData = new FormData();
+    const docId = Date.now();
+    formData.append('id', docId);
+    formData.append('categoria_id', adicionandoDocScan);
+    formData.append('titulo', novoDocScanTitulo);
+    formData.append('file', novoDocScanFicheiro);
+
+    // Optimistic UI could be tricky without filename from server, so we wait.
+    const res = await api.saveDigitalizacao(formData);
+    if (res && res.success) {
+      const novo = {
+        id: docId,
+        categoria_id: adicionandoDocScan,
+        titulo: novoDocScanTitulo,
+        filename: res.filename,
+        original_name: res.original_name,
+        created_at: new Date().toISOString()
+      };
+      setDigitalizacoes(prev => [novo, ...prev]);
+    }
+    setAdicionandoDocScan(null);
+    setNovoDocScanTitulo('');
+    setNovoDocScanFicheiro(null);
+  };
+
+  const handleDeleteScan = async (id) => {
+    if (!window.confirm("Remover ficheiro?")) return;
+    setDigitalizacoes(prev => prev.filter(d => d.id !== id));
+    await api.deleteDigitalizacao(id);
+  };
 
   const abrirEdicao = (doc) => {
     setEditDoc(doc);
@@ -177,17 +257,44 @@ const Documentos = () => {
           </p>
         </div>
         <div className="doc-header-actions">
-          <div className="doc-stats-pill">
-            <span className="stats-dot green"></span>
-            <span><strong>{totalPreenchidos}</strong> de {documentos.length} registados</span>
-          </div>
-          <button className="btn-primary doc-add-btn" onClick={() => setAdicionandoNovo(true)}>
-            <Plus size={18} />
-            <span>Novo Documento</span>
-          </button>
+          {activeSubTab === 'text' && (
+            <>
+              <div className="doc-stats-pill">
+                <span className="stats-dot green"></span>
+                <span><strong>{totalPreenchidos}</strong> de {documentos.length} registados</span>
+              </div>
+              <button className="btn-primary doc-add-btn" onClick={() => setAdicionandoNovo(true)}>
+                <Plus size={18} />
+                <span>Novo Documento</span>
+              </button>
+            </>
+          )}
+          {activeSubTab === 'scans' && (
+            <button className="btn-primary doc-add-btn" onClick={() => setAdicionandoCat(true)}>
+              <FolderHeart size={18} />
+              <span>Nova Categoria</span>
+            </button>
+          )}
         </div>
       </div>
 
+      {/* Sub Tabs */}
+      <div className="sub-tabs-container">
+        <button 
+          className={`sub-tab ${activeSubTab === 'text' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('text')}
+        >
+          <FileText size={16} /> Dados Escritos
+        </button>
+        <button 
+          className={`sub-tab ${activeSubTab === 'scans' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('scans')}
+        >
+          <ImageIcon size={16} /> Digitalizações
+        </button>
+      </div>
+
+      {activeSubTab === 'text' ? (
       {/* Table — visible on all screen sizes */}
       <div className="executive-table-wrapper">
         <table className="executive-table">
@@ -254,8 +361,73 @@ const Documentos = () => {
           </tbody>
         </table>
       </div>
+      ) : (
+      <div className="scans-container">
+        {categorias.length === 0 ? (
+          <div className="empty-state">
+            <FolderHeart size={48} color="var(--color-primary-light)" />
+            <p>Nenhuma categoria de digitalizações criada.</p>
+            <button className="btn-outline" onClick={() => setAdicionandoCat(true)}>Criar Categoria</button>
+          </div>
+        ) : (
+          <div className="categorias-list">
+            {categorias.map(cat => {
+              const catDocs = digitalizacoes.filter(d => String(d.categoria_id) === String(cat.id));
+              const isExpanded = expandedCats[cat.id];
+              return (
+                <div key={cat.id} className="categoria-card">
+                  <div className="categoria-header" onClick={() => toggleCategoria(cat.id)}>
+                    <div className="cat-title-left">
+                      {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                      <span className="cat-name">{cat.nome}</span>
+                      <span className="cat-badge">{catDocs.length} ficheiro(s)</span>
+                    </div>
+                    <div className="cat-actions" onClick={e => e.stopPropagation()}>
+                      <button className="btn-action-edit" title="Adicionar Documento" onClick={() => setAdicionandoDocScan(cat.id)}>
+                        <Plus size={16} />
+                      </button>
+                      <button className="btn-action-delete" title="Remover Categoria" onClick={() => handleDeleteCategoria(cat.id)}>
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {isExpanded && (
+                    <div className="categoria-body">
+                      {catDocs.length === 0 ? (
+                        <p className="empty-placeholder">Nenhum ficheiro anexado.</p>
+                      ) : (
+                        <div className="scans-grid">
+                          {catDocs.map(doc => {
+                            const isPdf = doc.filename.toLowerCase().endsWith('.pdf');
+                            const fileUrl = `/uploads/${doc.filename}`;
+                            return (
+                              <div key={doc.id} className="scan-item">
+                                <div className="scan-preview" onClick={() => setPreviewFile(fileUrl)}>
+                                  {isPdf ? <File size={40} color="var(--color-primary)" /> : <img src={fileUrl} alt={doc.titulo} />}
+                                </div>
+                                <div className="scan-info">
+                                  <span className="scan-title" title={doc.titulo}>{doc.titulo}</span>
+                                  <button className="btn-action-delete" onClick={() => handleDeleteScan(doc.id)}>
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      )}
 
-      {/* ─── EDIT DOCUMENT MODAL ─── */}
+      {/* ─── ADD CATEGORIA MODAL ─── */}
       {editDoc && (
         <div className="modal-overlay" onClick={() => setEditDoc(null)}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
@@ -404,6 +576,70 @@ const Documentos = () => {
                 <Trash2 size={16} /> Remover
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── ADD CATEGORIA MODAL ─── */}
+      {adicionandoCat && (
+        <div className="modal-overlay" onClick={() => setAdicionandoCat(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">Nova Categoria</h3>
+              <button className="btn-icon" onClick={() => setAdicionandoCat(false)}><X size={18} /></button>
+            </div>
+            <form onSubmit={handleAddCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group">
+                <label className="input-label">Nome da Categoria</label>
+                <input type="text" className="input-field" value={novaCatNome} onChange={e => setNovaCatNome(e.target.value)} placeholder="Ex: Médico, Finanças..." required autoFocus />
+              </div>
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => setAdicionandoCat(false)}>Cancelar</button>
+                <button type="submit" className="btn-primary">Criar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── ADD SCAN MODAL ─── */}
+      {adicionandoDocScan && (
+        <div className="modal-overlay" onClick={() => { setAdicionandoDocScan(null); setNovoDocScanFicheiro(null); }}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">Novo Ficheiro</h3>
+              <button className="btn-icon" onClick={() => { setAdicionandoDocScan(null); setNovoDocScanFicheiro(null); }}><X size={18} /></button>
+            </div>
+            <form onSubmit={handleAddScan} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group">
+                <label className="input-label">Título do Documento</label>
+                <input type="text" className="input-field" value={novoDocScanTitulo} onChange={e => setNovoDocScanTitulo(e.target.value)} placeholder="Ex: Cartão de Cidadão Frente" required autoFocus />
+              </div>
+              <div className="input-group">
+                <label className="input-label">Ficheiro (Imagem ou PDF)</label>
+                <input type="file" ref={fileInputRef} accept="image/*,application/pdf" className="input-field" onChange={e => setNovoDocScanFicheiro(e.target.files[0])} required />
+              </div>
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => { setAdicionandoDocScan(null); setNovoDocScanFicheiro(null); }}>Cancelar</button>
+                <button type="submit" className="btn-primary">Enviar Ficheiro</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── PREVIEW FILE MODAL ─── */}
+      {previewFile && (
+        <div className="modal-overlay" style={{ zIndex: 9999, background: 'rgba(0,0,0,0.85)' }} onClick={() => setPreviewFile(null)}>
+          <div className="modal-preview-wrapper" style={{ position: 'relative', width: '90%', height: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+            <button className="btn-icon" style={{ position: 'absolute', top: '-10px', right: '-10px', background: 'white', borderRadius: '50%' }} onClick={() => setPreviewFile(null)}>
+              <X size={24} color="black" />
+            </button>
+            {previewFile.toLowerCase().endsWith('.pdf') ? (
+              <iframe src={previewFile} title="Preview" style={{ width: '100%', height: '100%', border: 'none', borderRadius: '12px', background: 'white' }} />
+            ) : (
+              <img src={previewFile} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '12px' }} />
+            )}
           </div>
         </div>
       )}

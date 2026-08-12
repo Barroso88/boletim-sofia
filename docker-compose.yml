@@ -8,4 +8,6 @@ services:
     container_name: boletim-sofia
     ports:
       - "1307:80"
+    volumes:
+      - ./uploads:/app/uploads
     restart: unless-stopped
