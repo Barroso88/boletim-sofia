@@ -13,7 +13,13 @@ const DIAPER_TYPES = [
 ];
 
 const Leite = () => {
-  const [activeSubTab, setActiveSubTab] = useState('leite'); // 'leite' | 'fraldas' | 'sonos'
+  const [activeSubTab, setActiveSubTab] = useState(() => {
+    return sessionStorage.getItem('leite_active_tab') || 'leite';
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('leite_active_tab', activeSubTab);
+  }, [activeSubTab]);
 
   // Leite State
   const [registosLeite, setRegistosLeite] = useState([]);

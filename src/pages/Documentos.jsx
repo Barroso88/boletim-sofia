@@ -40,7 +40,13 @@ const Documentos = () => {
   const [draggedIndex, setDraggedIndex] = useState(null);
 
   // Scans State
-  const [activeSubTab, setActiveSubTab] = useState('text');
+  const [activeSubTab, setActiveSubTab] = useState(() => {
+    return sessionStorage.getItem('docs_active_tab') || 'text';
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('docs_active_tab', activeSubTab);
+  }, [activeSubTab]);
   const [categorias, setCategorias] = useState([]);
   const [digitalizacoes, setDigitalizacoes] = useState([]);
   const [expandedCats, setExpandedCats] = useState({});
