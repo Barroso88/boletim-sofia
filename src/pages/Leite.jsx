@@ -314,7 +314,7 @@ const Leite = () => {
     // avoid divide by zero if not enough data, assume avg 800ml/day
     const mediaDiaria = total7Days > 0 ? (total7Days / 7) : 800; 
     
-    const diasRestantes = (restante / mediaDiaria).toFixed(1);
+    const diasRestantes = Math.round(restante / mediaDiaria);
 
     return {
       lata: lataAtual,
