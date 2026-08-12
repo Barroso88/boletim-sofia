@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList } from 'lucide-react';
+import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList, RefreshCw } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
 import './Layout.css';
 
@@ -8,6 +8,7 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const [headerPattern, setHeaderPattern] = useState('/cabecalho.jpg');
   const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const savedPattern = localStorage.getItem('sofia_header_pattern');
@@ -27,13 +28,30 @@ const Layout = ({ children }) => {
       setHeaderFont(e.detail);
     };
     
+    // Auto-refresh when app comes to foreground (after being backgrounded on iOS)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // We could force a reload here, but a manual button is safer.
+        // We will just leave the manual button for now.
+      }
+    };
+    
     window.addEventListener('headerPatternChanged', handlePatternChange);
     window.addEventListener('headerFontChanged', handleFontChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
       window.removeEventListener('headerPatternChanged', handlePatternChange);
       window.removeEventListener('headerFontChanged', handleFontChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      window.location.reload();
+    }, 300);
+  };
 
   const navItems = [
     { path: '/', label: 'Início', icon: <Baby size={20} /> },
@@ -78,6 +96,14 @@ const Layout = ({ children }) => {
           </Link>
         </div>
         <div className="navbar-right mobile-only">
+          <button 
+            className="btn-settings-header" 
+            onClick={handleRefresh}
+            title="Atualizar"
+            style={{ marginRight: '0.25rem', background: 'transparent', border: 'none', color: 'var(--color-primary)' }}
+          >
+            <RefreshCw size={20} className={isRefreshing ? 'spin-animation' : ''} />
+          </button>
           <Link
             to="/definicoes"
             className={`btn-settings-header ${location.pathname === '/definicoes' ? 'active' : ''}`}
