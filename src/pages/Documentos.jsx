@@ -299,7 +299,7 @@ const Documentos = () => {
           className={`sub-tab ${activeSubTab === 'text' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('text')}
         >
-          <FileText size={16} /> Dados Escritos
+          <FileText size={16} /> Documentos
         </button>
         <button 
           className={`sub-tab ${activeSubTab === 'scans' ? 'active' : ''}`}
@@ -394,8 +394,10 @@ const Documentos = () => {
                   <div className="categoria-header" onClick={() => toggleCategoria(cat.id)}>
                     <div className="cat-title-left">
                       {isExpanded ? <ChevronUp size={20} color={themeColor} /> : <ChevronDown size={20} color={themeColor} />}
-                      <span className="cat-name" style={{ color: themeColor }}>{cat.nome}</span>
-                      <span className="cat-badge">{catDocs.length} ficheiro(s)</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.15rem' }}>
+                        <span className="cat-name" style={{ color: themeColor, lineHeight: '1.2' }}>{cat.nome}</span>
+                        <span className="cat-badge" style={{ padding: '0.1rem 0.5rem', fontSize: '0.7rem' }}>{catDocs.length} ficheiro(s)</span>
+                      </div>
                     </div>
                     <div className="cat-actions" onClick={e => e.stopPropagation()}>
                       <button className="btn-action-edit" title="Adicionar Documento" onClick={() => setAdicionandoDocScan(cat.id)}>
