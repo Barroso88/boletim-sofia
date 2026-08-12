@@ -295,7 +295,6 @@ const Documentos = () => {
       </div>
 
       {activeSubTab === 'text' ? (
-      {/* Table — visible on all screen sizes */}
       <div className="executive-table-wrapper">
         <table className="executive-table">
           <colgroup>
