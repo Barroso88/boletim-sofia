@@ -97,10 +97,10 @@ const Layout = ({ children }) => {
         </div>
         <div className="navbar-right mobile-only">
           <button 
-            className="btn-settings-header" 
+            className="btn-settings-header btn-refresh" 
             onClick={handleRefresh}
             title="Atualizar"
-            style={{ marginRight: '0.25rem', background: 'transparent', border: 'none', color: 'var(--color-primary)' }}
+            style={{ marginRight: '0.5rem' }}
           >
             <RefreshCw size={20} className={isRefreshing ? 'spin-animation' : ''} />
           </button>
