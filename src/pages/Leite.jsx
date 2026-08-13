@@ -1353,7 +1353,7 @@ const Leite = () => {
       )}
 
       {/* Delete Confirmation Modal */}
-      {confirmarDelete && (
+      {confirmarDelete && createPortal(
         <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
           <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
             <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
@@ -1380,13 +1380,14 @@ const Leite = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Modal de Relatório Semanal de Mamadas */}
       {mostrarRelatorioSemanal && (() => {
         const relatorio = getDadosRelatorioSemanal();
-        return (
+        return createPortal(
           <div className="modal-overlay" onClick={() => setMostrarRelatorioSemanal(false)}>
             <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
@@ -1488,14 +1489,15 @@ const Leite = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         );
       })()}
 
       {/* Modal de Relatório Semanal de Fraldas */}
       {mostrarRelatorioFraldas && (() => {
         const relatorio = getDadosRelatorioFraldas();
-        return (
+        return createPortal(
           <div className="modal-overlay" onClick={() => setMostrarRelatorioFraldas(false)}>
             <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
@@ -1599,14 +1601,15 @@ const Leite = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         );
       })()}
 
       {/* Modal de Relatório Semanal de Sonos */}
       {mostrarRelatorioSonos && (() => {
         const relatorio = getDadosRelatorioSonos();
-        return (
+        return createPortal(
           <div className="modal-overlay" onClick={() => setMostrarRelatorioSonos(false)}>
             <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
@@ -1700,12 +1703,13 @@ const Leite = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         );
       })()}
 
       {/* Modal Nova Lata de Leite */}
-      {modalLataAberta && (
+      {modalLataAberta && createPortal(
         <div className="modal-overlay" onClick={() => { setModalLataAberta(false); setEditandoIdLata(null); setNomeLata(''); }}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
@@ -1730,7 +1734,8 @@ const Leite = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
