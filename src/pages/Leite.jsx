@@ -657,74 +657,6 @@ const Leite = () => {
       {/* ─── TAB 1: LEITE ────────────────────────────────────────────────── */}
       {activeSubTab === 'leite' && (
         <>
-          {/* Stock de Leite Card */}
-          {(() => {
-            const stock = calcularStockLata();
-            if (!stock) {
-              return (
-                <div className="leite-hero-card" style={{ marginBottom: '1rem', background: 'var(--color-surface)' }}>
-                  <div className="hero-title-group" style={{ marginBottom: '1rem' }}>
-                    <div className="icon-badge-glow" style={{ background: 'var(--color-secondary)' }}>
-                      <Package size={22} color="white" />
-                    </div>
-                    <div>
-                      <h2 className="hero-day-title">Despensa de Leite</h2>
-                      <p className="hero-day-subtitle">Nenhuma lata aberta de momento</p>
-                    </div>
-                  </div>
-                  <button className="btn-primary w-100" onClick={() => setModalLataAberta(true)}>
-                    <Plus size={18} /> Registar Lata Aberta
-                  </button>
-                </div>
-              );
-            }
-            
-            return (
-              <div className="leite-hero-card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--color-primary)' }}>
-                <div className="hero-title-group" style={{ marginBottom: '1rem', justifyContent: 'space-between', display: 'flex' }}>
-                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <div className="icon-badge-glow" style={{ background: 'var(--color-primary)' }}>
-                      <Package size={22} color="white" />
-                    </div>
-                    <div>
-                      <h2 className="hero-day-title">{stock.lata.nome_formula || 'Lata de Leite'}</h2>
-                      <p className="hero-day-subtitle">Aberta a {stock.lata.data_abertura}</p>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button className="btn-icon text-secondary" onClick={() => abrirEdicaoLata(stock.lata)} title="Editar lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
-                      <Pencil size={14} />
-                    </button>
-                    <button className="btn-icon" onClick={() => setConfirmarDelete({ id: stock.lata.id, type: 'lata' })} title="Apagar lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%', color: '#ef4444' }}>
-                      <Trash2 size={14} />
-                    </button>
-                    <button className="btn-icon" onClick={() => setModalLataAberta(true)} title="Abrir nova lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
-                      <Plus size={16} />
-                    </button>
-                  </div>
-                </div>
-                
-                <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                  <span style={{ fontWeight: '500' }}>{stock.consumido} ml consumidos</span>
-                  <span className="text-secondary">{stock.capacidade} ml</span>
-                </div>
-                
-                <div style={{ width: '100%', height: '12px', background: 'var(--color-border)', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                  <div style={{ 
-                    height: '100%', 
-                    width: `${stock.percent}%`, 
-                    background: stock.percent > 85 ? '#ef4444' : stock.percent > 70 ? '#f59e0b' : 'var(--color-primary)',
-                    transition: 'width 0.5s ease-in-out'
-                  }}></div>
-                </div>
-                
-                <div style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <TrendingUp size={14} />
-                  <span>Previsão: restam cerca de <strong>{stock.diasRestantes} dias</strong></span>
-                </div>
-              </div>
-            );
-          })()}
 
           {/* Hero Stats Card */}
           <div className="leite-hero-card">
@@ -928,6 +860,75 @@ const Leite = () => {
               ))
             )}
           </div>
+
+          {/* Stock de Leite Card (Despensa) */}
+          {(() => {
+            const stock = calcularStockLata();
+            if (!stock) {
+              return (
+                <div className="leite-hero-card" style={{ marginBottom: '1rem', marginTop: '1.5rem', background: 'var(--color-surface)' }}>
+                  <div className="hero-title-group" style={{ marginBottom: '1rem' }}>
+                    <div className="icon-badge-glow" style={{ background: 'var(--color-secondary)' }}>
+                      <Package size={22} color="white" />
+                    </div>
+                    <div>
+                      <h2 className="hero-day-title">Despensa de Leite</h2>
+                      <p className="hero-day-subtitle">Nenhuma lata aberta de momento</p>
+                    </div>
+                  </div>
+                  <button className="btn-primary w-100" onClick={() => setModalLataAberta(true)}>
+                    <Plus size={18} /> Registar Lata Aberta
+                  </button>
+                </div>
+              );
+            }
+            
+            return (
+              <div className="leite-hero-card" style={{ marginBottom: '1rem', marginTop: '1.5rem', borderLeft: '4px solid var(--color-primary)' }}>
+                <div className="hero-title-group" style={{ marginBottom: '1rem', justifyContent: 'space-between', display: 'flex' }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div className="icon-badge-glow" style={{ background: 'var(--color-primary)' }}>
+                      <Package size={22} color="white" />
+                    </div>
+                    <div>
+                      <h2 className="hero-day-title">{stock.lata.nome_formula || 'Lata de Leite'}</h2>
+                      <p className="hero-day-subtitle">Aberta a {stock.lata.data_abertura}</p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="btn-icon text-secondary" onClick={() => abrirEdicaoLata(stock.lata)} title="Editar lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
+                      <Pencil size={14} />
+                    </button>
+                    <button className="btn-icon" onClick={() => setConfirmarDelete({ id: stock.lata.id, type: 'lata' })} title="Apagar lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%', color: '#ef4444' }}>
+                      <Trash2 size={14} />
+                    </button>
+                    <button className="btn-icon" onClick={() => setModalLataAberta(true)} title="Abrir nova lata" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%' }}>
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </div>
+                
+                <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                  <span style={{ fontWeight: '500' }}>{stock.consumido} ml consumidos</span>
+                  <span className="text-secondary">{stock.capacidade} ml</span>
+                </div>
+                
+                <div style={{ width: '100%', height: '12px', background: 'var(--color-border)', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                  <div style={{ 
+                    height: '100%', 
+                    width: `${stock.percent}%`, 
+                    background: stock.percent > 85 ? '#ef4444' : stock.percent > 70 ? '#f59e0b' : 'var(--color-primary)',
+                    transition: 'width 0.5s ease-in-out'
+                  }}></div>
+                </div>
+                
+                <div style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <TrendingUp size={14} />
+                  <span>Previsão: restam cerca de <strong>{stock.diasRestantes} dias</strong></span>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Button to Open Weekly Feeding Report */}
           <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
