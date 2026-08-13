@@ -1274,9 +1274,13 @@ const Leite = () => {
             ) : (
               <>
                 {registosSonosDoDia.map((reg) => {
-                  const durationToUse = reg.duracao_dia !== undefined ? reg.duracao_dia : reg.duracao_minutos;
-                  const hrs = Math.floor(durationToUse / 60);
-                  const mins = durationToUse % 60;
+                  const totalHrs = Math.floor(reg.duracao_minutos / 60);
+                  const totalMins = reg.duracao_minutos % 60;
+                  
+                  const partialDuration = reg.duracao_dia;
+                  const partialHrs = Math.floor(partialDuration / 60);
+                  const partialMins = partialDuration % 60;
+
                   return (
                     <div key={reg.id} className="feeding-card" style={{ borderLeft: '4px solid #8b5cf6' }}>
                       <div className="feeding-left">
@@ -1298,16 +1302,16 @@ const Leite = () => {
                             )}
                           </div>
                           <div className="text-secondary" style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span>
+                            <span style={{ fontWeight: 600, color: '#4b5563' }}>
                               {reg.hora_fim ? (
-                                <>{hrs > 0 ? `${hrs}h ` : ''}{mins}m</>
+                                <>{totalHrs > 0 ? `${totalHrs}h ` : ''}{totalMins}m</>
                               ) : (
                                 'Em curso'
                               )}
                             </span>
                             {(reg.is_split_start || reg.is_split_end) && reg.hora_fim && (
-                              <span style={{ fontSize: '0.7rem', background: 'rgba(139,92,246,0.1)', color: '#8b5cf6', padding: '1px 6px', borderRadius: '10px' }}>
-                                Parcial do dia
+                              <span style={{ fontSize: '0.7rem', background: 'rgba(139,92,246,0.1)', color: '#8b5cf6', padding: '2px 6px', borderRadius: '10px' }} title="Tempo contabilizado para o dia de hoje">
+                                Parcial: {partialHrs > 0 ? `${partialHrs}h ` : ''}{partialMins}m
                               </span>
                             )}
                           </div>
