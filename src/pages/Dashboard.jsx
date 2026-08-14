@@ -242,16 +242,19 @@ const Dashboard = () => {
                 <p className="snapshot-subtitle">Alimentação</p>
               </div>
             </div>
-            {ultimaMamada && (() => {
-              const tempo = getTempoDecorredor(ultimaMamada.data, ultimaMamada.hora);
-              return (
+          </div>
+
+          {ultimaMamada && (() => {
+            const tempo = getTempoDecorredor(ultimaMamada.data, ultimaMamada.hora);
+            return (
+              <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'flex-start' }}>
                 <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
                   <Clock size={16} />
                   <span>há {tempo.text}</span>
                 </div>
-              );
-            })()}
-          </div>
+              </div>
+            );
+          })()}
 
           {ultimaMamada ? (
             <div className="snapshot-body">
@@ -286,16 +289,19 @@ const Dashboard = () => {
                 <p className="snapshot-subtitle">Higiene</p>
               </div>
             </div>
-            {ultimaFralda && (() => {
-              const tempo = getTempoDecorredor(ultimaFralda.data, ultimaFralda.hora);
-              return (
+          </div>
+
+          {ultimaFralda && (() => {
+            const tempo = getTempoDecorredor(ultimaFralda.data, ultimaFralda.hora);
+            return (
+              <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'flex-start' }}>
                 <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
                   <Clock size={16} />
                   <span>há {tempo.text}</span>
                 </div>
-              );
-            })()}
-          </div>
+              </div>
+            );
+          })()}
 
           {ultimaFralda ? (
             <div className="snapshot-body">
@@ -331,16 +337,19 @@ const Dashboard = () => {
                 <p className="snapshot-subtitle">Descanso</p>
               </div>
             </div>
-            {ultimoSono && ultimoSono.hora_fim && (() => {
-              const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim);
-              return (
+          </div>
+
+          {ultimoSono && ultimoSono.hora_fim && (() => {
+            const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim);
+            return (
+              <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'flex-start' }}>
                 <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
                   <Clock size={16} />
                   <span>acordou há {tempo.text}</span>
                 </div>
-              );
-            })()}
-          </div>
+              </div>
+            );
+          })()}
 
           {ultimoSono ? (
             <div className="snapshot-body" style={{ alignItems: 'center' }}>
