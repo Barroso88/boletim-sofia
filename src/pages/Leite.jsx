@@ -8,6 +8,7 @@ import './Leite.css';
 import biberaoIcon from '../assets/icons/baby-bottle.png';
 import fraldaIcon from '../assets/icons/diaper.png';
 import dormirIcon from '../assets/icons/baby-sleep.png';
+import milkIcon from '../assets/icons/milk.png';
 
 const PRESET_AMOUNTS = [30, 60, 90, 120, 150, 180, 210, 240];
 const DIAPER_TYPES = [
@@ -323,6 +324,7 @@ const Leite = () => {
     // avoid divide by zero if not enough data, assume avg 800ml/day
     const mediaDiaria = total7Days > 0 ? (total7Days / 7) : 800; 
     
+    const percentConsumido = Math.min(100, Math.max(0, (consumido / capacidade) * 100));
     const diasRestantes = Math.round(restante / mediaDiaria);
 
     return {
@@ -331,6 +333,7 @@ const Leite = () => {
       capacidade,
       restante,
       percent,
+      percentConsumido,
       diasRestantes
     };
   };
@@ -886,10 +889,10 @@ const Leite = () => {
                 <div className="leite-hero-card" style={{ marginBottom: '1rem', marginTop: '1.5rem', background: 'var(--color-surface)' }}>
                   <div className="hero-title-group" style={{ marginBottom: '1rem' }}>
                     <div className="icon-badge-glow" style={{ background: 'var(--color-secondary)' }}>
-                      <Package size={22} color="white" />
+                      <img src={milkIcon} alt="Lata" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
                     </div>
                     <div>
-                      <h2 className="hero-day-title">Despensa de Leite</h2>
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: '800', margin: '0 0 0.1rem 0', color: 'var(--color-text)' }}>Despensa de Leite</h3>
                       <p className="hero-day-subtitle">Nenhuma lata aberta de momento</p>
                     </div>
                   </div>
@@ -905,10 +908,10 @@ const Leite = () => {
                 <div className="hero-title-group" style={{ marginBottom: '1rem', justifyContent: 'space-between', display: 'flex' }}>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <div className="icon-badge-glow" style={{ background: 'var(--color-primary)' }}>
-                      <Package size={22} color="white" />
+                      <img src={milkIcon} alt="Lata" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
                     </div>
                     <div>
-                      <h2 className="hero-day-title">{stock.lata.nome_formula || 'Lata de Leite'}</h2>
+                      <h3 style={{ fontSize: '1.2rem', fontWeight: '800', margin: '0 0 0.2rem 0', color: 'var(--color-text)' }}>{stock.lata.nome_formula || 'Lata de Leite'}</h3>
                       <p className="hero-day-subtitle">Aberta a {stock.lata.data_abertura} {stock.lata.hora_abertura ? `às ${stock.lata.hora_abertura}` : ''}</p>
                     </div>
                   </div>
@@ -930,12 +933,24 @@ const Leite = () => {
                   <span className="text-secondary">{stock.capacidade} ml</span>
                 </div>
                 
-                <div style={{ width: '100%', height: '12px', background: 'var(--color-border)', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                <div style={{ 
+                  width: '100%', 
+                  height: '14px', 
+                  background: 'rgba(0,0,0,0.06)', 
+                  borderRadius: '12px', 
+                  overflow: 'hidden', 
+                  marginBottom: '0.85rem',
+                  boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+                }}>
                   <div style={{ 
                     height: '100%', 
-                    width: `${stock.percent}%`, 
-                    background: stock.percent > 85 ? '#ef4444' : stock.percent > 70 ? '#f59e0b' : 'var(--color-primary)',
-                    transition: 'width 0.5s ease-in-out'
+                    width: `${stock.percentConsumido}%`, 
+                    background: stock.percentConsumido > 90 ? 'linear-gradient(90deg, #ef4444, #f87171)' : 
+                                stock.percentConsumido > 75 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)' : 
+                                'linear-gradient(90deg, var(--color-primary), #fb7185)',
+                    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                    borderRadius: '12px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
                   }}></div>
                 </div>
                 
