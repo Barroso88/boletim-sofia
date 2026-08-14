@@ -25,12 +25,14 @@ const Dashboard = () => {
   const [vacinas, setVacinas] = useState([]);
   const [registosLeite, setRegistosLeite] = useState([]);
   const [registosFraldas, setRegistosFraldas] = useState([]);
+  const [registosSonos, setRegistosSonos] = useState([]);
 
   useEffect(() => {
     api.getAgenda().then(data => setEventos(data));
     api.getVacinas(defaultVacinas).then(data => setVacinas(data));
     api.getLeite().then(data => setRegistosLeite(data || []));
     api.getFraldas().then(data => setRegistosFraldas(data || []));
+    api.getSonos().then(data => setRegistosSonos(data || []));
   }, []);
 
   // Filter 5 Consultas
@@ -119,6 +121,13 @@ const Dashboard = () => {
     return dtB.localeCompare(dtA);
   });
   const ultimaFralda = sortedFraldas[0];
+
+  const sortedSonos = [...registosSonos].sort((a, b) => {
+    const dtA = `${a.data}T${a.hora_inicio}`;
+    const dtB = `${b.data}T${b.hora_inicio}`;
+    return dtB.localeCompare(dtA);
+  });
+  const ultimoSono = sortedSonos[0];
 
   const getTempoDecorredor = (dataStr, horaStr) => {
     if (!dataStr || !horaStr) return null;
@@ -272,6 +281,68 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="snapshot-empty">Sem registos de fralda</div>
+          )}
+        </div>
+
+        {/* Card 3: Último Sono */}
+        <div className="quick-snapshot-card sleep-card glass-card" style={{ background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(2ede, 233, 254, 0.85))', border: '1px solid rgba(139, 92, 246, 0.35)', borderBottom: '3px solid rgba(124, 58, 237, 0.8)', boxShadow: '0 8px 32px -4px rgba(139, 92, 246, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.7)' }}>
+          <div className="snapshot-header">
+            <div className="snapshot-title-group">
+              <div className="snapshot-icon-badge" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6' }}>
+                <Clock size={20} />
+              </div>
+              <div>
+                <h3 className="snapshot-title">Último Sono</h3>
+                <p className="snapshot-subtitle">Descanso</p>
+              </div>
+            </div>
+            {ultimoSono && ultimoSono.hora_fim && (
+              <div className="snapshot-timer-pill" style={{ color: '#8b5cf6', background: 'rgba(139, 92, 246, 0.08)', borderColor: 'rgba(139, 92, 246, 0.15)' }}>
+                <Clock size={13} />
+                <span>acordou há {getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim)}</span>
+              </div>
+            )}
+          </div>
+
+          {ultimoSono ? (
+            <div className="snapshot-body" style={{ alignItems: 'center' }}>
+              <div className="snapshot-primary-val" style={{ color: '#8b5cf6', fontSize: '1.5rem' }}>
+                {ultimoSono.hora_fim ? (
+                  <>
+                    {Math.floor(ultimoSono.duracao_minutos / 60)}<span className="snapshot-unit" style={{marginRight: '4px'}}>h</span>
+                    {ultimoSono.duracao_minutos % 60}<span className="snapshot-unit">m</span>
+                  </>
+                ) : (
+                  <span style={{ fontSize: '1.2rem', fontStyle: 'italic' }}>A dormir...</span>
+                )}
+              </div>
+              
+              {!ultimoSono.hora_fim ? (
+                <button 
+                  className="btn-primary" 
+                  style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', padding: '0.4rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 'bold', border: 'none', color: '#fff', boxShadow: '0 4px 10px rgba(139, 92, 246, 0.2)', cursor: 'pointer' }}
+                  onClick={async () => {
+                    const horaAtual = format(new Date(), 'HH:mm');
+                    const [hI, mI] = ultimoSono.hora_inicio.split(':').map(Number);
+                    const [hF, mF] = horaAtual.split(':').map(Number);
+                    let duracao = (hF * 60 + mF) - (hI * 60 + mI);
+                    if (duracao < 0) duracao += 24 * 60;
+                    
+                    const novoRegisto = { ...ultimoSono, hora_fim: horaAtual, duracao_minutos: duracao };
+                    setRegistosSonos(prev => prev.map(r => r.id === ultimoSono.id ? novoRegisto : r));
+                    await api.saveSono(novoRegisto);
+                  }}
+                >
+                  Acordou
+                </button>
+              ) : (
+                <div className="snapshot-meta">
+                  <span>{ultimoSono.hora_inicio} - {ultimoSono.hora_fim} ({formatDataLabel(ultimoSono.data)})</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="snapshot-empty">Sem registos de sono</div>
           )}
         </div>
       </div>
