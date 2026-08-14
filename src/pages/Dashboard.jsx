@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { differenceInMonths, differenceInDays, differenceInYears, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar, Syringe, Milk, Sparkles, Clock } from 'lucide-react';
+import { Calendar, Syringe, Milk, Sparkles, Clock, Moon } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
 import './Dashboard.css';
@@ -289,7 +289,7 @@ const Dashboard = () => {
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6' }}>
-                <Clock size={20} />
+                <Moon size={20} />
               </div>
               <div>
                 <h3 className="snapshot-title">Último Sono</h3>
