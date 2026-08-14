@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { differenceInMonths, differenceInDays, differenceInYears, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers } from 'lucide-react';
@@ -10,6 +11,7 @@ import dormirIcon from '../assets/icons/baby-sleep.png';
 import './Dashboard.css';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const birthDate = new Date(2026, 6, 13); // 13 de Julho de 2026
   const now = new Date();
   
@@ -220,7 +222,14 @@ const Dashboard = () => {
       {/* Quick View Snapshots: Última Mamada & Última Fralda */}
       <div className="quick-snapshots-grid">
         {/* Card 1: Última Mamada */}
-        <div className="quick-snapshot-card milk-card glass-card">
+        <div 
+          className="quick-snapshot-card milk-card glass-card"
+          onClick={() => {
+            sessionStorage.setItem('leite_active_tab', 'leite');
+            navigate('/leite');
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge">
@@ -254,7 +263,14 @@ const Dashboard = () => {
         </div>
 
         {/* Card 2: Última Fralda */}
-        <div className="quick-snapshot-card diaper-card glass-card">
+        <div 
+          className="quick-snapshot-card diaper-card glass-card"
+          onClick={() => {
+            sessionStorage.setItem('leite_active_tab', 'fraldas');
+            navigate('/leite');
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge">
@@ -289,7 +305,14 @@ const Dashboard = () => {
         </div>
 
         {/* Card 3: Último Sono */}
-        <div className="quick-snapshot-card sleep-card glass-card" style={{ background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(2ede, 233, 254, 0.85))', border: '1px solid rgba(139, 92, 246, 0.35)', borderBottom: '3px solid rgba(124, 58, 237, 0.8)', boxShadow: '0 8px 32px -4px rgba(139, 92, 246, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.7)' }}>
+        <div 
+          className="quick-snapshot-card sleep-card glass-card" 
+          onClick={() => {
+            sessionStorage.setItem('leite_active_tab', 'sonos');
+            navigate('/leite');
+          }}
+          style={{ cursor: 'pointer', background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(2ede, 233, 254, 0.85))', border: '1px solid rgba(139, 92, 246, 0.35)', borderBottom: '3px solid rgba(124, 58, 237, 0.8)', boxShadow: '0 8px 32px -4px rgba(139, 92, 246, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.7)' }}
+        >
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge">

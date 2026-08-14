@@ -5,6 +5,9 @@ import { ptBR } from 'date-fns/locale';
 import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X, BarChart2, TrendingUp, Award, Package } from 'lucide-react';
 import { api } from '../services/api';
 import './Leite.css';
+import biberaoIcon from '../assets/icons/baby-bottle.png';
+import fraldaIcon from '../assets/icons/diaper.png';
+import dormirIcon from '../assets/icons/baby-sleep.png';
 
 const PRESET_AMOUNTS = [30, 60, 90, 120, 150, 180, 210, 240];
 const DIAPER_TYPES = [
@@ -27,6 +30,8 @@ const Leite = () => {
   const [latas, setLatas] = useState([]);
   const [modalLataAberta, setModalLataAberta] = useState(false);
   const [nomeLata, setNomeLata] = useState('');
+  const [dataLata, setDataLata] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [horaLata, setHoraLata] = useState(format(new Date(), 'HH:mm'));
   const [editandoIdLata, setEditandoIdLata] = useState(null);
   const [dataSelecionada, setDataSelecionada] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [adicionandoLeite, setAdicionandoLeite] = useState(false);
@@ -302,8 +307,9 @@ const Leite = () => {
     if (latas.length === 0) return null;
     const lataAtual = latas[0];
     const capacidade = lataAtual.capacidade_ml || 5580;
+    const tsLata = new Date(`${lataAtual.data_abertura}T${lataAtual.hora_abertura || '00:00'}:00`).getTime();
     
-    const milkSince = registosLeite.filter(r => r.id >= lataAtual.id);
+    const milkSince = registosLeite.filter(r => r.id >= tsLata);
     const consumido = milkSince.reduce((sum, r) => sum + r.quantidade_ml, 0);
     const restante = Math.max(0, capacidade - consumido);
     const percent = Math.min(100, Math.max(0, (restante / capacidade) * 100));
@@ -330,27 +336,26 @@ const Leite = () => {
   };
 
   const salvarLata = () => {
+    const id = new Date(`${dataLata}T${horaLata}:00`).getTime();
     if (editandoIdLata) {
       const original = latas.find(l => l.id === editandoIdLata);
       if (!original) return;
-      const novaLata = { ...original, nome_formula: nomeLata };
+      const novaLata = { ...original, nome_formula: nomeLata, data_abertura: dataLata, hora_abertura: horaLata, id };
       api.editLata(editandoIdLata, novaLata).then(() => {
         setLatas(latas.map(l => l.id === editandoIdLata ? novaLata : l));
-        setModalLataAberta(false);
-        setEditandoIdLata(null);
-        setNomeLata('');
+        fecharModalLata();
       });
     } else {
       const novaLata = {
-        id: Date.now(),
-        data_abertura: format(new Date(), 'yyyy-MM-dd'),
+        id,
+        data_abertura: dataLata,
+        hora_abertura: horaLata,
         capacidade_ml: 5580,
         nome_formula: nomeLata
       };
       api.addLata(novaLata).then(() => {
         setLatas([novaLata, ...latas]);
-        setModalLataAberta(false);
-        setNomeLata('');
+        fecharModalLata();
       });
     }
   };
@@ -358,7 +363,17 @@ const Leite = () => {
   const abrirEdicaoLata = (lata) => {
     setEditandoIdLata(lata.id);
     setNomeLata(lata.nome_formula || '');
+    setDataLata(lata.data_abertura || format(new Date(), 'yyyy-MM-dd'));
+    setHoraLata(lata.hora_abertura || format(new Date(), 'HH:mm'));
     setModalLataAberta(true);
+  };
+
+  const fecharModalLata = () => {
+    setModalLataAberta(false); 
+    setEditandoIdLata(null); 
+    setNomeLata('');
+    setDataLata(format(new Date(), 'yyyy-MM-dd'));
+    setHoraLata(format(new Date(), 'HH:mm'));
   };
 
   const abrirEdicaoLeite = (reg) => {
@@ -601,21 +616,21 @@ const Leite = () => {
           className={`sub-tab-btn btn-leite ${activeSubTab === 'leite' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('leite')}
         >
-          <Milk size={18} />
+          <img src={biberaoIcon} alt="Leite" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
           <span>Leite</span>
         </button>
         <button
           className={`sub-tab-btn btn-fraldas ${activeSubTab === 'fraldas' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('fraldas')}
         >
-          <Layers size={18} />
+          <img src={fraldaIcon} alt="Fraldas" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
           <span>Fraldas</span>
         </button>
         <button
           className={`sub-tab-btn btn-sono ${activeSubTab === 'sonos' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('sonos')}
         >
-          <Clock size={18} />
+          <img src={dormirIcon} alt="Sono" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
           <span>Sono</span>
         </button>
       </div>
@@ -894,7 +909,7 @@ const Leite = () => {
                     </div>
                     <div>
                       <h2 className="hero-day-title">{stock.lata.nome_formula || 'Lata de Leite'}</h2>
-                      <p className="hero-day-subtitle">Aberta a {stock.lata.data_abertura}</p>
+                      <p className="hero-day-subtitle">Aberta a {stock.lata.data_abertura} {stock.lata.hora_abertura ? `às ${stock.lata.hora_abertura}` : ''}</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -1731,11 +1746,11 @@ const Leite = () => {
 
       {/* Modal Nova Lata de Leite */}
       {modalLataAberta && createPortal(
-        <div className="modal-overlay" onClick={() => { setModalLataAberta(false); setEditandoIdLata(null); setNomeLata(''); }}>
+        <div className="modal-overlay" onClick={fecharModalLata}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">{editandoIdLata ? 'Editar Lata' : 'Abrir Nova Lata'}</h2>
-              <button className="btn-action-close" onClick={() => { setModalLataAberta(false); setEditandoIdLata(null); setNomeLata(''); }}>
+              <button className="btn-action-close" onClick={fecharModalLata}>
                 <X size={20} />
               </button>
             </div>
@@ -1749,6 +1764,26 @@ const Leite = () => {
                   value={nomeLata}
                   onChange={(e) => setNomeLata(e.target.value)}
                 />
+              </div>
+              <div className="form-group" style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  <label>Data de Abertura</label>
+                  <input
+                    type="date"
+                    className="input-field"
+                    value={dataLata}
+                    onChange={(e) => setDataLata(e.target.value)}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Hora</label>
+                  <input
+                    type="time"
+                    className="input-field"
+                    value={horaLata}
+                    onChange={(e) => setHoraLata(e.target.value)}
+                  />
+                </div>
               </div>
               <button className="btn-primary" onClick={salvarLata} style={{ marginTop: '0.5rem' }}>
                 {editandoIdLata ? 'Guardar Alterações' : 'Registar Abertura'}
