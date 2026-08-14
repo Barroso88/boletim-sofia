@@ -186,6 +186,7 @@ async function setupTables() {
         capacidade_ml INTEGER DEFAULT 5580,
         nome_formula TEXT
       );
+      ALTER TABLE latas_leite ADD COLUMN IF NOT EXISTS hora_abertura TEXT;
 
       CREATE TABLE IF NOT EXISTS leite (
         id BIGINT PRIMARY KEY,
@@ -746,11 +747,25 @@ app.get('/api/latas', async (req, res) => {
 });
 
 app.post('/api/latas', async (req, res) => {
-  const { id, data_abertura, capacidade_ml, nome_formula } = req.body;
+  const { id, data_abertura, hora_abertura, capacidade_ml, nome_formula } = req.body;
   try {
     await pool.query(
-      'INSERT INTO latas_leite (id, data_abertura, capacidade_ml, nome_formula) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data_abertura = $2, capacidade_ml = $3, nome_formula = $4',
-      [id, data_abertura, capacidade_ml || 5580, nome_formula || '']
+      'INSERT INTO latas_leite (id, data_abertura, hora_abertura, capacidade_ml, nome_formula) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET data_abertura = $2, hora_abertura = $3, capacidade_ml = $4, nome_formula = $5',
+      [id, data_abertura, hora_abertura || '', capacidade_ml || 5580, nome_formula || '']
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/latas/:id', async (req, res) => {
+  const { id } = req.params;
+  const { data_abertura, hora_abertura, capacidade_ml, nome_formula } = req.body;
+  try {
+    await pool.query(
+      'UPDATE latas_leite SET data_abertura = $1, hora_abertura = $2, capacidade_ml = $3, nome_formula = $4 WHERE id = $5',
+      [data_abertura, hora_abertura || '', capacidade_ml || 5580, nome_formula || '', id]
     );
     res.json({ success: true });
   } catch (err) {
