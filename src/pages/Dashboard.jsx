@@ -339,16 +339,28 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {ultimoSono && ultimoSono.hora_fim && (() => {
-            const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim);
-            return (
-              <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'flex-start' }}>
-                <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
-                  <Clock size={16} />
-                  <span>acordou há {tempo.text}</span>
+          {ultimoSono && (() => {
+            if (ultimoSono.hora_fim) {
+              const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim);
+              return (
+                <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'flex-start' }}>
+                  <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
+                    <Clock size={16} />
+                    <span>acordou há {tempo.text}</span>
+                  </div>
                 </div>
-              </div>
-            );
+              );
+            } else {
+              const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_inicio);
+              return (
+                <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'flex-start' }}>
+                  <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
+                    <Clock size={16} />
+                    <span>adormeceu há {tempo.text}</span>
+                  </div>
+                </div>
+              );
+            }
           })()}
 
           {ultimoSono ? (
@@ -365,23 +377,28 @@ const Dashboard = () => {
               </div>
               
               {!ultimoSono.hora_fim ? (
-                <button 
-                  className="btn-primary" 
-                  style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', padding: '0.4rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 'bold', border: 'none', color: '#fff', boxShadow: '0 4px 10px rgba(139, 92, 246, 0.2)', cursor: 'pointer' }}
-                  onClick={async () => {
-                    const horaAtual = format(new Date(), 'HH:mm');
-                    const [hI, mI] = ultimoSono.hora_inicio.split(':').map(Number);
-                    const [hF, mF] = horaAtual.split(':').map(Number);
-                    let duracao = (hF * 60 + mF) - (hI * 60 + mI);
-                    if (duracao < 0) duracao += 24 * 60;
-                    
-                    const novoRegisto = { ...ultimoSono, hora_fim: horaAtual, duracao_minutos: duracao };
-                    setRegistosSonos(prev => prev.map(r => r.id === ultimoSono.id ? novoRegisto : r));
-                    await api.saveSono(novoRegisto);
-                  }}
-                >
-                  Acordou
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                  <button 
+                    className="btn-primary" 
+                    style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', padding: '0.4rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 'bold', border: 'none', color: '#fff', boxShadow: '0 4px 10px rgba(139, 92, 246, 0.2)', cursor: 'pointer' }}
+                    onClick={async () => {
+                      const horaAtual = format(new Date(), 'HH:mm');
+                      const [hI, mI] = ultimoSono.hora_inicio.split(':').map(Number);
+                      const [hF, mF] = horaAtual.split(':').map(Number);
+                      let duracao = (hF * 60 + mF) - (hI * 60 + mI);
+                      if (duracao < 0) duracao += 24 * 60;
+                      
+                      const novoRegisto = { ...ultimoSono, hora_fim: horaAtual, duracao_minutos: duracao };
+                      setRegistosSonos(prev => prev.map(r => r.id === ultimoSono.id ? novoRegisto : r));
+                      await api.saveSono(novoRegisto);
+                    }}
+                  >
+                    Acordou
+                  </button>
+                  <div className="snapshot-meta" style={{ marginTop: '0' }}>
+                    <span>às <strong>{ultimoSono.hora_inicio}</strong> ({formatDataLabel(ultimoSono.data)})</span>
+                  </div>
+                </div>
               ) : (
                 <div className="snapshot-meta">
                   <span>{ultimoSono.hora_inicio} - {ultimoSono.hora_fim} ({formatDataLabel(ultimoSono.data)})</span>
