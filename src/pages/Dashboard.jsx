@@ -4,6 +4,9 @@ import { ptBR } from 'date-fns/locale';
 import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
+import biberaoIcon from '../assets/icons/biberao.svg';
+import fraldaIcon from '../assets/icons/fralda.svg';
+import dormirIcon from '../assets/icons/dormir.svg';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -221,7 +224,7 @@ const Dashboard = () => {
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge milk-bg">
-                <Milk size={20} />
+                <img src={biberaoIcon} alt="Biberão" style={{ width: '24px', height: '24px' }} />
               </div>
               <div>
                 <h3 className="snapshot-title">Última Mamada</h3>
@@ -255,7 +258,7 @@ const Dashboard = () => {
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge diaper-bg">
-                <Layers size={20} />
+                <img src={fraldaIcon} alt="Fralda" style={{ width: '24px', height: '24px' }} />
               </div>
               <div>
                 <h3 className="snapshot-title">Última Fralda</h3>
@@ -290,7 +293,7 @@ const Dashboard = () => {
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6' }}>
-                <Moon size={20} />
+                <img src={dormirIcon} alt="Dormir" style={{ width: '24px', height: '24px' }} />
               </div>
               <div>
                 <h3 className="snapshot-title">Último Sono</h3>
