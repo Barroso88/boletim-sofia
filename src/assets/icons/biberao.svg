@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="3873" height="3873" viewBox="0 0 3873 3873">
 <defs>
-<clipPath id="clip-0">
+<clipPath id="clip-b0">
 
 </clipPath>
-<clipPath id="clip-1">
+<clipPath id="clip-b1">
 <path clip-rule="nonzero" d="M -1936.5 1936.5 L 1936.5 -1936.5 L 5809.5 1936.5 L 1936.5 5809.5 Z M -1936.5 1936.5 "/>
 </clipPath>
-<clipPath id="clip-2">
+<clipPath id="clip-b2">
 <path clip-rule="nonzero" d="M 541.601562 0 C 242.800781 0 0 242.800781 0 541.601562 L 0 3331.398438 C 0 3630.199219 242.800781 3873 541.601562 3873 L 3331.398438 3873 C 3631 3873 3873 3630.199219 3873 3331.398438 L 3873 541.601562 C 3873 242.800781 3630.199219 0 3331.398438 0 Z M 541.601562 0 "/>
 </clipPath>
-<linearGradient id="linear-pattern-0" gradientUnits="userSpaceOnUse" x1="-0.0445687" y1="0" x2="1.044619" y2="0" gradientTransform="matrix(3555.86, -3555.86, -3555.86, -3555.86, 158.48, 3714.52)">
+<linearGradient id="grad-biberao" gradientUnits="userSpaceOnUse" x1="-0.0445687" y1="0" x2="1.044619" y2="0" gradientTransform="matrix(3555.86, -3555.86, -3555.86, -3555.86, 158.48, 3714.52)">
 <stop offset="0" stop-color="rgb(88.264465%, 7.951355%, 42.30957%)" stop-opacity="1"/>
 <stop offset="0.03125" stop-color="rgb(88.264465%, 7.951355%, 42.30957%)" stop-opacity="1"/>
 <stop offset="0.0390625" stop-color="rgb(88.264465%, 7.951355%, 42.30957%)" stop-opacity="1"/>
@@ -250,10 +250,10 @@
 <stop offset="1" stop-color="rgb(21.21582%, 34.991455%, 68.962097%)" stop-opacity="1"/>
 </linearGradient>
 </defs>
-<g clip-path="url(#clip-0)">
-<g clip-path="url(#clip-1)">
-<g clip-path="url(#clip-2)">
-<path fill-rule="nonzero" fill="url(#linear-pattern-0)" d="M 1936.5 5809.5 L -1936.5 1936.5 L 1936.5 -1936.5 L 5809.5 1936.5 Z M 1936.5 5809.5 "/>
+<g clip-path="url(#clip-b0)">
+<g clip-path="url(#clip-b1)">
+<g clip-path="url(#clip-b2)">
+<path fill-rule="nonzero" fill="url(#grad-biberao)" d="M 1936.5 5809.5 L -1936.5 1936.5 L 1936.5 -1936.5 L 5809.5 1936.5 Z M 1936.5 5809.5 "/>
 </g>
 </g>
 </g>
