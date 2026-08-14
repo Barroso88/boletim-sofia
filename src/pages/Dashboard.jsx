@@ -223,8 +223,8 @@ const Dashboard = () => {
         <div className="quick-snapshot-card milk-card glass-card">
           <div className="snapshot-header">
             <div className="snapshot-title-group">
-              <div className="snapshot-icon-badge milk-bg">
-                <img src={biberaoIcon} alt="Biberão" style={{ width: '24px', height: '24px' }} />
+              <div className="snapshot-icon-badge">
+                <img src={biberaoIcon} alt="Biberão" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
               </div>
               <div>
                 <h3 className="snapshot-title">Última Mamada</h3>
@@ -257,8 +257,8 @@ const Dashboard = () => {
         <div className="quick-snapshot-card diaper-card glass-card">
           <div className="snapshot-header">
             <div className="snapshot-title-group">
-              <div className="snapshot-icon-badge diaper-bg">
-                <img src={fraldaIcon} alt="Fralda" style={{ width: '24px', height: '24px' }} />
+              <div className="snapshot-icon-badge">
+                <img src={fraldaIcon} alt="Fralda" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
               </div>
               <div>
                 <h3 className="snapshot-title">Última Fralda</h3>
@@ -292,8 +292,8 @@ const Dashboard = () => {
         <div className="quick-snapshot-card sleep-card glass-card" style={{ background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(2ede, 233, 254, 0.85))', border: '1px solid rgba(139, 92, 246, 0.35)', borderBottom: '3px solid rgba(124, 58, 237, 0.8)', boxShadow: '0 8px 32px -4px rgba(139, 92, 246, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.7)' }}>
           <div className="snapshot-header">
             <div className="snapshot-title-group">
-              <div className="snapshot-icon-badge" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6' }}>
-                <img src={dormirIcon} alt="Dormir" style={{ width: '24px', height: '24px' }} />
+              <div className="snapshot-icon-badge">
+                <img src={dormirIcon} alt="Dormir" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
               </div>
               <div>
                 <h3 className="snapshot-title">Último Sono</h3>
