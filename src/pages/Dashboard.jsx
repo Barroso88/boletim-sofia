@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { differenceInMonths, differenceInDays, differenceInYears, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar, Syringe, Milk, Sparkles, Clock, Moon } from 'lucide-react';
+import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
 import './Dashboard.css';
@@ -161,12 +161,12 @@ const Dashboard = () => {
     }
   };
 
-  const getFraldaClass = (tipo) => {
-    if (!tipo) return 'xixi';
+  const getFraldaInfo = (tipo) => {
+    if (!tipo) return { cls: 'xixi', icon: '💧' };
     const t = tipo.toLowerCase();
-    if (t.includes('cocó') && t.includes('xixi')) return 'ambos';
-    if (t.includes('cocó')) return 'coco';
-    return 'xixi';
+    if (t.includes('cocó') && t.includes('xixi')) return { cls: 'ambos', icon: '🧻' };
+    if (t.includes('cocó')) return { cls: 'coco', icon: '💩' };
+    return { cls: 'xixi', icon: '💧' };
   };
 
   const renderList = (items, emptyMessage, isPast = false) => {
@@ -255,7 +255,7 @@ const Dashboard = () => {
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge diaper-bg">
-                <Sparkles size={20} />
+                <Layers size={20} />
               </div>
               <div>
                 <h3 className="snapshot-title">Última Fralda</h3>
@@ -272,7 +272,8 @@ const Dashboard = () => {
 
           {ultimaFralda ? (
             <div className="snapshot-body">
-              <div className={`snapshot-type-tag type-${getFraldaClass(ultimaFralda.tipo)}`}>
+              <div className={`snapshot-type-tag type-${getFraldaInfo(ultimaFralda.tipo).cls}`}>
+                <span style={{ marginRight: '6px' }}>{getFraldaInfo(ultimaFralda.tipo).icon}</span>
                 {ultimaFralda.tipo}
               </div>
               <div className="snapshot-meta">
