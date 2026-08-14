@@ -680,7 +680,7 @@ const Leite = () => {
             <div className="hero-top-row">
               <div className="hero-title-group">
                 <div className="icon-badge-glow">
-                  <Milk size={26} />
+                  <img src={biberaoIcon} alt="Leite" style={{ width: '26px', height: '26px', objectFit: 'contain' }} />
                 </div>
                 <div>
                   <h2 className="hero-day-title">{diaDaSemana}</h2>
@@ -728,7 +728,7 @@ const Leite = () => {
             <form className="add-form-card" onSubmit={adicionarRegistoLeite}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <h3 className="h3 flex-center" style={{ gap: '0.5rem' }}>
-                  <Milk size={20} className="text-primary" />
+                  <img src={biberaoIcon} alt="Leite" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
                   <span>Registar Mamada</span>
                 </h3>
                 <span className="text-secondary" style={{ fontSize: '0.85rem' }}>{dataSelecionada}</span>
@@ -829,7 +829,7 @@ const Leite = () => {
             {registosLeiteDoDia.length === 0 ? (
               <div className="empty-state-card">
                 <div className="empty-icon-circle">
-                  <Milk size={32} />
+                  <img src={biberaoIcon} alt="Leite" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                 </div>
                 <h4 style={{ margin: '0 0 0.25rem 0', color: 'var(--color-text)', fontWeight: '800' }}>Sem registos hoje</h4>
                 <p className="text-secondary" style={{ fontSize: '0.85rem', margin: 0 }}>
@@ -841,7 +841,7 @@ const Leite = () => {
                 <div key={reg.id} className="feeding-card">
                   <div className="feeding-left">
                     <div className="feeding-icon-box">
-                      <Milk size={22} />
+                      <img src={biberaoIcon} alt="Leite" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
                     </div>
                     <div>
                       <div className="feeding-time">{reg.hora}</div>
@@ -968,7 +968,7 @@ const Leite = () => {
             <div className="hero-top-row">
               <div className="hero-title-group">
                 <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, #0284c7, #6366f1)' }}>
-                  <Layers size={26} />
+                  <img src={fraldaIcon} alt="Fraldas" style={{ width: '26px', height: '26px', objectFit: 'contain' }} />
                 </div>
                 <div>
                   <h2 className="hero-day-title">{diaDaSemana}</h2>
@@ -1017,7 +1017,7 @@ const Leite = () => {
             <form className="add-form-card" onSubmit={adicionarRegistoFralda}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <h3 className="h3 flex-center" style={{ gap: '0.5rem' }}>
-                  <Layers size={20} style={{ color: '#0284c7' }} />
+                  <img src={fraldaIcon} alt="Fraldas" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
                   <span>Registar Fralda</span>
                 </h3>
                 <span className="text-secondary" style={{ fontSize: '0.85rem' }}>{dataSelecionada}</span>
@@ -1080,7 +1080,7 @@ const Leite = () => {
           {/* Diapers Feed Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
             <h3 className="h3 flex-center" style={{ gap: '0.5rem' }}>
-              <Layers size={18} style={{ color: '#0284c7' }} />
+              <img src={fraldaIcon} alt="Fraldas" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
               <span>Fraldas Registadas</span>
             </h3>
             <span className="badge" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', padding: '0.25rem 0.65rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '700' }}>
@@ -1093,7 +1093,7 @@ const Leite = () => {
             {registosFraldasDoDia.length === 0 ? (
               <div className="empty-state-card">
                 <div className="empty-icon-circle" style={{ background: 'rgba(2, 132, 199, 0.1)', color: '#0284c7' }}>
-                  <Layers size={32} />
+                  <img src={fraldaIcon} alt="Fraldas" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                 </div>
                 <h4 style={{ margin: '0 0 0.25rem 0', color: 'var(--color-text)', fontWeight: '800' }}>Sem registos hoje</h4>
                 <p className="text-secondary" style={{ fontSize: '0.85rem', margin: 0 }}>
@@ -1166,7 +1166,7 @@ const Leite = () => {
             <div className="hero-top-row">
               <div className="hero-title-group">
                 <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)' }}>
-                  <Clock size={26} />
+                  <img src={dormirIcon} alt="Sono" style={{ width: '26px', height: '26px', objectFit: 'contain' }} />
                 </div>
                 <div>
                   <h2 className="hero-day-title">{diaDaSemana}</h2>
@@ -1211,7 +1211,7 @@ const Leite = () => {
             <form className="add-form-card" onSubmit={adicionarRegistoSono}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <h3 className="h3 flex-center" style={{ gap: '0.5rem', color: '#8b5cf6' }}>
-                  <Clock size={20} />
+                  <img src={dormirIcon} alt="Sono" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
                   <span>Registar Sono</span>
                 </h3>
               </div>
@@ -1297,7 +1297,7 @@ const Leite = () => {
             {registosSonosDoDia.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-icon-wrap" style={{ background: 'rgba(139,92,246,0.1)' }}>
-                  <Clock size={32} color="#8b5cf6" />
+                  <img src={dormirIcon} alt="Sono" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                 </div>
                 <p>Nenhum sono registado neste dia.</p>
               </div>
@@ -1315,7 +1315,7 @@ const Leite = () => {
                     <div key={reg.id} className="feeding-card" style={{ borderLeft: '4px solid #8b5cf6' }}>
                       <div className="feeding-left">
                         <div className="feeding-icon-box" style={{ color: '#8b5cf6', background: 'rgba(139,92,246,0.1)' }}>
-                          <Clock size={20} />
+                          <img src={dormirIcon} alt="Sono" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
                         </div>
                         <div>
                           <div className="feeding-time" style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
