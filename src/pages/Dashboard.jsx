@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { differenceInMonths, differenceInDays, differenceInYears, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers } from 'lucide-react';
+import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers, Sofa, BedDouble, Baby, Droplets } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
 import biberaoIcon from '../assets/icons/baby-bottle.png';
@@ -201,6 +201,39 @@ const Dashboard = () => {
     );
   };
 
+  const triggerHA = async (room) => {
+    const webhooks = {
+      'sala': 'boletim_sofia_sala',
+      'quarto': 'boletim_sofia_quarto',
+      'quarto-sofia': 'boletim_sofia_quarto_sofia',
+      'fralda': 'boletim_sofia_fralda'
+    };
+
+    const webhookId = webhooks[room];
+    const haUrl = import.meta.env.VITE_HA_URL;
+
+    if (!haUrl) {
+      console.warn("VITE_HA_URL não está definido no ficheiro .env.local");
+      alert("Por favor configura o VITE_HA_URL no ficheiro .env.local");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${haUrl}/api/webhook/${webhookId}`, {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        console.log(`Sucesso: Ação ${room} ativada no Home Assistant!`);
+        // Opcional: Adicionar notificação visual aqui
+      } else {
+        console.error("Falha ao contactar o webhook do Home Assistant.");
+      }
+    } catch (error) {
+      console.error("Erro ao comunicar com o Home Assistant:", error);
+    }
+  };
+
   return (
     <div className="dashboard">
       <div className="hero-card glass-card">
@@ -218,6 +251,34 @@ const Dashboard = () => {
             <span className="stat-label">Dias</span>
           </div>
         </div>
+      </div>
+
+      {/* Home Assistant Smart Actions */}
+      <div className="ha-actions-grid">
+        <button className="ha-action-btn glass-card" onClick={() => triggerHA('sala')}>
+          <div className="ha-icon-wrapper">
+            <Sofa size={24} />
+          </div>
+          <span>Sala</span>
+        </button>
+        <button className="ha-action-btn glass-card" onClick={() => triggerHA('quarto')}>
+          <div className="ha-icon-wrapper">
+            <BedDouble size={24} />
+          </div>
+          <span>Quarto</span>
+        </button>
+        <button className="ha-action-btn glass-card" onClick={() => triggerHA('quarto-sofia')}>
+          <div className="ha-icon-wrapper">
+            <Baby size={24} />
+          </div>
+          <span>Quarto Sofia</span>
+        </button>
+        <button className="ha-action-btn glass-card" onClick={() => triggerHA('fralda')}>
+          <div className="ha-icon-wrapper">
+            <Droplets size={24} />
+          </div>
+          <span>Fralda</span>
+        </button>
       </div>
 
 
