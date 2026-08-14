@@ -611,5 +611,18 @@ export const api = {
     fetchWithFallback(`${API_BASE}/digitalizacoes/${id}`, {
       method: 'DELETE'
     });
+  },
+
+  // --- HOME ASSISTANT ---
+  async triggerHA(webhookId) {
+    try {
+      const res = await fetch(`${API_BASE}/ha/webhook/${webhookId}`, {
+        method: 'POST'
+      });
+      return res.ok;
+    } catch (err) {
+      console.error('Falha ao contactar o proxy HA:', err);
+      return false;
+    }
   }
 };

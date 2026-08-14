@@ -205,29 +205,18 @@ const Dashboard = () => {
     const webhooks = {
       'sala': 'boletim_sofia_sala',
       'quarto': 'boletim_sofia_quarto',
-      'quarto-sofia': 'boletim_sofia_quarto_sofia',
+      'quarto-sofia': 'boletim_sofia_quartosofia',
       'fralda': 'boletim_sofia_fralda'
     };
 
     const webhookId = webhooks[room];
-    const haUrl = import.meta.env.VITE_HA_URL;
-
-    if (!haUrl) {
-      console.warn("VITE_HA_URL não está definido no ficheiro .env.local");
-      alert("Por favor configura o VITE_HA_URL no ficheiro .env.local");
-      return;
-    }
 
     try {
-      const response = await fetch(`${haUrl}/api/webhook/${webhookId}`, {
-        method: 'POST',
-      });
-      
-      if (response.ok) {
+      const success = await api.triggerHA(webhookId);
+      if (success) {
         console.log(`Sucesso: Ação ${room} ativada no Home Assistant!`);
-        // Opcional: Adicionar notificação visual aqui
       } else {
-        console.error("Falha ao contactar o webhook do Home Assistant.");
+        console.error("Falha ao contactar o webhook do Home Assistant através do backend.");
       }
     } catch (error) {
       console.error("Erro ao comunicar com o Home Assistant:", error);

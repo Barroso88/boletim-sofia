@@ -783,6 +783,28 @@ app.delete('/api/latas/:id', async (req, res) => {
   }
 });
 
+// --- HOME ASSISTANT PROXY ---
+app.post('/api/ha/webhook/:id', async (req, res) => {
+  const { id } = req.params;
+  // Use variable from Unraid Docker container environment
+  const haUrl = process.env.HA_URL || 'https://ha.barrosoportal.com';
+
+  try {
+    const response = await fetch(`${haUrl}/api/webhook/${id}`, {
+      method: 'POST'
+    });
+
+    if (response.ok) {
+      res.json({ success: true });
+    } else {
+      res.status(response.status).json({ error: 'Erro ao contactar Home Assistant' });
+    }
+  } catch (err) {
+    console.error('Erro no proxy para Home Assistant:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Serve Static Frontend Files
 const distPath = path.join(__dirname, '../dist');
 app.use(express.static(distPath));
