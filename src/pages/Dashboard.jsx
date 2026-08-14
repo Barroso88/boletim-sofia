@@ -140,15 +140,17 @@ const Dashboard = () => {
       const past = new Date(`${dataStr}T${horaStr}:00`);
       const now = new Date();
       const diffMs = now - past;
-      if (isNaN(diffMs) || diffMs < 0) return '0 min';
+      if (isNaN(diffMs) || diffMs < 0) return { text: '0 min', isUrgent: false };
 
       const totalMinutes = Math.floor(diffMs / (1000 * 60));
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
+      
+      const isUrgent = totalMinutes > 180; // Mais de 3 horas
 
-      if (hours === 0) return `${minutes} min`;
-      if (minutes === 0) return `${hours}h`;
-      return `${hours}h ${minutes}min`;
+      if (hours === 0) return { text: `${minutes} min`, isUrgent };
+      if (minutes === 0) return { text: `${hours}h`, isUrgent };
+      return { text: `${hours}h ${minutes}min`, isUrgent };
     } catch (e) {
       return null;
     }
@@ -240,12 +242,15 @@ const Dashboard = () => {
                 <p className="snapshot-subtitle">Alimentação</p>
               </div>
             </div>
-            {ultimaMamada && (
-              <div className="snapshot-timer-pill">
-                <Clock size={13} />
-                <span>há {getTempoDecorredor(ultimaMamada.data, ultimaMamada.hora)}</span>
-              </div>
-            )}
+            {ultimaMamada && (() => {
+              const tempo = getTempoDecorredor(ultimaMamada.data, ultimaMamada.hora);
+              return (
+                <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
+                  <Clock size={16} />
+                  <span>há {tempo.text}</span>
+                </div>
+              );
+            })()}
           </div>
 
           {ultimaMamada ? (
@@ -281,12 +286,15 @@ const Dashboard = () => {
                 <p className="snapshot-subtitle">Higiene</p>
               </div>
             </div>
-            {ultimaFralda && (
-              <div className="snapshot-timer-pill">
-                <Clock size={13} />
-                <span>há {getTempoDecorredor(ultimaFralda.data, ultimaFralda.hora)}</span>
-              </div>
-            )}
+            {ultimaFralda && (() => {
+              const tempo = getTempoDecorredor(ultimaFralda.data, ultimaFralda.hora);
+              return (
+                <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
+                  <Clock size={16} />
+                  <span>há {tempo.text}</span>
+                </div>
+              );
+            })()}
           </div>
 
           {ultimaFralda ? (
@@ -323,12 +331,15 @@ const Dashboard = () => {
                 <p className="snapshot-subtitle">Descanso</p>
               </div>
             </div>
-            {ultimoSono && ultimoSono.hora_fim && (
-              <div className="snapshot-timer-pill" style={{ color: '#8b5cf6', background: 'rgba(139, 92, 246, 0.08)', borderColor: 'rgba(139, 92, 246, 0.15)' }}>
-                <Clock size={13} />
-                <span>acordou há {getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim)}</span>
-              </div>
-            )}
+            {ultimoSono && ultimoSono.hora_fim && (() => {
+              const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim);
+              return (
+                <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
+                  <Clock size={16} />
+                  <span>acordou há {tempo.text}</span>
+                </div>
+              );
+            })()}
           </div>
 
           {ultimoSono ? (
