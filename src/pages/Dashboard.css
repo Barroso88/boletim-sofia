@@ -543,20 +543,20 @@
   gap: 0.75rem;
   padding: 1.25rem 0.5rem;
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(225, 29, 72, 0.65); /* Rose pink background */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 
-    0 4px 20px rgba(0, 0, 0, 0.3),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    0 4px 20px rgba(225, 29, 72, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   text-decoration: none;
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 700;
-  color: rgba(248, 250, 252, 0.9);
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   -webkit-tap-highlight-color: transparent;
@@ -565,7 +565,7 @@
 }
 
 [data-theme="light"] .ha-action-btn {
-  background: rgba(15, 23, 42, 0.85); /* Keep dark futuristic look even in light mode for contrast */
+  background: rgba(225, 29, 72, 0.75); /* Deep pink glass for light mode */
 }
 
 /* Neon glow line at the top of the button */
@@ -576,21 +576,21 @@
   left: 20%;
   right: 20%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-  opacity: 0.3;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  opacity: 0.4;
   transition: opacity 0.3s ease;
 }
 
 .ha-action-btn:hover::before, .ha-action-btn:active::before {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .ha-action-btn:active {
   transform: scale(0.94) translateY(2px);
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(190, 18, 60, 0.85); /* Darker pink on press */
   box-shadow: 
-    0 2px 10px rgba(0, 0, 0, 0.4),
-    inset 0 0 20px rgba(0, 0, 0, 0.6);
+    0 2px 10px rgba(190, 18, 60, 0.5),
+    inset 0 0 20px rgba(159, 18, 57, 0.7);
 }
 
 .ha-icon-wrapper {
