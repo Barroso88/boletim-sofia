@@ -49,6 +49,7 @@ const Leite = () => {
   const [editandoIdSono, setEditandoIdSono] = useState(null);
   const [novaHoraInicioSono, setNovaHoraInicioSono] = useState(format(new Date(), 'HH:mm'));
   const [novaHoraFimSono, setNovaHoraFimSono] = useState('');
+  const [novaDataSono, setNovaDataSono] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [mostrarRelatorioSonos, setMostrarRelatorioSonos] = useState(false);
   useEffect(() => {
     api.getLeite().then(data => setRegistosLeite(data));
@@ -441,6 +442,7 @@ const Leite = () => {
 
   const abrirEdicaoSono = (reg) => {
     setEditandoIdSono(reg.id);
+    setNovaDataSono(reg.data);
     setNovaHoraInicioSono(reg.hora_inicio);
     setNovaHoraFimSono(reg.hora_fim);
     setAdicionandoSono(true);
@@ -454,7 +456,7 @@ const Leite = () => {
     
     const registo = {
       id: editandoIdSono || Date.now(),
-      data: dataSelecionada,
+      data: novaDataSono,
       hora_inicio: novaHoraInicioSono,
       hora_fim: novaHoraFimSono || "",
       duracao_minutos: duracao,
@@ -1182,6 +1184,7 @@ const Leite = () => {
               style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%)', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)' }}
               onClick={() => {
                 setAdicionandoSono(true);
+                setNovaDataSono(dataSelecionada);
                 setNovaHoraInicioSono(format(new Date(), 'HH:mm'));
                 setNovaHoraFimSono('');
               }}
@@ -1196,11 +1199,23 @@ const Leite = () => {
                   <Clock size={20} />
                   <span>Registar Sono</span>
                 </h3>
-                <span className="text-secondary" style={{ fontSize: '0.85rem' }}>{dataSelecionada}</span>
               </div>
 
-              <div className="time-input-group" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
-                <div style={{ flex: 1 }}>
+              <div className="time-input-group" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 100%' }}>
+                  <div className="form-section-title">Data de Início</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.75rem 1rem', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
+                    <CalendarIcon size={18} className="text-secondary" />
+                    <input
+                      type="date"
+                      value={novaDataSono}
+                      onChange={(e) => setNovaDataSono(e.target.value)}
+                      style={{ border: 'none', background: 'transparent', width: '100%', fontSize: '1.1rem', fontWeight: '700', outline: 'none', color: 'var(--color-text)' }}
+                      required
+                    />
+                  </div>
+                </div>
+                <div style={{ flex: 1, minWidth: '120px' }}>
                   <div className="form-section-title">Hora Início</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.75rem 1rem', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
                     <Clock size={18} className="text-secondary" />
@@ -1213,7 +1228,7 @@ const Leite = () => {
                     />
                   </div>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: '120px' }}>
                   <div className="form-section-title">Hora Fim</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.75rem 1rem', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
                     <Clock size={18} className="text-secondary" />
