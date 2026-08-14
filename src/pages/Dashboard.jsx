@@ -4,9 +4,9 @@ import { ptBR } from 'date-fns/locale';
 import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
-import biberaoIcon from '../assets/icons/biberao.svg';
-import fraldaIcon from '../assets/icons/fralda.svg';
-import dormirIcon from '../assets/icons/dormir.svg';
+import biberaoIcon from '../assets/icons/baby-bottle.png';
+import fraldaIcon from '../assets/icons/diaper.png';
+import dormirIcon from '../assets/icons/baby-sleep.png';
 import './Dashboard.css';
 
 const Dashboard = () => {
