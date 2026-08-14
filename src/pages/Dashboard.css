@@ -529,10 +529,10 @@
 /* Home Assistant Actions Grid */
 .ha-actions-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin-top: -0.5rem; /* pull up slightly closer to hero card */
-  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .ha-action-btn {
@@ -541,42 +541,64 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 1rem 0.5rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(0,0,0,0.05);
-  background: var(--color-surface);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  padding: 1.25rem 0.5rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 245, 250, 0.8));
+  box-shadow: 
+    0 8px 0 rgba(200, 210, 225, 0.8),
+    0 12px 24px rgba(0, 0, 0, 0.08),
+    inset 0 2px 6px rgba(255, 255, 255, 0.9);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.3, 0.7, 0.3, 1);
   text-decoration: none;
   font-family: inherit;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text);
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  top: 0;
+  outline: none;
+}
+
+[data-theme="midnight"] .ha-action-btn {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 8px 0 rgba(2, 6, 23, 0.9),
+    0 12px 24px rgba(0, 0, 0, 0.4),
+    inset 0 2px 6px rgba(255, 255, 255, 0.05);
 }
 
 .ha-action-btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  top: 8px;
+  box-shadow: 
+    0 0 0 rgba(200, 210, 225, 0.8),
+    0 4px 10px rgba(0, 0, 0, 0.05),
+    inset 0 2px 6px rgba(255, 255, 255, 0.8);
+  transform: scale(0.98);
 }
 
-.ha-action-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+[data-theme="midnight"] .ha-action-btn:active {
+  box-shadow: 
+    0 0 0 rgba(2, 6, 23, 0.9),
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 2px 6px rgba(255, 255, 255, 0.02);
 }
 
 .ha-icon-wrapper {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f1f5f9; /* Slate 100 */
-  color: #64748b; /* Slate 500 */
+  background: #f1f5f9;
+  color: #64748b;
   margin-bottom: 0.25rem;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .ha-action-btn:active .ha-icon-wrapper {
@@ -585,20 +607,28 @@
 
 /* Specific button colors for premium look */
 .ha-action-btn:nth-child(1) .ha-icon-wrapper { /* Sala */
-  background: rgba(245, 158, 11, 0.15);
+  background: linear-gradient(135deg, rgba(252, 211, 77, 0.2), rgba(245, 158, 11, 0.15));
   color: #d97706;
 }
 .ha-action-btn:nth-child(2) .ha-icon-wrapper { /* Quarto */
-  background: rgba(59, 130, 246, 0.15);
+  background: linear-gradient(135deg, rgba(147, 197, 253, 0.2), rgba(59, 130, 246, 0.15));
   color: #2563eb;
 }
 .ha-action-btn:nth-child(3) .ha-icon-wrapper { /* Quarto Sofia */
-  background: rgba(139, 92, 246, 0.15);
+  background: linear-gradient(135deg, rgba(196, 181, 253, 0.2), rgba(139, 92, 246, 0.15));
   color: #7c3aed;
 }
 .ha-action-btn:nth-child(4) .ha-icon-wrapper { /* Fralda */
-  background: rgba(16, 185, 129, 0.15);
+  background: linear-gradient(135deg, rgba(110, 231, 183, 0.2), rgba(16, 185, 129, 0.15));
   color: #059669;
+}
+.ha-action-btn:nth-child(5) .ha-icon-wrapper { /* Persiana */
+  background: linear-gradient(135deg, rgba(103, 232, 249, 0.2), rgba(6, 182, 212, 0.15));
+  color: #0891b2;
+}
+.ha-action-btn:nth-child(6) .ha-icon-wrapper { /* Ventilador */
+  background: linear-gradient(135deg, rgba(203, 213, 225, 0.3), rgba(148, 163, 184, 0.2));
+  color: #475569;
 }
 
 @media (max-width: 600px) {
@@ -606,15 +636,15 @@
     gap: 0.75rem;
   }
   .ha-action-btn {
-    padding: 0.75rem 0.25rem;
+    padding: 1rem 0.25rem;
     font-size: 0.75rem;
   }
   .ha-icon-wrapper {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
   }
   .ha-icon-wrapper svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 }

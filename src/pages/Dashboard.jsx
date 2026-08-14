@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { differenceInMonths, differenceInDays, differenceInYears, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers, Sofa, BedDouble, Baby, Droplets } from 'lucide-react';
+import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers, Sofa, BedDouble, Baby, Droplets, Blinds, Fan } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
 import biberaoIcon from '../assets/icons/baby-bottle.png';
@@ -206,7 +206,9 @@ const Dashboard = () => {
       'sala': 'boletim_sofia_sala',
       'quarto': 'boletim_sofia_quarto',
       'quarto-sofia': 'boletim_sofia_quartosofia',
-      'fralda': 'boletim_sofia_fralda'
+      'fralda': 'boletim_sofia_fralda',
+      'persiana': 'boletim_sofia_persiana',
+      'ventilador': 'boletim_sofia_ventilador'
     };
 
     const webhookId = webhooks[room];
@@ -244,29 +246,41 @@ const Dashboard = () => {
 
       {/* Home Assistant Smart Actions */}
       <div className="ha-actions-grid">
-        <button className="ha-action-btn glass-card" onClick={() => triggerHA('sala')}>
+        <button className="ha-action-btn" onClick={() => triggerHA('sala')}>
           <div className="ha-icon-wrapper">
             <Sofa size={24} />
           </div>
           <span>Sala</span>
         </button>
-        <button className="ha-action-btn glass-card" onClick={() => triggerHA('quarto')}>
+        <button className="ha-action-btn" onClick={() => triggerHA('quarto')}>
           <div className="ha-icon-wrapper">
             <BedDouble size={24} />
           </div>
           <span>Quarto</span>
         </button>
-        <button className="ha-action-btn glass-card" onClick={() => triggerHA('quarto-sofia')}>
+        <button className="ha-action-btn" onClick={() => triggerHA('quarto-sofia')}>
           <div className="ha-icon-wrapper">
             <Baby size={24} />
           </div>
           <span>Quarto Sofia</span>
         </button>
-        <button className="ha-action-btn glass-card" onClick={() => triggerHA('fralda')}>
+        <button className="ha-action-btn" onClick={() => triggerHA('fralda')}>
           <div className="ha-icon-wrapper">
             <Droplets size={24} />
           </div>
           <span>Fralda</span>
+        </button>
+        <button className="ha-action-btn" onClick={() => triggerHA('persiana')}>
+          <div className="ha-icon-wrapper">
+            <Blinds size={24} />
+          </div>
+          <span>Persiana</span>
+        </button>
+        <button className="ha-action-btn" onClick={() => triggerHA('ventilador')}>
+          <div className="ha-icon-wrapper">
+            <Fan size={24} />
+          </div>
+          <span>Ventilador</span>
         </button>
       </div>
 
