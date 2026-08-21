@@ -275,8 +275,13 @@ const Dashboard = () => {
               marginTop: '1.25rem', 
               padding: '1.5rem',
               cursor: 'pointer',
-              background: currentLeap ? 'linear-gradient(135deg, rgba(239, 246, 255, 0.9), rgba(219, 234, 254, 0.9))' : 'linear-gradient(135deg, rgba(254, 252, 232, 0.9), rgba(254, 240, 138, 0.9))',
-              borderColor: currentLeap ? 'rgba(59, 130, 246, 0.3)' : 'rgba(234, 179, 8, 0.3)'
+              background: currentLeap ? 'linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(219, 234, 254, 0.85))' : 'linear-gradient(135deg, rgba(254, 252, 232, 0.95), rgba(254, 240, 138, 0.85))',
+              border: currentLeap ? '2px solid rgba(59, 130, 246, 1)' : '2px solid rgba(234, 179, 8, 1)',
+              borderBottom: currentLeap ? '3px solid rgba(37, 99, 235, 1)' : '3px solid rgba(202, 138, 4, 1)',
+              boxShadow: currentLeap 
+                ? '0 0 10px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.6), inset 0 0 10px rgba(59, 130, 246, 0.8), 0 8px 32px -4px rgba(59, 130, 246, 0.25)' 
+                : '0 0 10px rgba(234, 179, 8, 0.8), 0 0 20px rgba(234, 179, 8, 0.6), inset 0 0 10px rgba(234, 179, 8, 0.8), 0 8px 32px -4px rgba(234, 179, 8, 0.25)',
+              borderRadius: '16px'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
@@ -360,7 +365,14 @@ const Dashboard = () => {
             sessionStorage.setItem('leite_active_tab', 'leite');
             navigate('/leite');
           }}
-          style={{ cursor: 'pointer' }}
+          style={{ 
+            cursor: 'pointer',
+            background: 'linear-gradient(135deg, rgba(236, 254, 255, 0.95), rgba(207, 250, 254, 0.85))',
+            border: '2px solid rgba(6, 182, 212, 1)',
+            borderBottom: '3px solid rgba(8, 145, 178, 1)',
+            boxShadow: '0 0 10px rgba(6, 182, 212, 0.8), 0 0 20px rgba(6, 182, 212, 0.6), inset 0 0 10px rgba(6, 182, 212, 0.8), 0 8px 32px -4px rgba(6, 182, 212, 0.25)',
+            borderRadius: '16px'
+          }}
         >
           <div className="snapshot-header">
             <div className="snapshot-title-group">
@@ -407,7 +419,14 @@ const Dashboard = () => {
             sessionStorage.setItem('leite_active_tab', 'fraldas');
             navigate('/leite');
           }}
-          style={{ cursor: 'pointer' }}
+          style={{ 
+            cursor: 'pointer',
+            background: 'linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(209, 250, 229, 0.85))',
+            border: '2px solid rgba(16, 185, 129, 1)',
+            borderBottom: '3px solid rgba(5, 150, 105, 1)',
+            boxShadow: '0 0 10px rgba(16, 185, 129, 0.8), 0 0 20px rgba(16, 185, 129, 0.6), inset 0 0 10px rgba(16, 185, 129, 0.8), 0 8px 32px -4px rgba(16, 185, 129, 0.25)',
+            borderRadius: '16px'
+          }}
         >
           <div className="snapshot-header">
             <div className="snapshot-title-group">
@@ -455,7 +474,14 @@ const Dashboard = () => {
             sessionStorage.setItem('leite_active_tab', 'sonos');
             navigate('/leite');
           }}
-          style={{ cursor: 'pointer', background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(2ede, 233, 254, 0.85))', border: '1px solid rgba(139, 92, 246, 0.35)', borderBottom: '3px solid rgba(124, 58, 237, 0.8)', boxShadow: '0 8px 32px -4px rgba(139, 92, 246, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.7)' }}
+          style={{ 
+            cursor: 'pointer', 
+            background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(2ede, 233, 254, 0.85))', 
+            border: '2px solid rgba(139, 92, 246, 1)', 
+            borderBottom: '3px solid rgba(124, 58, 237, 1)', 
+            boxShadow: '0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.6), inset 0 0 10px rgba(139, 92, 246, 0.8), 0 8px 32px -4px rgba(139, 92, 246, 0.25)',
+            borderRadius: '16px'
+          }}
         >
           <div className="snapshot-header">
             <div className="snapshot-title-group">
