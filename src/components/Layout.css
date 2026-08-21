@@ -408,3 +408,33 @@
   }
 }
 
+/* Theme Neon Effects */
+.navbar.theme-neon {
+  border: 2px solid var(--color-primary) !important;
+  border-bottom: 3px solid var(--color-primary-dark) !important;
+  box-shadow: 
+    0 0 10px color-mix(in srgb, var(--color-primary) 80%, transparent), 
+    0 0 20px color-mix(in srgb, var(--color-primary) 60%, transparent), 
+    inset 0 0 10px color-mix(in srgb, var(--color-primary) 80%, transparent), 
+    0 8px 32px -4px color-mix(in srgb, var(--color-primary) 30%, transparent) !important;
+}
+
+[data-theme="midnight"] .navbar.theme-neon {
+  border: 2px solid var(--color-primary) !important;
+  border-bottom: 3px solid var(--color-primary-dark) !important;
+  box-shadow: 
+    0 0 10px color-mix(in srgb, var(--color-primary) 80%, transparent), 
+    0 0 20px color-mix(in srgb, var(--color-primary) 60%, transparent), 
+    inset 0 0 10px color-mix(in srgb, var(--color-primary) 80%, transparent), 
+    0 8px 32px -4px color-mix(in srgb, var(--color-primary) 30%, transparent) !important;
+}
+
+.theme-neon-avatar {
+  border: 2px solid var(--color-primary) !important;
+  box-shadow: 
+    0 0 10px color-mix(in srgb, var(--color-primary) 80%, transparent), 
+    0 0 20px color-mix(in srgb, var(--color-primary) 60%, transparent), 
+    inset 0 0 10px color-mix(in srgb, var(--color-primary) 80%, transparent) !important;
+  background: var(--color-primary) !important;
+}
+

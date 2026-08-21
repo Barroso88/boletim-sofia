@@ -67,18 +67,17 @@ const Layout = ({ children }) => {
     <div className="layout">
       <VitaminaModal />
       <nav
-        className="navbar glass-card"
+        className="navbar glass-card theme-neon"
         style={{
           '--header-pattern': `url('${headerPattern}')`
         }}
       >
         <div className="navbar-left">
           <Link to="/perfil" className="navbar-brand brand-link">
-            <div className="avatar-ring">
+            <div className="avatar-ring theme-neon-avatar">
               <div className="avatar">
                 <img src="/favicon.png?v=4" alt="Sofia" />
               </div>
-              <span className="online-pulse-dot" title="Sofia Morais Barroso" />
             </div>
           </Link>
         </div>
