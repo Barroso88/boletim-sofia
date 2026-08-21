@@ -7,6 +7,7 @@ const Perfil = () => {
   const [perfil, setPerfil] = useState({
     nome_completo: '',
     data_nascimento: '',
+    data_provavel_parto: '',
     morada: '',
     codigo_postal: '',
     cidade: '',
@@ -138,6 +139,7 @@ const Perfil = () => {
           
           {renderField(<UserCircle size={16} />, "Nome Completo", "nome_completo", "text", "Ex: Sofia Morais Barroso", true)}
           {renderField(<Calendar size={16} />, "Data de Nascimento", "data_nascimento", "date", "")}
+          {renderField(<Calendar size={16} />, "Data Provável de Parto (DPP)", "data_provavel_parto", "date", "")}
           {renderField(<MapPin size={16} />, "Local de Nascimento", "local_nascimento", "text", "Ex: Maternidade Alfredo da Costa")}
           
           {renderField(<Users size={16} />, "Nome da Mãe", "nome_mae", "text", "Nome da mãe")}

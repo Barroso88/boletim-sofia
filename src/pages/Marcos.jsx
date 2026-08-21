@@ -3,6 +3,7 @@ import { Plus, Trash2, Star, Calendar, AlertTriangle, X, Pencil } from 'lucide-r
 import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import TeethMap from '../components/TeethMap';
+import SaltosTimeline from '../components/SaltosTimeline';
 import { api } from '../services/api';
 import './Marcos.css';
 
@@ -28,7 +29,14 @@ const Marcos = () => {
   const [novaDescricao, setNovaDescricao] = useState('');
   const [novoIcone, setNovoIcone] = useState('🌟');
   const [novaCor, setNovaCor] = useState('rose');
-  const [activeTab, setActiveTab] = useState('timeline');
+  const [activeTab, setActiveTab] = useState(() => {
+    const saved = sessionStorage.getItem('marcos_active_tab');
+    if (saved) {
+      sessionStorage.removeItem('marcos_active_tab');
+      return saved;
+    }
+    return 'timeline';
+  });
   const [confirmarDelete, setConfirmarDelete] = useState(null);
 
   useEffect(() => {
@@ -103,9 +111,12 @@ const Marcos = () => {
         <button className={`marcos-tab ${activeTab === 'teeth' ? 'active' : ''}`} onClick={() => setActiveTab('teeth')}>
           🦷 Dentição
         </button>
+        <button className={`marcos-tab ${activeTab === 'saltos' ? 'active' : ''}`} onClick={() => setActiveTab('saltos')}>
+          🧠 Saltos
+        </button>
       </div>
 
-      {activeTab === 'timeline' ? (
+      {activeTab === 'timeline' && (
         <>
           {/* Add Marco Form */}
           {adicionando && (
@@ -281,9 +292,11 @@ const Marcos = () => {
             </div>
           )}
         </>
-      ) : (
-        <TeethMap />
       )}
+
+      {activeTab === 'teeth' && <TeethMap />}
+      
+      {activeTab === 'saltos' && <SaltosTimeline />}
 
       {/* Delete Confirmation Modal */}
       {confirmarDelete && (

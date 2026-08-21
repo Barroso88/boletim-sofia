@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { differenceInMonths, differenceInDays, differenceInYears, format } from 'date-fns';
+import { differenceInMonths, differenceInDays, differenceInYears, format, differenceInWeeks } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers } from 'lucide-react';
+import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers, CloudRain, Sun } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
+import { SALTOS_DESENVOLVIMENTO } from '../data/saltos';
 import biberaoIcon from '../assets/icons/baby-bottle.png';
 import fraldaIcon from '../assets/icons/diaper.png';
 import dormirIcon from '../assets/icons/baby-sleep.png';
@@ -37,6 +38,7 @@ const Dashboard = () => {
   const [registosLeite, setRegistosLeite] = useState([]);
   const [registosFraldas, setRegistosFraldas] = useState([]);
   const [registosSonos, setRegistosSonos] = useState([]);
+  const [dpp, setDpp] = useState(null);
 
   useEffect(() => {
     api.getAgenda().then(data => setEventos(data));
@@ -44,6 +46,13 @@ const Dashboard = () => {
     api.getLeite().then(data => setRegistosLeite(data || []));
     api.getFraldas().then(data => setRegistosFraldas(data || []));
     api.getSonos().then(data => setRegistosSonos(data || []));
+    api.getPerfil().then(data => {
+      if (data && data.data_provavel_parto) {
+        setDpp(new Date(data.data_provavel_parto));
+      } else if (data && data.data_nascimento) {
+        setDpp(new Date(data.data_nascimento));
+      }
+    });
   }, []);
 
   // Filter 5 Consultas
@@ -250,7 +259,59 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="ha-actions-grid">
+      {dpp && (() => {
+        const currentWeeks = differenceInWeeks(new Date(), dpp);
+        const currentLeap = SALTOS_DESENVOLVIMENTO.find(
+          s => currentWeeks >= s.startWeek && currentWeeks <= s.endWeek
+        );
+        return (
+          <div 
+            className="glass-card animate-fade-in" 
+            onClick={() => {
+              sessionStorage.setItem('marcos_active_tab', 'saltos');
+              navigate('/marcos');
+            }}
+            style={{ 
+              marginTop: '1.25rem', 
+              padding: '1.5rem',
+              cursor: 'pointer',
+              background: currentLeap ? 'linear-gradient(135deg, rgba(239, 246, 255, 0.9), rgba(219, 234, 254, 0.9))' : 'linear-gradient(135deg, rgba(254, 252, 232, 0.9), rgba(254, 240, 138, 0.9))',
+              borderColor: currentLeap ? 'rgba(59, 130, 246, 0.3)' : 'rgba(234, 179, 8, 0.3)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ background: currentLeap ? '#3b82f6' : '#eab308', color: 'white', padding: '0.75rem', borderRadius: '50%', flexShrink: 0 }}>
+                {currentLeap ? <CloudRain size={28} /> : <Sun size={28} />}
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#1e293b' }}>
+                  {currentLeap ? 'Fase de Tempestade (Salto)' : 'Fase de Sol (Tranquilidade)'}
+                </h3>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569' }}>
+                  A Sofia está na {currentWeeks}ª semana (desde a DPP).
+                </p>
+              </div>
+            </div>
+            
+            {currentLeap ? (
+              <div>
+                <p style={{ fontWeight: 600, color: '#1e40af', marginBottom: '0.5rem' }}>{currentLeap.title}</p>
+                <p style={{ fontSize: '0.9rem', color: '#334155', margin: 0 }}>
+                  É normal que o sono e o apetite da Sofia estejam alterados. Ela está a processar uma enorme quantidade de nova informação!
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p style={{ fontSize: '0.9rem', color: '#334155', margin: 0 }}>
+                  Semana calma para brincar e praticar as novas habilidades adquiridas. Aproveitem o sol!
+                </p>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
+      <div className="ha-actions-grid" style={{ marginTop: '1.5rem' }}>
         <button className="ha-action-btn" onClick={() => triggerHA('sala')}>
           <div className="ha-icon-wrapper">
             <img src={salaIcon} alt="Sala" className="custom-ha-icon" />

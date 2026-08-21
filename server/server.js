@@ -229,6 +229,7 @@ async function setupTables() {
       
       ALTER TABLE perfil ADD COLUMN IF NOT EXISTS codigo_postal TEXT;
       ALTER TABLE perfil ADD COLUMN IF NOT EXISTS cidade TEXT;
+      ALTER TABLE perfil ADD COLUMN IF NOT EXISTS data_provavel_parto TEXT;
     `);
 
     client.release();
@@ -272,17 +273,17 @@ app.get('/api/perfil', async (req, res) => {
 
 app.post('/api/perfil', async (req, res) => {
   const {
-    nome_completo, data_nascimento, morada, codigo_postal, cidade, nome_pai, nome_mae,
+    nome_completo, data_nascimento, data_provavel_parto, morada, codigo_postal, cidade, nome_pai, nome_mae,
     local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas
   } = req.body;
   try {
     await pool.query(
-      `INSERT INTO perfil (id, nome_completo, data_nascimento, morada, codigo_postal, cidade, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas)
-       VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      `INSERT INTO perfil (id, nome_completo, data_nascimento, data_provavel_parto, morada, codigo_postal, cidade, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas)
+       VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        ON CONFLICT (id) DO UPDATE SET 
-         nome_completo = $1, data_nascimento = $2, morada = $3, codigo_postal = $4, cidade = $5, nome_pai = $6, nome_mae = $7,
-         local_nascimento = $8, peso_nascimento = $9, altura_nascimento = $10, grupo_sanguineo = $11, notas = $12`,
-      [nome_completo, data_nascimento, morada, codigo_postal, cidade, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas]
+         nome_completo = $1, data_nascimento = $2, data_provavel_parto = $3, morada = $4, codigo_postal = $5, cidade = $6, nome_pai = $7, nome_mae = $8,
+         local_nascimento = $9, peso_nascimento = $10, altura_nascimento = $11, grupo_sanguineo = $12, notas = $13`,
+      [nome_completo, data_nascimento, data_provavel_parto, morada, codigo_postal, cidade, nome_pai, nome_mae, local_nascimento, peso_nascimento, altura_nascimento, grupo_sanguineo, notas]
     );
     res.json({ success: true });
   } catch (err) {
