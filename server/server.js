@@ -119,6 +119,7 @@ async function setupTables() {
         data TEXT NOT NULL,
         tipo TEXT NOT NULL
       );
+      ALTER TABLE agenda ADD COLUMN IF NOT EXISTS notas TEXT;
 
       CREATE TABLE IF NOT EXISTS marcos (
         id BIGINT PRIMARY KEY,
@@ -300,11 +301,11 @@ app.get('/api/agenda', async (req, res) => {
 });
 
 app.post('/api/agenda', async (req, res) => {
-  const { id, titulo, data, tipo } = req.body;
+  const { id, titulo, data, tipo, notas } = req.body;
   try {
     await pool.query(
-      'INSERT INTO agenda (id, titulo, data, tipo) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET titulo = $2, data = $3, tipo = $4',
-      [id || Date.now(), titulo, data, tipo]
+      'INSERT INTO agenda (id, titulo, data, tipo, notas) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET titulo = $2, data = $3, tipo = $4, notas = $5',
+      [id || Date.now(), titulo, data, tipo, notas || '']
     );
     res.json({ success: true });
   } catch (err) {

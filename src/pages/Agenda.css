@@ -354,6 +354,46 @@
   color: #334155;
 }
 
+.evento-notas-premium {
+  margin-top: 0.4rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  width: max-content;
+  max-width: 100%;
+  text-align: left;
+}
+
+[data-theme="midnight"] .evento-notas-premium {
+  background: rgba(15, 23, 42, 0.4);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.evento-notas-premium .notas-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  opacity: 0.8;
+}
+
+.evento-notas-premium p {
+  margin: 0;
+  line-height: 1.5;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
 .btn-delete-evento {
   color: var(--color-text-light);
   padding: 0.75rem;

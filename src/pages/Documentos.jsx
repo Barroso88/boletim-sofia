@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle, ChevronUp, ChevronDown, GripVertical, FileText, Upload, Image as ImageIcon, File } from 'lucide-react';
+import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle, ChevronUp, ChevronDown, GripVertical, FileText, Upload, Image as ImageIcon, File, Download } from 'lucide-react';
 import { api } from '../services/api';
 import './Documentos.css';
 
@@ -433,7 +433,16 @@ const Documentos = () => {
                                   <span className="scan-list-title" title={doc.titulo}>{doc.titulo}</span>
                                 </div>
                                 <div className="scan-list-actions">
-                                  <button className="btn-action-delete" onClick={() => handleDeleteScan(doc.id)}>
+                                  <a 
+                                    href={fileUrl} 
+                                    download={doc.original_name || doc.filename} 
+                                    className="btn-action-edit" 
+                                    title="Download" 
+                                    onClick={e => e.stopPropagation()}
+                                  >
+                                    <Download size={16} />
+                                  </a>
+                                  <button className="btn-action-delete" onClick={(e) => { e.stopPropagation(); handleDeleteScan(doc.id); }}>
                                     <Trash2 size={16} />
                                   </button>
                                 </div>
@@ -655,11 +664,11 @@ const Documentos = () => {
 
       {/* ─── PREVIEW FILE MODAL ─── */}
       {previewFile && (
-        <div className="modal-overlay" style={{ zIndex: 9999, background: 'rgba(0,0,0,0.85)' }} onClick={() => setPreviewFile(null)}>
-          <div className="modal-preview-wrapper" style={{ position: 'relative', width: '90%', height: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
-            <button className="btn-icon" style={{ position: 'absolute', top: '-10px', right: '-10px', background: 'white', borderRadius: '50%' }} onClick={() => setPreviewFile(null)}>
-              <X size={24} color="black" />
-            </button>
+        <div className="modal-overlay" style={{ zIndex: 9999, background: 'rgba(0,0,0,0.85)', padding: '3rem 1rem 1rem 1rem', boxSizing: 'border-box' }} onClick={() => setPreviewFile(null)}>
+          <button className="btn-icon" style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'white', borderRadius: '50%', zIndex: 10000, padding: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setPreviewFile(null)}>
+            <X size={24} color="black" />
+          </button>
+          <div className="modal-preview-wrapper" style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
             {previewFile.toLowerCase().endsWith('.pdf') ? (
               <iframe src={previewFile} title="Preview" style={{ width: '100%', height: '100%', border: 'none', borderRadius: '12px', background: 'white' }} />
             ) : (

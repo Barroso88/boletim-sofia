@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight, Pencil, X, AlertTriangle } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Trash2, ChevronLeft, ChevronRight, Pencil, X, AlertTriangle, FileText } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { api } from '../services/api';
@@ -26,6 +26,7 @@ const Agenda = () => {
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novaHora, setNovaHora] = useState('09:00');
   const [novoTipo, setNovoTipo] = useState('Consulta');
+  const [novaNota, setNovaNota] = useState('');
 
   useEffect(() => {
     api.getAgenda().then(data => setEventos(data));
@@ -52,6 +53,7 @@ const Agenda = () => {
     setEditandoId(evento.id);
     setNovoTitulo(evento.titulo);
     setNovoTipo(evento.tipo);
+    setNovaNota(evento.notas || '');
     try {
       const d = new Date(evento.data);
       setNovaHora(format(d, 'HH:mm'));
@@ -74,7 +76,8 @@ const Agenda = () => {
       id: editandoId || Date.now(),
       titulo: novoTitulo,
       data: dataComHora.toISOString(),
-      tipo: novoTipo
+      tipo: novoTipo,
+      notas: novaNota
     };
     
     const outros = eventos.filter(ev => ev.id !== evento.id);
@@ -85,6 +88,7 @@ const Agenda = () => {
     setEditandoId(null);
     setNovoTitulo('');
     setNovaHora('09:00');
+    setNovaNota('');
   };
 
   const [confirmarDelete, setConfirmarDelete] = useState(null);
@@ -234,6 +238,17 @@ const Agenda = () => {
                   </div>
                 </div>
 
+                <div className="input-group">
+                  <label className="input-label">Notas (Opcional)</label>
+                  <textarea
+                    className="input-field"
+                    value={novaNota}
+                    onChange={(e) => setNovaNota(e.target.value)}
+                    placeholder="Ex: Levar boletim de vacinas, perguntar sobre cólicas..."
+                    rows="3"
+                  ></textarea>
+                </div>
+
                 <div className="form-actions">
                   <button type="button" className="btn-outline" onClick={() => setAdicionando(false)}>
                     Cancelar
@@ -269,6 +284,12 @@ const Agenda = () => {
                       <span className={`evento-badge ${tipoCls}`}>
                         {evento.tipo}
                       </span>
+                      {evento.notas && (
+                        <div className="evento-notas-premium">
+                          <FileText size={16} className="notas-icon" />
+                          <p>{evento.notas}</p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="btn-action-group">
