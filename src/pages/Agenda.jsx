@@ -272,7 +272,7 @@ const Agenda = () => {
                 const dateObj = new Date(evento.data);
                 const tipoCls = getTipoClass(evento.tipo);
                 return (
-                  <div key={evento.id} className="glass-card evento-card animate-fade-in">
+                  <div key={evento.id} className={`glass-card evento-card animate-fade-in ${tipoCls}`}>
                     <div className={`evento-color-bar ${tipoCls}`}></div>
                     
                     <div className="evento-time">
