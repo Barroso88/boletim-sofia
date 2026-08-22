@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { format } from 'date-fns';
 import { Syringe, CheckCircle, Circle, ShieldCheck, Clock, Calendar, Sparkles, Pencil, Trash2, Plus, AlertTriangle, X } from 'lucide-react';
 import { api } from '../services/api';
@@ -341,17 +342,17 @@ const Vacinas = () => {
       </div>
 
       {/* ─── EDIT VACCINE MODAL ─── */}
-      {editandoVacina && (
+      {editandoVacina && createPortal(
         <div className="modal-overlay" onClick={() => setEditandoVacina(null)}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <div className="modal-title-group">
                 <div className="modal-icon-badge">
-                  <Syringe size={22} />
+                  <Pencil size={22} />
                 </div>
                 <div>
                   <h3 className="modal-title">Editar Vacina</h3>
-                  <p className="modal-subtitle">{editandoVacina.nome}</p>
+                  <p className="modal-subtitle">Atualize os detalhes desta inoculação</p>
                 </div>
               </div>
               <button className="btn-icon" onClick={() => setEditandoVacina(null)}>
@@ -429,11 +430,12 @@ const Vacinas = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ─── ADD NEW VACCINE MODAL ─── */}
-      {adicionandoVacina && (
+      {adicionandoVacina && createPortal(
         <div className="modal-overlay" onClick={() => setAdicionandoVacina(false)}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
@@ -497,11 +499,12 @@ const Vacinas = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ─── DELETE CONFIRMATION MODAL ─── */}
-      {confirmarDelete && (
+      {confirmarDelete && createPortal(
         <div className="modal-overlay" onClick={() => setConfirmarDelete(null)}>
           <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
             <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
@@ -526,11 +529,12 @@ const Vacinas = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ─── UNMARK CONFIRMATION MODAL ─── */}
-      {confirmarUnmark && (
+      {confirmarUnmark && createPortal(
         <div className="modal-overlay" onClick={() => setConfirmarUnmark(null)}>
           <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
             <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(245,158,11,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
@@ -555,7 +559,8 @@ const Vacinas = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
