@@ -636,3 +636,13 @@
     height: 32px;
   }
 }
+
+.ha-neon {
+  border: 2px solid rgba(236, 72, 153, 1) !important;
+  border-bottom: 3px solid rgba(219, 39, 119, 1) !important;
+  box-shadow: 
+    0 0 10px rgba(236, 72, 153, 0.8), 
+    0 0 20px rgba(236, 72, 153, 0.6), 
+    inset 0 0 10px rgba(236, 72, 153, 0.8), 
+    0 8px 32px -4px rgba(236, 72, 153, 0.25) !important;
+}
