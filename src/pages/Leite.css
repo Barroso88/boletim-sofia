@@ -491,7 +491,7 @@
   gap: 0.5rem;
   padding: 0.75rem 0.5rem;
   border-radius: 16px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   background: transparent;
   color: var(--color-text-light);
   font-weight: 700;
@@ -509,26 +509,26 @@
 }
 
 .sub-tab-btn.btn-leite.active {
-  background: linear-gradient(135deg, rgba(253, 242, 248, 1), rgba(252, 231, 243, 0.95));
+  background: linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.85));
   color: #be123c;
-  border: 1px solid rgba(244, 63, 94, 0.3);
-  box-shadow: 0 6px 16px rgba(244, 63, 94, 0.15), inset 0 0 12px rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(244, 63, 94, 1);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
 }
 
 .sub-tab-btn.btn-fraldas.active {
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(219, 234, 254, 0.85));
   color: #1d4ed8;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.15), inset 0 0 12px rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(59, 130, 246, 1);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
 }
 
 .sub-tab-btn.btn-sono.active {
-  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  background: linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(209, 250, 229, 0.85));
   color: #047857;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15), inset 0 0 12px rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(16, 185, 129, 1);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
 }
 
