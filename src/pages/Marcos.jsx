@@ -10,14 +10,14 @@ import './Marcos.css';
 const ICONS = ['👶', '🌟', '👣', '🗣️', '🦷', '🍼', '🧸', '🎉', '✈️', '❤️', '🎂', '🏥', '💉', '🌈', '🐣', '👏'];
 
 const MARCO_COLORS = [
-  { id: 'rose', name: 'Rosa Suave', bg: 'linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(253, 226, 236, 0.95))', border: 'rgba(244, 63, 94, 0.25)', accent: '#f43f5e', dotBg: '#ffe4e6' },
-  { id: 'sky', name: 'Azul Céu', bg: 'linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(224, 242, 254, 0.95))', border: 'rgba(2, 132, 199, 0.25)', accent: '#0284c7', dotBg: '#e0f2fe' },
-  { id: 'purple', name: 'Alfazema', bg: 'linear-gradient(135deg, rgba(250, 245, 255, 0.95), rgba(243, 232, 255, 0.95))', border: 'rgba(139, 92, 246, 0.25)', accent: '#8b5cf6', dotBg: '#f3e8ff' },
-  { id: 'emerald', name: 'Menta', bg: 'linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(209, 250, 229, 0.95))', border: 'rgba(16, 185, 129, 0.25)', accent: '#10b981', dotBg: '#d1fae5' },
-  { id: 'amber', name: 'Pêssego', bg: 'linear-gradient(135deg, rgba(255, 251, 235, 0.95), rgba(254, 243, 199, 0.95))', border: 'rgba(245, 158, 11, 0.25)', accent: '#f59e0b', dotBg: '#fef3c7' },
-  { id: 'pink', name: 'Orquídea', bg: 'linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.95))', border: 'rgba(236, 72, 153, 0.25)', accent: '#ec4899', dotBg: '#fce7f3' },
-  { id: 'indigo', name: 'Índigo', bg: 'linear-gradient(135deg, rgba(238, 242, 255, 0.95), rgba(224, 231, 255, 0.95))', border: 'rgba(99, 102, 241, 0.25)', accent: '#6366f1', dotBg: '#e0e7ff' },
-  { id: 'teal', name: 'Turquesa', bg: 'linear-gradient(135deg, rgba(240, 253, 250, 0.95), rgba(204, 251, 241, 0.95))', border: 'rgba(20, 184, 166, 0.25)', accent: '#14b8a6', dotBg: '#ccfbf1' },
+  { id: 'rose', name: 'Rosa Suave', bg: 'linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(253, 226, 236, 0.95))', border: 'rgba(244, 63, 94, 0.25)', rgb: '244, 63, 94', accent: '#f43f5e', dotBg: '#ffe4e6' },
+  { id: 'sky', name: 'Azul Céu', bg: 'linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(224, 242, 254, 0.95))', border: 'rgba(2, 132, 199, 0.25)', rgb: '2, 132, 199', accent: '#0284c7', dotBg: '#e0f2fe' },
+  { id: 'purple', name: 'Alfazema', bg: 'linear-gradient(135deg, rgba(250, 245, 255, 0.95), rgba(243, 232, 255, 0.95))', border: 'rgba(139, 92, 246, 0.25)', rgb: '139, 92, 246', accent: '#8b5cf6', dotBg: '#f3e8ff' },
+  { id: 'emerald', name: 'Menta', bg: 'linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(209, 250, 229, 0.95))', border: 'rgba(16, 185, 129, 0.25)', rgb: '16, 185, 129', accent: '#10b981', dotBg: '#d1fae5' },
+  { id: 'amber', name: 'Pêssego', bg: 'linear-gradient(135deg, rgba(255, 251, 235, 0.95), rgba(254, 243, 199, 0.95))', border: 'rgba(245, 158, 11, 0.25)', rgb: '245, 158, 11', accent: '#f59e0b', dotBg: '#fef3c7' },
+  { id: 'pink', name: 'Orquídea', bg: 'linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.95))', border: 'rgba(236, 72, 153, 0.25)', rgb: '236, 72, 153', accent: '#ec4899', dotBg: '#fce7f3' },
+  { id: 'indigo', name: 'Índigo', bg: 'linear-gradient(135deg, rgba(238, 242, 255, 0.95), rgba(224, 231, 255, 0.95))', border: 'rgba(99, 102, 241, 0.25)', rgb: '99, 102, 241', accent: '#6366f1', dotBg: '#e0e7ff' },
+  { id: 'teal', name: 'Turquesa', bg: 'linear-gradient(135deg, rgba(240, 253, 250, 0.95), rgba(204, 251, 241, 0.95))', border: 'rgba(20, 184, 166, 0.25)', rgb: '20, 184, 166', accent: '#14b8a6', dotBg: '#ccfbf1' },
 ];
 
 const Marcos = () => {
@@ -240,7 +240,9 @@ const Marcos = () => {
                       className="marco-card"
                       style={{
                         background: colorObj.bg,
-                        borderColor: colorObj.border
+                        border: `2px solid rgba(${colorObj.rgb}, 1)`,
+                        borderBottom: `3px solid rgba(${colorObj.rgb}, 1)`,
+                        boxShadow: `0 0 10px rgba(${colorObj.rgb}, 0.8), 0 0 20px rgba(${colorObj.rgb}, 0.6), inset 0 0 10px rgba(${colorObj.rgb}, 0.8), 0 8px 32px -4px rgba(${colorObj.rgb}, 0.25)`
                       }}
                     >
                       <div className="btn-action-group" style={{ position: 'absolute', top: '1.25rem', right: '1.25rem' }}>
