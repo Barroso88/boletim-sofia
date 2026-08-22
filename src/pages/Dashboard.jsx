@@ -249,7 +249,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <div className="hero-card glass-card">
+      <div className="hero-card glass-card theme-neon">
         <div className="age-stats">
           <div className="stat-box box-years">
             <span className="stat-value">{age.years}</span>
@@ -273,7 +273,7 @@ const Dashboard = () => {
         );
         return (
           <div 
-            className="glass-card animate-fade-in" 
+            className="glass-card theme-neon animate-fade-in" 
             onClick={() => {
               sessionStorage.setItem('marcos_active_tab', 'saltos');
               navigate('/marcos');
@@ -283,11 +283,6 @@ const Dashboard = () => {
               padding: '1.5rem',
               cursor: 'pointer',
               background: currentLeap ? 'linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(219, 234, 254, 0.85))' : 'linear-gradient(135deg, rgba(254, 252, 232, 0.95), rgba(254, 240, 138, 0.85))',
-              border: currentLeap ? '2px solid rgba(59, 130, 246, 1)' : '2px solid rgba(234, 179, 8, 1)',
-              borderBottom: currentLeap ? '3px solid rgba(37, 99, 235, 1)' : '3px solid rgba(202, 138, 4, 1)',
-              boxShadow: currentLeap 
-                ? '0 0 10px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.6), inset 0 0 10px rgba(59, 130, 246, 0.8), 0 8px 32px -4px rgba(59, 130, 246, 0.25)' 
-                : '0 0 10px rgba(234, 179, 8, 0.8), 0 0 20px rgba(234, 179, 8, 0.6), inset 0 0 10px rgba(234, 179, 8, 0.8), 0 8px 32px -4px rgba(234, 179, 8, 0.25)',
               borderRadius: '16px'
             }}
           >
@@ -324,37 +319,37 @@ const Dashboard = () => {
       })()}
 
       <div className="ha-actions-grid" style={{ marginTop: '1.5rem' }}>
-        <button className="ha-action-btn" onClick={() => triggerHA('sala')}>
+        <button className="ha-action-btn theme-neon" onClick={() => triggerHA('sala')}>
           <div className="ha-icon-wrapper">
             <img src={salaIcon} alt="Sala" className="custom-ha-icon" />
           </div>
           <span>Sala</span>
         </button>
-        <button className="ha-action-btn" onClick={() => triggerHA('quarto')}>
+        <button className="ha-action-btn theme-neon" onClick={() => triggerHA('quarto')}>
           <div className="ha-icon-wrapper">
             <img src={quartoIcon} alt="Quarto" className="custom-ha-icon" />
           </div>
           <span>Quarto</span>
         </button>
-        <button className="ha-action-btn" onClick={() => triggerHA('quarto-sofia')}>
+        <button className="ha-action-btn theme-neon" onClick={() => triggerHA('quarto-sofia')}>
           <div className="ha-icon-wrapper">
             <img src={sofiaIcon} alt="Quarto Sofia" className="custom-ha-icon" />
           </div>
           <span>Quarto Sofia</span>
         </button>
-        <button className="ha-action-btn" onClick={() => triggerHA('fralda')}>
+        <button className="ha-action-btn theme-neon" onClick={() => triggerHA('fralda')}>
           <div className="ha-icon-wrapper">
             <img src={diapersIcon} alt="Fralda" className="custom-ha-icon" />
           </div>
           <span>Fralda</span>
         </button>
-        <button className="ha-action-btn" onClick={() => triggerHA('persiana')}>
+        <button className="ha-action-btn theme-neon" onClick={() => triggerHA('persiana')}>
           <div className="ha-icon-wrapper">
             <img src={blindsIcon} alt="Persiana" className="custom-ha-icon" />
           </div>
           <span>Persiana</span>
         </button>
-        <button className="ha-action-btn" onClick={() => triggerHA('ventilador')}>
+        <button className="ha-action-btn theme-neon" onClick={() => triggerHA('ventilador')}>
           <div className="ha-icon-wrapper">
             <img src={fanIcon} alt="Ventilador" className="custom-ha-icon" />
           </div>
@@ -367,7 +362,7 @@ const Dashboard = () => {
       <div className="quick-snapshots-grid">
         {/* Card 1: Última Mamada */}
         <div 
-          className="quick-snapshot-card milk-card glass-card"
+          className="quick-snapshot-card milk-card glass-card theme-neon"
           onClick={() => {
             sessionStorage.setItem('leite_active_tab', 'leite');
             navigate('/leite');
@@ -375,9 +370,6 @@ const Dashboard = () => {
           style={{ 
             cursor: 'pointer',
             background: 'linear-gradient(135deg, rgba(236, 254, 255, 0.95), rgba(207, 250, 254, 0.85))',
-            border: '2px solid rgba(6, 182, 212, 1)',
-            borderBottom: '3px solid rgba(8, 145, 178, 1)',
-            boxShadow: '0 0 10px rgba(6, 182, 212, 0.8), 0 0 20px rgba(6, 182, 212, 0.6), inset 0 0 10px rgba(6, 182, 212, 0.8), 0 8px 32px -4px rgba(6, 182, 212, 0.25)',
             borderRadius: '16px'
           }}
         >
@@ -421,7 +413,7 @@ const Dashboard = () => {
 
         {/* Card 2: Última Fralda */}
         <div 
-          className="quick-snapshot-card diaper-card glass-card"
+          className="quick-snapshot-card diaper-card glass-card theme-neon"
           onClick={() => {
             sessionStorage.setItem('leite_active_tab', 'fraldas');
             navigate('/leite');
@@ -429,9 +421,6 @@ const Dashboard = () => {
           style={{ 
             cursor: 'pointer',
             background: 'linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(209, 250, 229, 0.85))',
-            border: '2px solid rgba(16, 185, 129, 1)',
-            borderBottom: '3px solid rgba(5, 150, 105, 1)',
-            boxShadow: '0 0 10px rgba(16, 185, 129, 0.8), 0 0 20px rgba(16, 185, 129, 0.6), inset 0 0 10px rgba(16, 185, 129, 0.8), 0 8px 32px -4px rgba(16, 185, 129, 0.25)',
             borderRadius: '16px'
           }}
         >
@@ -476,7 +465,7 @@ const Dashboard = () => {
 
         {/* Card 3: Último Sono */}
         <div 
-          className="quick-snapshot-card sleep-card glass-card" 
+          className="quick-snapshot-card sleep-card glass-card theme-neon" 
           onClick={() => {
             sessionStorage.setItem('leite_active_tab', 'sonos');
             navigate('/leite');
@@ -484,9 +473,6 @@ const Dashboard = () => {
           style={{ 
             cursor: 'pointer', 
             background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(2ede, 233, 254, 0.85))', 
-            border: '2px solid rgba(139, 92, 246, 1)', 
-            borderBottom: '3px solid rgba(124, 58, 237, 1)', 
-            boxShadow: '0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.6), inset 0 0 10px rgba(139, 92, 246, 0.8), 0 8px 32px -4px rgba(139, 92, 246, 0.25)',
             borderRadius: '16px'
           }}
         >
