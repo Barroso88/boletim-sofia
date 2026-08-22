@@ -29,6 +29,7 @@ const Vacinas = () => {
   const [editandoVacina, setEditandoVacina] = useState(null);
   const [adicionandoVacina, setAdicionandoVacina] = useState(false);
   const [confirmarDelete, setConfirmarDelete] = useState(null);
+  const [confirmarUnmark, setConfirmarUnmark] = useState(null);
 
   // Form state
   const [formNome, setFormNome] = useState('');
@@ -60,20 +61,42 @@ const Vacinas = () => {
   };
 
   const toggleTomada = (id) => {
+    const vacina = vacinas.find(v => v.id === id);
+    if (vacina.tomada) {
+      setConfirmarUnmark(vacina.id);
+      return;
+    }
+
     const hojeFormatted = format(new Date(), 'dd/MM/yyyy');
     const novaLista = vacinas.map(v => {
       if (v.id === id) {
-        const novoTomada = !v.tomada;
         return {
           ...v,
-          tomada: novoTomada,
-          dataAdministrada: novoTomada ? (v.dataAdministrada || hojeFormatted) : null,
+          tomada: true,
+          dataAdministrada: v.dataAdministrada || hojeFormatted,
         };
       }
       return v;
     });
     persistVacinas(novaLista);
     api.toggleVacina(id, novaLista);
+  };
+
+  const unmarkVacina = () => {
+    if (!confirmarUnmark) return;
+    const novaLista = vacinas.map(v => {
+      if (v.id === confirmarUnmark) {
+        return {
+          ...v,
+          tomada: false,
+          dataAdministrada: null,
+        };
+      }
+      return v;
+    });
+    persistVacinas(novaLista);
+    api.toggleVacina(confirmarUnmark, novaLista);
+    setConfirmarUnmark(null);
   };
 
   const abrirEdicaoVacina = (vacina) => {
@@ -500,6 +523,35 @@ const Vacinas = () => {
                 onClick={removerVacina}
               >
                 <Trash2 size={16} /> Remover
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── UNMARK CONFIRMATION MODAL ─── */}
+      {confirmarUnmark && (
+        <div className="modal-overlay" onClick={() => setConfirmarUnmark(null)}>
+          <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(245,158,11,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
+              <AlertTriangle size={26} color="#f59e0b" />
+            </div>
+            <div>
+              <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.15rem', fontWeight: 800 }}>Desfazer Toma?</h3>
+              <p style={{ color: 'var(--color-text-light)', fontSize: '0.86rem', margin: 0 }}>
+                Esta vacina voltará para a lista de vacinas por administrar.
+              </p>
+            </div>
+            <div className="form-actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn-outline" onClick={() => setConfirmarUnmark(null)}>
+                <X size={16} /> Cancelar
+              </button>
+              <button
+                className="btn-primary"
+                style={{ background: '#f59e0b', borderColor: '#f59e0b', boxShadow: '0 4px 14px rgba(245,158,11,0.35)' }}
+                onClick={unmarkVacina}
+              >
+                <Clock size={16} /> Confirmar
               </button>
             </div>
           </div>
