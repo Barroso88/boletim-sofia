@@ -27,6 +27,13 @@ const CATEGORY_COLORS = [
   '#f43f5e'  // Rosa choque
 ];
 
+const hexToRgb = (hex) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r}, ${g}, ${b}`;
+};
+
 const Documentos = () => {
   const [documentos, setDocumentos] = useState([]);
   const [editDoc, setEditDoc] = useState(null);
@@ -395,8 +402,13 @@ const Documentos = () => {
               const catDocs = digitalizacoes.filter(d => String(d.categoria_id) === String(cat.id));
               const isExpanded = expandedCats[cat.id];
               const themeColor = CATEGORY_COLORS[index % CATEGORY_COLORS.length];
+              const rgb = hexToRgb(themeColor);
               return (
-                <div key={cat.id} className="categoria-card" style={{ borderLeft: `6px solid ${themeColor}` }}>
+                <div key={cat.id} className="categoria-card" style={{ 
+                  border: `2px solid rgba(${rgb}, 1)`, 
+                  borderBottom: `3px solid rgba(${rgb}, 1)`, 
+                  boxShadow: `0 0 10px rgba(${rgb}, 0.8), 0 0 20px rgba(${rgb}, 0.6), inset 0 0 10px rgba(${rgb}, 0.8), 0 8px 32px -4px rgba(${rgb}, 0.25)` 
+                }}>
                   <div className="categoria-header" onClick={() => toggleCategoria(cat.id)}>
                     <div className="cat-title-left">
                       {isExpanded ? <ChevronUp size={20} color={themeColor} /> : <ChevronDown size={20} color={themeColor} />}
