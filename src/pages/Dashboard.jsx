@@ -149,10 +149,17 @@ const Dashboard = () => {
   });
   const ultimoSono = sortedSonos[0];
 
-  const getTempoDecorredor = (dataStr, horaStr) => {
+  const getTempoDecorredor = (dataStr, horaStr, isHoraFim = false, horaInicioStr = null) => {
     if (!dataStr || !horaStr) return null;
     try {
-      const past = new Date(`${dataStr}T${horaStr}:00`);
+      let past = new Date(`${dataStr}T${horaStr}:00`);
+      
+      // Se for a hora de fim de um sono e for menor que a hora de início, 
+      // significa que passou da meia-noite, logo a data real é o dia seguinte.
+      if (isHoraFim && horaInicioStr && horaStr < horaInicioStr) {
+        past.setDate(past.getDate() + 1);
+      }
+
       const now = new Date();
       const diffMs = now - past;
       if (isNaN(diffMs) || diffMs < 0) return { text: '0 min', isUrgent: false };
@@ -497,7 +504,7 @@ const Dashboard = () => {
 
           {ultimoSono && (() => {
             if (ultimoSono.hora_fim) {
-              const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim);
+              const tempo = getTempoDecorredor(ultimoSono.data, ultimoSono.hora_fim, true, ultimoSono.hora_inicio);
               return (
                 <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'flex-start' }}>
                   <div className={`snapshot-timer-pill ${tempo.isUrgent ? 'urgent' : 'ok'}`}>
