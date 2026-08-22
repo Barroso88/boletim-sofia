@@ -79,10 +79,9 @@
   box-shadow: inset -4px 0 12px rgba(255, 255, 255, 0.7);
 }
 
-.executive-card:hover {
+.executive-row:hover td {
   transform: translateY(-2px);
-  background: linear-gradient(135deg, rgba(253, 242, 248, 1), rgba(252, 231, 243, 0.95)) !important;
-  box-shadow: 0 4px 15px rgba(244, 63, 94, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.8) !important;
+  background: linear-gradient(135deg, rgba(253, 242, 248, 1), rgba(252, 231, 243, 0.95));
 }
 
 .editing-row td {

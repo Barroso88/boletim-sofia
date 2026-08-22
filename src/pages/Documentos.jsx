@@ -323,35 +323,33 @@ const Documentos = () => {
       </div>
 
       {activeSubTab === 'text' ? (
-      <div className="executive-list-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+      <div className="executive-table-wrapper">
+        <table className="executive-table">
+          <colgroup>
+            <col style={{ width: '65%' }} />   {/* Document name & number */}
+            <col style={{ width: '35%' }} />   {/* Actions */}
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Documento</th>
+              <th className="text-right col-actions">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
             {documentos.map((doc, index) => {
               const isPreenchido = doc.numero && doc.numero.trim() !== '';
               return (
-                <div
+                <tr
                   key={doc.id}
-                  className={`executive-card ${draggedIndex === index ? 'dragging' : ''}`}
+                  className={`executive-row ${draggedIndex === index ? 'dragging' : ''}`}
                   draggable
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, index)}
-                  style={{ 
-                    animationDelay: `${index * 0.04}s`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '1rem 1.5rem',
-                    background: 'linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.85))',
-                    border: '2px solid rgba(244, 63, 94, 1)',
-                    borderBottom: '3px solid rgba(225, 29, 72, 1)',
-                    borderRadius: 'var(--radius-lg)',
-                    boxShadow: '0 0 10px rgba(244, 63, 94, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.7)',
-                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                    opacity: 0,
-                    animation: 'tableRowFade 0.5s ease forwards'
-                  }}
+                  style={{ animationDelay: `${index * 0.04}s` }}
                 >
                   {/* Doc name + drag handle + icon + number */}
-                  <div className="cell-doc" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, minWidth: 0 }}>
+                  <td className="cell-doc">
                     <div className="drag-handle-badge" title="Arraste para reordenar">
                       <GripVertical size={18} />
                     </div>
@@ -371,10 +369,10 @@ const Documentos = () => {
                         <span className="empty-placeholder" style={{ marginTop: '0.2rem', display: 'block' }}>Não preenchido</span>
                       )}
                     </div>
-                  </div>
+                  </td>
 
                   {/* Actions */}
-                  <div className="cell-actions text-right col-actions" style={{ flexShrink: 0, marginLeft: '1rem' }}>
+                  <td className="cell-actions text-right col-actions">
                     <div className="btn-action-group">
                       <button className="btn-action-edit" onClick={() => abrirEdicao(doc)} title="Editar documento">
                         <Pencil size={17} />
@@ -383,10 +381,12 @@ const Documentos = () => {
                         <Trash2 size={17} />
                       </button>
                     </div>
-                  </div>
-                </div>
+                  </td>
+                </tr>
               );
             })}
+          </tbody>
+        </table>
       </div>
       ) : (
       <div className="scans-container">
