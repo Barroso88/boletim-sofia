@@ -148,17 +148,7 @@ const Agenda = () => {
                 }}
               >
                 <span className="calendar-day-num">{format(day, 'd')}</span>
-                {hasEventos && (
-                  <div className="calendar-indicators">
-                    {hasConsultas && <span className="dot dot-consulta" title="Consulta"></span>}
-                    {hasExames && <span className="dot dot-exames" title="Exames"></span>}
-                    {hasAnalises && <span className="dot dot-analises" title="Análises"></span>}
-                    {hasVacinas && <span className="dot dot-vacina" title="Vacinas"></span>}
-                    {hasMesversario && <span className="dot dot-mesversario" title="Mêsversário"></span>}
-                    {hasAniversario && <span className="dot dot-aniversario" title="Aniversário"></span>}
-                    {hasOutros && <span className="dot dot-outro" title="Outro"></span>}
-                  </div>
-                )}
+
               </div>
             );
           })}
