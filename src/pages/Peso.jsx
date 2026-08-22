@@ -236,24 +236,14 @@ const Peso = () => {
           </div>
 
           {/* Weight Log Table */}
-          <div className="peso-table-container glass-card">
+          <div className="peso-table-container">
             {processedRegistos.length === 0 ? (
               <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-light)' }}>
                 <Scale size={48} style={{ margin: '0 auto 1rem', opacity: 0.25 }} />
                 <p>Ainda não foram registadas pesagens.</p>
               </div>
             ) : (
-              <table className="premium-table">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Peso</th>
-                    <th>Variação / dia</th>
-                    <th className="col-total">Total</th>
-                    <th className="text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div className="executive-list-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {processedRegistos.map((registo, index) => {
                     const dateObj = parseDate(registo.data);
                     const isGain = registo.ganhoDia !== null && registo.ganhoDia > 0;
@@ -261,14 +251,23 @@ const Peso = () => {
                     const isTotalGain = registo.ganhoTotal !== null && registo.ganhoTotal > 0;
 
                     return (
-                      <tr key={registo.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.04}s` }}>
-                        <td>
-                          <div className="td-date">{format(dateObj, "dd/MM/yyyy")}</div>
-                        </td>
-                        <td>
-                          <div className="td-weight">{registo.peso.toFixed(3)} <span>kg</span></div>
-                        </td>
-                        <td>
+                      <div key={registo.id} className="peso-card animate-fade-in" style={{ 
+                        animationDelay: `${index * 0.04}s`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '1rem 1.5rem',
+                        background: 'linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.85))',
+                        border: '2px solid rgba(244, 63, 94, 1)',
+                        borderBottom: '3px solid rgba(225, 29, 72, 1)',
+                        borderRadius: 'var(--radius-lg)',
+                        boxShadow: '0 0 10px rgba(244, 63, 94, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.7)',
+                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                      }}>
+                        <div className="td-date" style={{ width: '85px', flexShrink: 0 }}>{format(dateObj, "dd/MM/yyyy")}</div>
+                        <div className="td-weight" style={{ flex: 1, minWidth: '70px', paddingLeft: '0.5rem' }}>{registo.peso.toFixed(3)} <span>kg</span></div>
+                        
+                        <div style={{ width: '110px', flexShrink: 0 }}>
                           {registo.ganhoDia !== null ? (
                             <div className={`ganho-badge ${isGain ? 'gain' : isLoss ? 'loss' : 'neutral'}`}>
                               {isGain ? <TrendingUp size={12} /> : isLoss ? <TrendingDown size={12} /> : <Minus size={12} />}
@@ -281,8 +280,9 @@ const Peso = () => {
                               <span className="badge-text-short">—</span>
                             </div>
                           )}
-                        </td>
-                        <td className="col-total">
+                        </div>
+                        
+                        <div className="col-total" style={{ width: '90px', flexShrink: 0 }}>
                           {registo.ganhoTotal !== null ? (
                             <div className={`ganho-badge ${isTotalGain ? 'gain' : 'loss'}`}>
                               <span>{registo.ganhoTotal > 0 ? '+' : ''}{registo.ganhoTotal} g</span>
@@ -290,9 +290,10 @@ const Peso = () => {
                           ) : (
                             <div className="ganho-badge neutral"><span>—</span></div>
                           )}
-                        </td>
-                        <td className="text-right">
-                          <div className="btn-action-group">
+                        </div>
+                        
+                        <div className="text-right" style={{ width: '70px', flexShrink: 0 }}>
+                          <div className="btn-action-group" style={{ justifyContent: 'flex-end' }}>
                             <button className="btn-action-edit" onClick={() => abrirEdicaoPeso(registo)} title="Editar pesagem">
                               <Pencil size={17} />
                             </button>
@@ -300,12 +301,11 @@ const Peso = () => {
                               <Trash2 size={17} />
                             </button>
                           </div>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
+              </div>
             )}
           </div>
         </>
@@ -332,24 +332,14 @@ const Peso = () => {
           </div>
 
           {/* Height Log Table */}
-          <div className="peso-table-container glass-card">
+          <div className="peso-table-container">
             {processedAlturas.length === 0 ? (
               <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-light)' }}>
                 <Ruler size={48} style={{ margin: '0 auto 1rem', opacity: 0.25 }} />
                 <p>Ainda não foram registadas medições de altura.</p>
               </div>
             ) : (
-              <table className="premium-table">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Altura</th>
-                    <th>Variação / dia</th>
-                    <th className="col-total">Total</th>
-                    <th className="text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div className="executive-list-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {processedAlturas.map((registo, index) => {
                     const dateObj = parseDate(registo.data);
                     const isGain = registo.ganhoDia !== null && registo.ganhoDia > 0;
@@ -357,16 +347,25 @@ const Peso = () => {
                     const isTotalGain = registo.ganhoTotal !== null && registo.ganhoTotal > 0;
 
                     return (
-                      <tr key={registo.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.04}s` }}>
-                        <td>
-                          <div className="td-date">{format(dateObj, "dd/MM/yyyy")}</div>
-                        </td>
-                        <td>
-                          <div className="td-weight" style={{ color: '#8B5CF6' }}>
-                            {registo.altura.toFixed(1)} <span>cm</span>
-                          </div>
-                        </td>
-                        <td>
+                      <div key={registo.id} className="peso-card animate-fade-in" style={{ 
+                        animationDelay: `${index * 0.04}s`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '1rem 1.5rem',
+                        background: 'linear-gradient(135deg, rgba(250, 245, 255, 0.95), rgba(243, 232, 255, 0.85))',
+                        border: '2px solid rgba(139, 92, 246, 1)',
+                        borderBottom: '3px solid rgba(139, 92, 246, 1)',
+                        borderRadius: 'var(--radius-lg)',
+                        boxShadow: '0 0 10px rgba(139, 92, 246, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.7)',
+                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                      }}>
+                        <div className="td-date" style={{ width: '85px', flexShrink: 0 }}>{format(dateObj, "dd/MM/yyyy")}</div>
+                        <div className="td-weight" style={{ flex: 1, minWidth: '70px', paddingLeft: '0.5rem', color: '#8B5CF6' }}>
+                          {registo.altura.toFixed(1)} <span>cm</span>
+                        </div>
+                        
+                        <div style={{ width: '110px', flexShrink: 0 }}>
                           {registo.ganhoDia !== null ? (
                             <div className={`ganho-badge ${isGain ? 'gain' : isLoss ? 'loss' : 'neutral'}`}>
                               {isGain ? <TrendingUp size={12} /> : isLoss ? <TrendingDown size={12} /> : <Minus size={12} />}
@@ -379,8 +378,9 @@ const Peso = () => {
                               <span className="badge-text-short">—</span>
                             </div>
                           )}
-                        </td>
-                        <td className="col-total">
+                        </div>
+                        
+                        <div className="col-total" style={{ width: '90px', flexShrink: 0 }}>
                           {registo.ganhoTotal !== null ? (
                             <div className={`ganho-badge ${isTotalGain ? 'gain' : 'loss'}`}>
                               <span>{registo.ganhoTotal > 0 ? '+' : ''}{registo.ganhoTotal} cm</span>
@@ -388,9 +388,10 @@ const Peso = () => {
                           ) : (
                             <div className="ganho-badge neutral"><span>—</span></div>
                           )}
-                        </td>
-                        <td className="text-right">
-                          <div className="btn-action-group">
+                        </div>
+                        
+                        <div className="text-right" style={{ width: '70px', flexShrink: 0 }}>
+                          <div className="btn-action-group" style={{ justifyContent: 'flex-end' }}>
                             <button className="btn-action-edit" onClick={() => abrirEdicaoAltura(registo)} title="Editar medição">
                               <Pencil size={17} />
                             </button>
@@ -398,12 +399,11 @@ const Peso = () => {
                               <Trash2 size={17} />
                             </button>
                           </div>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
+              </div>
             )}
           </div>
         </>
