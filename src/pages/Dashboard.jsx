@@ -252,9 +252,9 @@ const Dashboard = () => {
       <div 
         className="hero-card glass-card"
         style={{
-          border: '2px solid rgba(236, 72, 153, 1)',
-          borderBottom: '3px solid rgba(219, 39, 119, 1)',
-          boxShadow: '0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(236, 72, 153, 0.6), inset 0 0 10px rgba(236, 72, 153, 0.8), 0 8px 32px -4px rgba(236, 72, 153, 0.25)'
+          border: '2px solid rgba(34, 197, 94, 1)',
+          borderBottom: '3px solid rgba(22, 163, 74, 1)',
+          boxShadow: '0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.6), inset 0 0 10px rgba(34, 197, 94, 0.8), 0 8px 32px -4px rgba(34, 197, 94, 0.25)'
         }}
       >
         <div className="age-stats">
