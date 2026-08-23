@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { format, parseISO, formatDistanceToNow, subDays, differenceInDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X, BarChart2, TrendingUp, Award, Package } from 'lucide-react';
+import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X, BarChart2, TrendingUp, Award, Package, Moon } from 'lucide-react';
 import { api } from '../services/api';
 import './Leite.css';
 import biberaoIcon from '../assets/icons/baby-bottle.png';
