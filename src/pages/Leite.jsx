@@ -1705,14 +1705,14 @@ const Leite = () => {
                 <div className="weekly-stats-grid">
                   <div className="weekly-stat-card">
                     <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><TrendingUp size={18} /></div>
-                    <div className="weekly-stat-val" style={{ fontSize: '1.2rem' }}>{relatorio.mediaDiariaHoras}<span className="stat-unit">h</span> {relatorio.mediaDiariaMinutos}<span className="stat-unit">m</span></div>
-                    <div className="weekly-stat-lbl">Média Diária</div>
+                    <div className="weekly-stat-val">{relatorio.mediaDiariaFormatada}</div>
+                    <div className="weekly-stat-lbl">Média / Dia</div>
                   </div>
 
                   <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#c084fc' }}><Moon size={18} /></div>
-                    <div className="weekly-stat-val" style={{ fontSize: '1.2rem' }}>{relatorio.totalSemanalHoras}<span className="stat-unit">h</span></div>
-                    <div className="weekly-stat-lbl">{mostrarRelatorioSonos === 'geral' ? `Total (${relatorio.numDiasValidos}d)` : 'Total 7 Dias'}</div>
+                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><Clock size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.totalSemanalSestas}</div>
+                    <div className="weekly-stat-lbl">{mostrarRelatorioSonos === 'geral' ? `Sestas (${relatorio.numDiasValidos}d)` : 'Sestas na Semana'}</div>
                   </div>
 
                   <div className="weekly-stat-card">
