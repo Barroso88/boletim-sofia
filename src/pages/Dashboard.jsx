@@ -161,6 +161,13 @@ const Dashboard = () => {
       }
 
       const now = new Date();
+      
+      // Se a data/hora calculada for no futuro, é muito provável que o utilizador
+      // tenha registado uma hora do dia anterior na data de hoje (ex: 23:00 registado hoje às 02:00)
+      if (past > now) {
+        past.setDate(past.getDate() - 1);
+      }
+
       const diffMs = now - past;
       if (isNaN(diffMs) || diffMs < 0) return { text: '0 min', isUrgent: false };
 
