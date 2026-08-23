@@ -64,13 +64,15 @@ const Leite = () => {
     api.getLatas().then(data => setLatas(data));
   }, []);
 
-  // --- RELATÓRIO SEMANAL CALCULATIONS ---
-  const getDadosRelatorioSemanal = () => {
+  // --- RELATÓRIO CALCULATIONS ---
+  const getDadosRelatorioSemanal = (tipo = 'semanal') => {
     const START_DATE_STR = '2026-08-05';
     const hoje = new Date();
+    const numDiasTotal = differenceInDays(hoje, parseISO(START_DATE_STR)) + 1;
+    const loopDias = tipo === 'geral' ? numDiasTotal : 7;
     const dias = [];
     
-    for (let i = 6; i >= 0; i--) {
+    for (let i = loopDias - 1; i >= 0; i--) {
       const d = subDays(hoje, i);
       const dateStr = format(d, 'yyyy-MM-dd');
       
@@ -122,13 +124,15 @@ const Leite = () => {
     };
   };
 
-  // --- RELATÓRIO SEMANAL FRALDAS CALCULATIONS ---
-  const getDadosRelatorioFraldas = () => {
+  // --- RELATÓRIO FRALDAS CALCULATIONS ---
+  const getDadosRelatorioFraldas = (tipo = 'semanal') => {
     const START_DATE_STR = '2026-08-05';
     const hoje = new Date();
+    const numDiasTotal = differenceInDays(hoje, parseISO(START_DATE_STR)) + 1;
+    const loopDias = tipo === 'geral' ? numDiasTotal : 7;
     const dias = [];
     
-    for (let i = 6; i >= 0; i--) {
+    for (let i = loopDias - 1; i >= 0; i--) {
       const d = subDays(hoje, i);
       const dateStr = format(d, 'yyyy-MM-dd');
       
@@ -190,13 +194,15 @@ const Leite = () => {
     };
   };
 
-  // --- RELATÓRIO SEMANAL SONOS CALCULATIONS ---
-  const getDadosRelatorioSonos = () => {
+  // --- RELATÓRIO SONOS CALCULATIONS ---
+  const getDadosRelatorioSonos = (tipo = 'semanal') => {
     const START_DATE_STR = '2026-08-05';
     const hoje = new Date();
+    const numDiasTotal = differenceInDays(hoje, parseISO(START_DATE_STR)) + 1;
+    const loopDias = tipo === 'geral' ? numDiasTotal : 7;
     const dias = [];
     
-    for (let i = 6; i >= 0; i--) {
+    for (let i = loopDias - 1; i >= 0; i--) {
       const d = subDays(hoje, i);
       const dateStr = format(d, 'yyyy-MM-dd');
       if (dateStr < START_DATE_STR) continue;
@@ -958,6 +964,25 @@ const Leite = () => {
                   <TrendingUp size={14} />
                   <span>Previsão: restam cerca de <strong>{stock.diasRestantes} dias</strong></span>
                 </div>
+                <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <button 
+                className="btn-outline" 
+                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
+                onClick={() => setMostrarRelatorioSemanal('semanal')}
+              >
+                <BarChart2 size={18} style={{ marginRight: '6px' }} />
+                <span>Ver Relatório Semanal das Mamadas</span>
+              </button>
+
+              <button 
+                className="btn-outline" 
+                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
+                onClick={() => setMostrarRelatorioSemanal('geral')}
+              >
+                <BarChart2 size={18} style={{ marginRight: '6px' }} />
+                <span>Ver Relatório Geral das Mamadas</span>
+              </button>
+            </div>
               </div>
             );
           })()}
@@ -966,7 +991,7 @@ const Leite = () => {
           <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
             <button
               className="btn-weekly-report"
-              onClick={() => setMostrarRelatorioSemanal(true)}
+              onClick={() => setMostrarRelatorioSemanal('semanal')}
             >
               <BarChart2 size={20} />
               <span>Ver Relatório Semanal das Mamadas</span>
@@ -1159,12 +1184,31 @@ const Leite = () => {
               })
             )}
           </div>
+               <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <button 
+                className="btn-outline" 
+                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
+                onClick={() => setMostrarRelatorioFraldas('semanal')}
+              >
+                <BarChart2 size={18} style={{ marginRight: '6px' }} />
+                <span>Ver Relatório Semanal de Fraldas</span>
+              </button>
+
+              <button 
+                className="btn-outline" 
+                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
+                onClick={() => setMostrarRelatorioFraldas('geral')}
+              >
+                <BarChart2 size={18} style={{ marginRight: '6px' }} />
+                <span>Ver Relatório Geral de Fraldas</span>
+              </button>
+            </div>
 
           {/* Button to Open Weekly Diaper Report */}
           <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
             <button
               className="btn-weekly-report btn-weekly-report-diapers"
-              onClick={() => setMostrarRelatorioFraldas(true)}
+              onClick={() => setMostrarRelatorioFraldas('semanal')}
             >
               <BarChart2 size={20} />
               <span>Ver Relatório Semanal de Fraldas</span>
@@ -1389,12 +1433,30 @@ const Leite = () => {
               </>
             )}
           </div>
+              <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <button 
+                className="btn-outline" 
+                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
+                onClick={() => setMostrarRelatorioSonos('semanal')}
+              >
+                <BarChart2 size={18} style={{ marginRight: '6px' }} />
+                <span>Ver Relatório Semanal de Sonos</span>
+              </button>
 
+              <button 
+                className="btn-outline" 
+                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
+                onClick={() => setMostrarRelatorioSonos('geral')}
+              >
+                <BarChart2 size={18} style={{ marginRight: '6px' }} />
+                <span>Ver Relatório Geral de Sonos</span>
+              </button>
+            </div>
           <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
             <button
               className="btn-weekly-report"
               style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', color: '#fff', borderColor: 'transparent' }}
-              onClick={() => setMostrarRelatorioSonos(true)}
+              onClick={() => setMostrarRelatorioSonos('semanal')}
             >
               <BarChart2 size={20} />
               <span>Ver Relatório Semanal de Sonos</span>
@@ -1435,27 +1497,23 @@ const Leite = () => {
         document.body
       )}
 
-      {/* Modal de Relatório Semanal de Mamadas */}
+      {/* Modal de Relatório de Mamadas */}
       {mostrarRelatorioSemanal && (() => {
-        const relatorio = getDadosRelatorioSemanal();
+        const relatorio = getDadosRelatorioSemanal(mostrarRelatorioSemanal);
         return createPortal(
-          <div className="modal-overlay" onClick={() => setMostrarRelatorioSemanal(false)}>
-            <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
+          <div className="modal-overlay" onClick={() => setMostrarRelatorioSemanal(null)}>
+            <div className="modal-card relatorio-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <div className="modal-title-group">
-                  <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))' }}>
-                    <BarChart2 size={22} />
+                  <div className="modal-icon-badge" style={{ background: 'rgba(14, 165, 233, 0.12)', color: 'var(--color-primary)' }}>
+                    <BarChart2 size={24} />
                   </div>
                   <div>
-                    <h2 className="modal-title">Relatório Semanal das Mamadas</h2>
-                    <p className="modal-subtitle">
-                      {relatorio.numDiasValidos < 7
-                        ? `Resumo dos registos (desde 05/08 · ${relatorio.numDiasValidos} ${relatorio.numDiasValidos === 1 ? 'dia' : 'dias'})`
-                        : 'Resumo dos últimos 7 dias da Sofia'}
-                    </p>
+                    <h2 className="modal-title">{mostrarRelatorioSemanal === 'geral' ? 'Relatório Geral das Mamadas' : 'Relatório Semanal das Mamadas'}</h2>
+                    <p className="modal-subtitle">Resumo estatístico do consumo</p>
                   </div>
                 </div>
-                <button className="btn-action-close" onClick={() => setMostrarRelatorioSemanal(false)}>
+                <button className="btn-action-close" onClick={() => setMostrarRelatorioSemanal(null)}>
                   <X size={20} />
                 </button>
               </div>
@@ -1488,9 +1546,9 @@ const Leite = () => {
                   </div>
                 </div>
 
-                {/* Gráfico de Barras dos 7 Dias */}
+                {/* Gráfico de Barras dos Dias */}
                 <div className="weekly-chart-card">
-                  <h3 className="chart-title">Consumo Diário (desde 05/08)</h3>
+                  <h3 className="chart-title">Consumo Diário</h3>
                   <div className="bars-container">
                     {relatorio.dias.map(d => {
                       const heightPct = Math.round((d.totalMl / relatorio.maxMlGraph) * 100);
@@ -1545,27 +1603,23 @@ const Leite = () => {
         );
       })()}
 
-      {/* Modal de Relatório Semanal de Fraldas */}
+      {/* Modal de Relatório de Fraldas */}
       {mostrarRelatorioFraldas && (() => {
-        const relatorio = getDadosRelatorioFraldas();
+        const relatorio = getDadosRelatorioFraldas(mostrarRelatorioFraldas);
         return createPortal(
-          <div className="modal-overlay" onClick={() => setMostrarRelatorioFraldas(false)}>
-            <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
+          <div className="modal-overlay" onClick={() => setMostrarRelatorioFraldas(null)}>
+            <div className="modal-card relatorio-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <div className="modal-title-group">
-                  <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, #0284c7, #6366f1)' }}>
-                    <BarChart2 size={22} />
+                  <div className="modal-icon-badge" style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#059669' }}>
+                    <BarChart2 size={24} />
                   </div>
                   <div>
-                    <h2 className="modal-title">Relatório Semanal de Fraldas</h2>
-                    <p className="modal-subtitle">
-                      {relatorio.numDiasValidos < 7
-                        ? `Resumo dos registos (desde 05/08 · ${relatorio.numDiasValidos} ${relatorio.numDiasValidos === 1 ? 'dia' : 'dias'})`
-                        : 'Resumo dos últimos 7 dias da Sofia'}
-                    </p>
+                    <h2 className="modal-title">{mostrarRelatorioFraldas === 'geral' ? 'Relatório Geral de Fraldas' : 'Relatório Semanal de Fraldas'}</h2>
+                    <p className="modal-subtitle">Resumo de utilização</p>
                   </div>
                 </div>
-                <button className="btn-action-close" onClick={() => setMostrarRelatorioFraldas(false)}>
+                <button className="btn-action-close" onClick={() => setMostrarRelatorioFraldas(null)}>
                   <X size={20} />
                 </button>
               </div>
@@ -1574,13 +1628,13 @@ const Leite = () => {
                 {/* 4 Cards de Métricas */}
                 <div className="weekly-stats-grid">
                   <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><TrendingUp size={18} /></div>
+                    <div className="weekly-stat-icon" style={{ color: '#059669' }}><TrendingUp size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.mediaDiariaFraldas}</div>
-                    <div className="weekly-stat-lbl">Média / Dia</div>
+                    <div className="weekly-stat-lbl">Fraldas / Dia</div>
                   </div>
 
                   <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><Sparkles size={18} /></div>
+                    <div className="weekly-stat-icon" style={{ color: '#0ea5e9' }}><Droplet size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.totalSemanalXixi}</div>
                     <div className="weekly-stat-lbl">Trocas com Xixi 💧</div>
                   </div>
