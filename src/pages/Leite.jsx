@@ -964,37 +964,26 @@ const Leite = () => {
                   <TrendingUp size={14} />
                   <span>Previsão: restam cerca de <strong>{stock.diasRestantes} dias</strong></span>
                 </div>
-                <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <button 
-                className="btn-outline" 
-                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
-                onClick={() => setMostrarRelatorioSemanal('semanal')}
-              >
-                <BarChart2 size={18} style={{ marginRight: '6px' }} />
-                <span>Ver Relatório Semanal das Mamadas</span>
-              </button>
-
-              <button 
-                className="btn-outline" 
-                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
-                onClick={() => setMostrarRelatorioSemanal('geral')}
-              >
-                <BarChart2 size={18} style={{ marginRight: '6px' }} />
-                <span>Ver Relatório Geral das Mamadas</span>
-              </button>
-            </div>
               </div>
             );
           })()}
 
-          {/* Button to Open Weekly Feeding Report */}
-          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <button
               className="btn-weekly-report"
+              style={{ width: '100%' }}
               onClick={() => setMostrarRelatorioSemanal('semanal')}
             >
               <BarChart2 size={20} />
               <span>Ver Relatório Semanal das Mamadas</span>
+            </button>
+            <button
+              className="btn-weekly-report"
+              style={{ width: '100%', background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.05), rgba(244, 63, 94, 0.15))', border: '1px solid rgba(244, 63, 94, 0.4)', color: 'var(--color-primary)' }}
+              onClick={() => setMostrarRelatorioSemanal('geral')}
+            >
+              <BarChart2 size={20} />
+              <span>Ver Relatório Geral das Mamadas</span>
             </button>
           </div>
         </>
@@ -1184,34 +1173,23 @@ const Leite = () => {
               })
             )}
           </div>
-               <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <button 
-                className="btn-outline" 
-                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
-                onClick={() => setMostrarRelatorioFraldas('semanal')}
-              >
-                <BarChart2 size={18} style={{ marginRight: '6px' }} />
-                <span>Ver Relatório Semanal de Fraldas</span>
-              </button>
 
-              <button 
-                className="btn-outline" 
-                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
-                onClick={() => setMostrarRelatorioFraldas('geral')}
-              >
-                <BarChart2 size={18} style={{ marginRight: '6px' }} />
-                <span>Ver Relatório Geral de Fraldas</span>
-              </button>
-            </div>
-
-          {/* Button to Open Weekly Diaper Report */}
-          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <button
               className="btn-weekly-report btn-weekly-report-diapers"
+              style={{ width: '100%' }}
               onClick={() => setMostrarRelatorioFraldas('semanal')}
             >
               <BarChart2 size={20} />
               <span>Ver Relatório Semanal de Fraldas</span>
+            </button>
+            <button
+              className="btn-weekly-report btn-weekly-report-diapers"
+              style={{ width: '100%', background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.05), rgba(14, 165, 233, 0.15))', border: '1px solid rgba(14, 165, 233, 0.4)', color: '#0284c7' }}
+              onClick={() => setMostrarRelatorioFraldas('geral')}
+            >
+              <BarChart2 size={20} />
+              <span>Ver Relatório Geral de Fraldas</span>
             </button>
           </div>
         </>
@@ -1433,33 +1411,23 @@ const Leite = () => {
               </>
             )}
           </div>
-              <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <button 
-                className="btn-outline" 
-                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
-                onClick={() => setMostrarRelatorioSonos('semanal')}
-              >
-                <BarChart2 size={18} style={{ marginRight: '6px' }} />
-                <span>Ver Relatório Semanal de Sonos</span>
-              </button>
 
-              <button 
-                className="btn-outline" 
-                style={{ width: '100%', padding: '0.85rem', fontWeight: '800' }}
-                onClick={() => setMostrarRelatorioSonos('geral')}
-              >
-                <BarChart2 size={18} style={{ marginRight: '6px' }} />
-                <span>Ver Relatório Geral de Sonos</span>
-              </button>
-            </div>
-          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <button
               className="btn-weekly-report"
-              style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', color: '#fff', borderColor: 'transparent' }}
+              style={{ width: '100%', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.2))', border: '1px solid rgba(139, 92, 246, 0.4)', color: '#8b5cf6' }}
               onClick={() => setMostrarRelatorioSonos('semanal')}
             >
               <BarChart2 size={20} />
               <span>Ver Relatório Semanal de Sonos</span>
+            </button>
+            <button
+              className="btn-weekly-report"
+              style={{ width: '100%', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.15))', border: '1px solid rgba(139, 92, 246, 0.3)', color: '#8b5cf6' }}
+              onClick={() => setMostrarRelatorioSonos('geral')}
+            >
+              <BarChart2 size={20} />
+              <span>Ver Relatório Geral de Sonos</span>
             </button>
           </div>
         </>
@@ -1502,11 +1470,11 @@ const Leite = () => {
         const relatorio = getDadosRelatorioSemanal(mostrarRelatorioSemanal);
         return createPortal(
           <div className="modal-overlay" onClick={() => setMostrarRelatorioSemanal(null)}>
-            <div className="modal-card relatorio-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <div className="modal-title-group">
-                  <div className="modal-icon-badge" style={{ background: 'rgba(14, 165, 233, 0.12)', color: 'var(--color-primary)' }}>
-                    <BarChart2 size={24} />
+                  <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))' }}>
+                    <BarChart2 size={22} />
                   </div>
                   <div>
                     <h2 className="modal-title">{mostrarRelatorioSemanal === 'geral' ? 'Relatório Geral das Mamadas' : 'Relatório Semanal das Mamadas'}</h2>
@@ -1530,7 +1498,7 @@ const Leite = () => {
                   <div className="weekly-stat-card">
                     <div className="weekly-stat-icon text-secondary"><Milk size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.totalSemanalMl} <span className="stat-unit">ml</span></div>
-                    <div className="weekly-stat-lbl">{relatorio.numDiasValidos < 7 ? `Total (${relatorio.numDiasValidos}d)` : 'Total 7 Dias'}</div>
+                    <div className="weekly-stat-lbl">{mostrarRelatorioSemanal === 'geral' ? `Total (${relatorio.numDiasValidos}d)` : (relatorio.numDiasValidos < 7 ? `Total (${relatorio.numDiasValidos}d)` : 'Total 7 Dias')}</div>
                   </div>
 
                   <div className="weekly-stat-card">
@@ -1546,9 +1514,9 @@ const Leite = () => {
                   </div>
                 </div>
 
-                {/* Gráfico de Barras dos Dias */}
+                {/* Gráfico de Barras dos 7 Dias */}
                 <div className="weekly-chart-card">
-                  <h3 className="chart-title">Consumo Diário</h3>
+                  <h3 className="chart-title">Consumo Diário (desde 05/08)</h3>
                   <div className="bars-container">
                     {relatorio.dias.map(d => {
                       const heightPct = Math.round((d.totalMl / relatorio.maxMlGraph) * 100);
@@ -1608,11 +1576,11 @@ const Leite = () => {
         const relatorio = getDadosRelatorioFraldas(mostrarRelatorioFraldas);
         return createPortal(
           <div className="modal-overlay" onClick={() => setMostrarRelatorioFraldas(null)}>
-            <div className="modal-card relatorio-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <div className="modal-title-group">
-                  <div className="modal-icon-badge" style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#059669' }}>
-                    <BarChart2 size={24} />
+                  <div className="icon-badge-glow" style={{ background: 'linear-gradient(135deg, #0284c7, #6366f1)' }}>
+                    <BarChart2 size={22} />
                   </div>
                   <div>
                     <h2 className="modal-title">{mostrarRelatorioFraldas === 'geral' ? 'Relatório Geral de Fraldas' : 'Relatório Semanal de Fraldas'}</h2>
@@ -1628,15 +1596,15 @@ const Leite = () => {
                 {/* 4 Cards de Métricas */}
                 <div className="weekly-stats-grid">
                   <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#059669' }}><TrendingUp size={18} /></div>
+                    <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><TrendingUp size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.mediaDiariaFraldas}</div>
-                    <div className="weekly-stat-lbl">Fraldas / Dia</div>
+                    <div className="weekly-stat-lbl">Média / Dia</div>
                   </div>
 
                   <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#0ea5e9' }}><Droplet size={18} /></div>
+                    <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><Sparkles size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.totalSemanalXixi}</div>
-                    <div className="weekly-stat-lbl">Trocas com Xixi 💧</div>
+                    <div className="weekly-stat-lbl">{mostrarRelatorioFraldas === 'geral' ? `Trocas com Xixi (${relatorio.numDiasValidos}d)` : 'Trocas com Xixi 💧'}</div>
                   </div>
 
                   <div className="weekly-stat-card">
@@ -1711,11 +1679,11 @@ const Leite = () => {
         );
       })()}
 
-      {/* Modal de Relatório Semanal de Sonos */}
+      {/* Modal de Relatório de Sonos */}
       {mostrarRelatorioSonos && (() => {
-        const relatorio = getDadosRelatorioSonos();
+        const relatorio = getDadosRelatorioSonos(mostrarRelatorioSonos);
         return createPortal(
-          <div className="modal-overlay" onClick={() => setMostrarRelatorioSonos(false)}>
+          <div className="modal-overlay" onClick={() => setMostrarRelatorioSonos(null)}>
             <div className="modal-card weekly-report-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <div className="modal-title-group">
@@ -1723,26 +1691,28 @@ const Leite = () => {
                     <BarChart2 size={22} />
                   </div>
                   <div>
-                    <h2 className="modal-title">Relatório Semanal de Sonos</h2>
-                    <p className="modal-subtitle">
-                      {relatorio.numDiasValidos < 7
-                        ? `Resumo dos registos (desde 05/08 · ${relatorio.numDiasValidos} ${relatorio.numDiasValidos === 1 ? 'dia' : 'dias'})`
-                        : 'Resumo dos últimos 7 dias da Sofia'}
-                    </p>
+                    <h2 className="modal-title">{mostrarRelatorioSonos === 'geral' ? 'Relatório Geral de Sonos' : 'Relatório Semanal de Sonos'}</h2>
+                    <p className="modal-subtitle">Resumo dos padrões de descanso</p>
                   </div>
                 </div>
-                <button className="btn-action-close" onClick={() => setMostrarRelatorioSonos(false)}>
+                <button className="btn-action-close" onClick={() => setMostrarRelatorioSonos(null)}>
                   <X size={20} />
                 </button>
               </div>
 
               <div className="modal-body">
-                {/* Cards de Métricas */}
+                {/* 4 Cards de Métricas */}
                 <div className="weekly-stats-grid">
                   <div className="weekly-stat-card">
                     <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><TrendingUp size={18} /></div>
-                    <div className="weekly-stat-val">{relatorio.mediaDiariaFormatada}</div>
-                    <div className="weekly-stat-lbl">Média / Dia</div>
+                    <div className="weekly-stat-val" style={{ fontSize: '1.2rem' }}>{relatorio.mediaDiariaHoras}<span className="stat-unit">h</span> {relatorio.mediaDiariaMinutos}<span className="stat-unit">m</span></div>
+                    <div className="weekly-stat-lbl">Média Diária</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#c084fc' }}><Moon size={18} /></div>
+                    <div className="weekly-stat-val" style={{ fontSize: '1.2rem' }}>{relatorio.totalSemanalHoras}<span className="stat-unit">h</span></div>
+                    <div className="weekly-stat-lbl">{mostrarRelatorioSonos === 'geral' ? `Total (${relatorio.numDiasValidos}d)` : 'Total 7 Dias'}</div>
                   </div>
 
                   <div className="weekly-stat-card">
