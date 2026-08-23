@@ -266,9 +266,14 @@ const Leite = () => {
 
     const maxMinutosGraph = Math.max(...dias.map(d => d.totalMinutos), 60); // min 1h
 
+    const totalH = Math.floor(totalSemanalMinutos / 60);
+    const totalM = totalSemanalMinutos % 60;
+    const totalSemanalFormatado = `${totalH}h ${totalM}m`;
+
     return {
       dias,
       mediaDiariaFormatada,
+      totalSemanalFormatado,
       totalSemanalSestas: dias.reduce((sum, d) => sum + d.numSestas, 0),
       maxDia,
       maxMinutosGraph,
@@ -1596,6 +1601,12 @@ const Leite = () => {
                 {/* 4 Cards de Métricas */}
                 <div className="weekly-stats-grid">
                   <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><Layers size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.totalSemanalFraldas}</div>
+                    <div className="weekly-stat-lbl">{mostrarRelatorioFraldas === 'geral' ? `Total (${relatorio.numDiasValidos}d)` : 'Total Fraldas'}</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
                     <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><TrendingUp size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.mediaDiariaFraldas}</div>
                     <div className="weekly-stat-lbl">Média / Dia</div>
@@ -1604,19 +1615,13 @@ const Leite = () => {
                   <div className="weekly-stat-card">
                     <div className="weekly-stat-icon" style={{ color: '#0284c7' }}><Sparkles size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.totalSemanalXixi}</div>
-                    <div className="weekly-stat-lbl">{mostrarRelatorioFraldas === 'geral' ? `Trocas com Xixi (${relatorio.numDiasValidos}d)` : 'Trocas com Xixi 💧'}</div>
+                    <div className="weekly-stat-lbl">Xixi 💧</div>
                   </div>
 
                   <div className="weekly-stat-card">
                     <div className="weekly-stat-icon" style={{ color: '#c2410c' }}><Sparkles size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.totalSemanalCoco}</div>
-                    <div className="weekly-stat-lbl">Trocas com Cocó 💩</div>
-                  </div>
-
-                  <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#f59e0b' }}><Award size={18} /></div>
-                    <div className="weekly-stat-val">{relatorio.maxDia.countTotal}</div>
-                    <div className="weekly-stat-lbl">Dia de Pico ({relatorio.maxDia.dayLabel})</div>
+                    <div className="weekly-stat-lbl">Cocó 💩</div>
                   </div>
                 </div>
 
@@ -1704,27 +1709,27 @@ const Leite = () => {
                 {/* 4 Cards de Métricas */}
                 <div className="weekly-stats-grid">
                   <div className="weekly-stat-card">
+                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><Clock size={18} /></div>
+                    <div className="weekly-stat-val">{relatorio.totalSemanalFormatado}</div>
+                    <div className="weekly-stat-lbl">{mostrarRelatorioSonos === 'geral' ? `Total (${relatorio.numDiasValidos}d)` : 'Total de Horas'}</div>
+                  </div>
+
+                  <div className="weekly-stat-card">
                     <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><TrendingUp size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.mediaDiariaFormatada}</div>
                     <div className="weekly-stat-lbl">Média / Dia</div>
                   </div>
 
                   <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><Clock size={18} /></div>
+                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><Moon size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.totalSemanalSestas}</div>
-                    <div className="weekly-stat-lbl">{mostrarRelatorioSonos === 'geral' ? `Sestas (${relatorio.numDiasValidos}d)` : 'Sestas na Semana'}</div>
-                  </div>
-
-                  <div className="weekly-stat-card">
-                    <div className="weekly-stat-icon" style={{ color: '#8b5cf6' }}><Clock size={18} /></div>
-                    <div className="weekly-stat-val">{relatorio.totalSemanalSestas}</div>
-                    <div className="weekly-stat-lbl">Sestas na Semana</div>
+                    <div className="weekly-stat-lbl">Sestas</div>
                   </div>
 
                   <div className="weekly-stat-card">
                     <div className="weekly-stat-icon" style={{ color: '#f59e0b' }}><Award size={18} /></div>
                     <div className="weekly-stat-val">{relatorio.maxDia.totalFormatado}</div>
-                    <div className="weekly-stat-lbl">Dia de Pico ({relatorio.maxDia.dayLabel})</div>
+                    <div className="weekly-stat-lbl">Pico ({relatorio.maxDia.dayLabel})</div>
                   </div>
                 </div>
 
