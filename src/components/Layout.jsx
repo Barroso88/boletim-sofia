@@ -49,7 +49,12 @@ const Layout = ({ children }) => {
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
-      window.location.reload();
+      // Avoid window.location.reload() on iOS standalone PWAs to prevent freezing
+      if (window.navigator.standalone || /iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        window.location.href = window.location.href;
+      } else {
+        window.location.reload();
+      }
     }, 300);
   };
 
