@@ -593,9 +593,10 @@ const Documentos = () => {
                     style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                     onClick={() => toggleAcessoExpand(acesso.id)}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       {expandedAcessos[acesso.id] ? <ChevronUp size={20} color="#8b5cf6" /> : <ChevronDown size={20} color="#8b5cf6" />}
-                      <Lock size={18} color="#8b5cf6" />
+                      <div className="cell-icon-badge icon-bg-social" style={{ transform: 'scale(0.85)', transformOrigin: 'left center' }}>
+                        <img src="/seg_social_logo.png" alt="NISS" className="doc-icon-img" />
+                      </div>
                       <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#4c1d95' }}>{acesso.titulo}</h4>
                     </div>
                     <div className="btn-action-group" onClick={e => e.stopPropagation()}>
@@ -609,27 +610,30 @@ const Documentos = () => {
                   </div>
 
                   {expandedAcessos[acesso.id] && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(139, 92, 246, 0.2)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', width: '70px' }}>Utilizador:</span>
-                      <code style={{ background: 'rgba(255,255,255,0.7)', padding: '0.2rem 0.5rem', borderRadius: '4px', flex: 1 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(139, 92, 246, 0.2)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(255, 255, 255, 0.6)', padding: '0.6rem 0.8rem', borderRadius: '12px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', border: '1px solid rgba(255, 255, 255, 0.8)' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b7280', width: '85px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Utilizador</span>
+                      <span style={{ flex: 1, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace', color: '#1f2937', fontWeight: 500, fontSize: '0.95rem' }}>
                         {acesso.username || '-'}
-                      </code>
-                      <button className="quick-copy-icon" onClick={() => copiarParaClipboard(acesso.username, acesso.id + 'u')} title="Copiar Utilizador">
-                        {copiadoId === (acesso.id + 'u') ? <Check size={14} /> : <Copy size={14} />}
+                      </span>
+                      <button className="quick-copy-icon" style={{ background: 'white', border: '1px solid #e5e7eb', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }} onClick={() => copiarParaClipboard(acesso.username, acesso.id + 'u')} title="Copiar Utilizador">
+                        {copiadoId === (acesso.id + 'u') ? <Check size={15} color="#10b981" /> : <Copy size={15} color="#6b7280" />}
                       </button>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', width: '70px' }}>Palavra-passe:</span>
-                      <code style={{ background: 'rgba(255,255,255,0.7)', padding: '0.2rem 0.5rem', borderRadius: '4px', flex: 1, letterSpacing: isShowing ? 'normal' : '2px' }}>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(255, 255, 255, 0.6)', padding: '0.6rem 0.8rem', borderRadius: '12px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', border: '1px solid rgba(255, 255, 255, 0.8)' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b7280', width: '85px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Password</span>
+                      <span style={{ flex: 1, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace', color: '#1f2937', fontWeight: 500, fontSize: '0.95rem', letterSpacing: isShowing ? 'normal' : '3px' }}>
                         {isShowing ? (acesso.password || '-') : '••••••••'}
-                      </code>
-                      <button className="quick-copy-icon" onClick={() => toggleShowPassword(acesso.id)} title={isShowing ? "Ocultar" : "Mostrar"}>
-                        {isShowing ? <EyeOff size={14} /> : <Eye size={14} />}
-                      </button>
-                      <button className="quick-copy-icon" onClick={() => copiarParaClipboard(acesso.password, acesso.id + 'p')} title="Copiar Palavra-passe">
-                        {copiadoId === (acesso.id + 'p') ? <Check size={14} /> : <Copy size={14} />}
-                      </button>
+                      </span>
+                      <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        <button className="quick-copy-icon" style={{ background: 'white', border: '1px solid #e5e7eb', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }} onClick={() => toggleShowPassword(acesso.id)} title={isShowing ? "Ocultar" : "Mostrar"}>
+                          {isShowing ? <EyeOff size={15} color="#6b7280" /> : <Eye size={15} color="#6b7280" />}
+                        </button>
+                        <button className="quick-copy-icon" style={{ background: 'white', border: '1px solid #e5e7eb', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }} onClick={() => copiarParaClipboard(acesso.password, acesso.id + 'p')} title="Copiar Palavra-passe">
+                          {copiadoId === (acesso.id + 'p') ? <Check size={15} color="#10b981" /> : <Copy size={15} color="#6b7280" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
                   )}
