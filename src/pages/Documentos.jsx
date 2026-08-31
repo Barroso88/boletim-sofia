@@ -398,7 +398,7 @@ const Documentos = () => {
         </button>
       </div>
 
-      {activeSubTab === 'text' ? (
+      {activeSubTab === 'text' && (
       <div className="executive-list-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
             {documentos.map((doc, index) => {
               const isPreenchido = doc.numero && doc.numero.trim() !== '';
@@ -464,7 +464,9 @@ const Documentos = () => {
               );
             })}
       </div>
-      ) : (
+      )}
+      
+      {activeSubTab === 'scans' && (
       <div className="scans-container">
         {categorias.length === 0 ? (
           <div className="empty-state">
@@ -547,7 +549,9 @@ const Documentos = () => {
           </div>
         )}
       </div>
-      ) : (
+      )}
+
+      {activeSubTab === 'acessos' && (
       <div className="acessos-container">
         {acessos.length === 0 ? (
           <div className="empty-state">
