@@ -230,6 +230,13 @@ async function setupTables() {
       ALTER TABLE perfil ADD COLUMN IF NOT EXISTS codigo_postal TEXT;
       ALTER TABLE perfil ADD COLUMN IF NOT EXISTS cidade TEXT;
       ALTER TABLE perfil ADD COLUMN IF NOT EXISTS data_provavel_parto TEXT;
+
+      CREATE TABLE IF NOT EXISTS acessos (
+        id BIGINT PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL
+      );
     `);
 
     client.release();
@@ -779,6 +786,39 @@ app.delete('/api/latas/:id', async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query('DELETE FROM latas_leite WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- ACESSOS ---
+app.get('/api/acessos', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM acessos ORDER BY id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/acessos', async (req, res) => {
+  const { id, titulo, username, password } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO acessos (id, titulo, username, password) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET titulo = $2, username = $3, password = $4',
+      [id || Date.now(), titulo, username || '', password || '']
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/acessos/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM acessos WHERE id = $1', [id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

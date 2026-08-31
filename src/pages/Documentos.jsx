@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle, ChevronUp, ChevronDown, GripVertical, FileText, Upload, Image as ImageIcon, File, Download } from 'lucide-react';
+import { Plus, Pencil, Save, Trash2, X, Copy, Check, CreditCard, FolderHeart, Droplet, AlertTriangle, ChevronUp, ChevronDown, GripVertical, FileText, Upload, Image as ImageIcon, File, Download, Lock, Eye, EyeOff } from 'lucide-react';
 import { api } from '../services/api';
 import './Documentos.css';
 
@@ -67,6 +67,15 @@ const Documentos = () => {
 
   const [previewFile, setPreviewFile] = useState(null); // URL of file to preview
 
+  // Acessos State
+  const [acessos, setAcessos] = useState([]);
+  const [adicionandoAcesso, setAdicionandoAcesso] = useState(false);
+  const [editAcessoId, setEditAcessoId] = useState(null);
+  const [acessoTitulo, setAcessoTitulo] = useState('');
+  const [acessoUsername, setAcessoUsername] = useState('');
+  const [acessoPassword, setAcessoPassword] = useState('');
+  const [showPasswords, setShowPasswords] = useState({});
+
   useEffect(() => {
     api.getDocumentos(defaultDocs).then(data => {
       const seenTypes = new Set();
@@ -100,6 +109,9 @@ const Documentos = () => {
     if (activeSubTab === 'scans') {
       api.getCategorias().then(data => setCategorias(data || []));
       api.getDigitalizacoes().then(data => setDigitalizacoes(data || []));
+    }
+    if (activeSubTab === 'acessos') {
+      api.getAcessos().then(data => setAcessos(data || []));
     }
   }, [activeSubTab]);
 
@@ -235,6 +247,52 @@ const Documentos = () => {
     setDraggedIndex(null);
   };
 
+  const handleSalvarAcesso = async (e) => {
+    e.preventDefault();
+    if (!acessoTitulo.trim()) return;
+    
+    const novoAcesso = {
+      id: editAcessoId || Date.now(),
+      titulo: acessoTitulo,
+      username: acessoUsername,
+      password: acessoPassword
+    };
+
+    let novaLista;
+    if (editAcessoId) {
+      novaLista = acessos.map(a => a.id === editAcessoId ? novoAcesso : a);
+    } else {
+      novaLista = [novoAcesso, ...acessos];
+    }
+    
+    setAcessos(novaLista);
+    await api.saveAcesso(novoAcesso);
+    
+    setAdicionandoAcesso(false);
+    setEditAcessoId(null);
+    setAcessoTitulo('');
+    setAcessoUsername('');
+    setAcessoPassword('');
+  };
+
+  const handleDeleteAcesso = async (id) => {
+    if (!window.confirm("Remover este acesso?")) return;
+    setAcessos(prev => prev.filter(a => a.id !== id));
+    await api.deleteAcesso(id);
+  };
+
+  const abrirEdicaoAcesso = (acesso) => {
+    setEditAcessoId(acesso.id);
+    setAcessoTitulo(acesso.titulo || '');
+    setAcessoUsername(acesso.username || '');
+    setAcessoPassword(acesso.password || '');
+    setAdicionandoAcesso(true);
+  };
+
+  const toggleShowPassword = (id) => {
+    setShowPasswords(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   const copiarParaClipboard = (numero, id) => {
     if (!numero) return;
     navigator.clipboard.writeText(numero).then(() => {
@@ -303,6 +361,18 @@ const Documentos = () => {
               <span>Nova Categoria</span>
             </button>
           )}
+          {activeSubTab === 'acessos' && (
+            <button className="btn-primary doc-add-btn" onClick={() => {
+              setEditAcessoId(null);
+              setAcessoTitulo('');
+              setAcessoUsername('');
+              setAcessoPassword('');
+              setAdicionandoAcesso(true);
+            }}>
+              <Plus size={18} />
+              <span>Novo Acesso</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -319,6 +389,12 @@ const Documentos = () => {
           onClick={() => setActiveSubTab('scans')}
         >
           <ImageIcon size={16} /> Digitalizações
+        </button>
+        <button 
+          className={`sub-tab ${activeSubTab === 'acessos' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('acessos')}
+        >
+          <Lock size={16} /> Acessos
         </button>
       </div>
 
@@ -465,6 +541,84 @@ const Documentos = () => {
                       )}
                     </div>
                   )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      ) : (
+      <div className="acessos-container">
+        {acessos.length === 0 ? (
+          <div className="empty-state">
+            <Lock size={48} color="var(--color-primary-light)" />
+            <p>Nenhum acesso guardado.</p>
+            <button className="btn-outline" onClick={() => {
+              setEditAcessoId(null);
+              setAcessoTitulo('');
+              setAcessoUsername('');
+              setAcessoPassword('');
+              setAdicionandoAcesso(true);
+            }}>Criar Acesso</button>
+          </div>
+        ) : (
+          <div className="executive-list-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+            {acessos.map((acesso, index) => {
+              const isShowing = showPasswords[acesso.id];
+              return (
+                <div key={acesso.id} className="executive-card" style={{ 
+                    animationDelay: `${index * 0.04}s`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '1rem 1.5rem',
+                    background: 'linear-gradient(135deg, rgba(253, 242, 248, 0.95), rgba(252, 231, 243, 0.85))',
+                    border: '2px solid rgba(139, 92, 246, 0.5)',
+                    borderBottom: '3px solid rgba(139, 92, 246, 0.8)',
+                    borderRadius: 'var(--radius-lg)',
+                    boxShadow: '0 0 10px rgba(139, 92, 246, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.7)',
+                    opacity: 0,
+                    animation: 'tableRowFade 0.5s ease forwards'
+                  }}>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Lock size={18} color="#8b5cf6" />
+                      <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#4c1d95' }}>{acesso.titulo}</h4>
+                    </div>
+                    <div className="btn-action-group">
+                      <button className="btn-action-edit" onClick={() => abrirEdicaoAcesso(acesso)} title="Editar acesso">
+                        <Pencil size={17} />
+                      </button>
+                      <button className="btn-action-delete" onClick={() => handleDeleteAcesso(acesso.id)} title="Remover acesso">
+                        <Trash2 size={17} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', width: '70px' }}>Utilizador:</span>
+                      <code style={{ background: 'rgba(255,255,255,0.7)', padding: '0.2rem 0.5rem', borderRadius: '4px', flex: 1 }}>
+                        {acesso.username || '-'}
+                      </code>
+                      <button className="quick-copy-icon" onClick={() => copiarParaClipboard(acesso.username, acesso.id + 'u')} title="Copiar Utilizador">
+                        {copiadoId === (acesso.id + 'u') ? <Check size={14} /> : <Copy size={14} />}
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', width: '70px' }}>Palavra-passe:</span>
+                      <code style={{ background: 'rgba(255,255,255,0.7)', padding: '0.2rem 0.5rem', borderRadius: '4px', flex: 1, letterSpacing: isShowing ? 'normal' : '2px' }}>
+                        {isShowing ? (acesso.password || '-') : '••••••••'}
+                      </code>
+                      <button className="quick-copy-icon" onClick={() => toggleShowPassword(acesso.id)} title={isShowing ? "Ocultar" : "Mostrar"}>
+                        {isShowing ? <EyeOff size={14} /> : <Eye size={14} />}
+                      </button>
+                      <button className="quick-copy-icon" onClick={() => copiarParaClipboard(acesso.password, acesso.id + 'p')} title="Copiar Palavra-passe">
+                        {copiadoId === (acesso.id + 'p') ? <Check size={14} /> : <Copy size={14} />}
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               );
             })}
@@ -686,6 +840,74 @@ const Documentos = () => {
             ) : (
               <img src={previewFile} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '12px' }} />
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ─── ADD ACESSO MODAL ─── */}
+      {adicionandoAcesso && (
+        <div className="modal-overlay" onClick={() => setAdicionandoAcesso(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <div className="modal-icon-badge" style={{ background: '#f3e8ff', color: '#8b5cf6' }}>
+                  <Lock size={22} />
+                </div>
+                <div>
+                  <h3 className="modal-title">{editAcessoId ? 'Editar Acesso' : 'Novo Acesso'}</h3>
+                  <p className="modal-subtitle">Guarde as credenciais da Sofia</p>
+                </div>
+              </div>
+              <button className="btn-icon" onClick={() => setAdicionandoAcesso(false)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSalvarAcesso} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group">
+                <label className="input-label">Título do Serviço</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={acessoTitulo}
+                  onChange={e => setAcessoTitulo(e.target.value)}
+                  placeholder="Ex: Segurança Social Direta"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Nome de Utilizador / NISS</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={acessoUsername}
+                  onChange={e => setAcessoUsername(e.target.value)}
+                  placeholder="Utilizador, email ou número..."
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Palavra-passe</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={acessoPassword}
+                  onChange={e => setAcessoPassword(e.target.value)}
+                  placeholder="Palavra-passe..."
+                />
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-outline" onClick={() => setAdicionandoAcesso(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary">
+                  {editAcessoId ? 'Atualizar' : 'Guardar'} Acesso
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

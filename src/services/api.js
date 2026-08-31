@@ -613,6 +613,47 @@ export const api = {
     });
   },
 
+  // --- ACESSOS ---
+  async getAcessos(localKey = 'sofia_acessos') {
+    const remote = await fetchWithFallback(`${API_BASE}/acessos`);
+    if (remote && Array.isArray(remote)) {
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        localList.forEach(r => this.saveAcesso(r, localKey));
+        return localList;
+      }
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  async saveAcesso(acesso, localKey = 'sofia_acessos') {
+    const saved = localStorage.getItem(localKey);
+    let list = saved ? JSON.parse(saved) : [];
+    const idx = list.findIndex(r => r.id === acesso.id);
+    if (idx >= 0) list[idx] = acesso;
+    else list.push(acesso);
+    localStorage.setItem(localKey, JSON.stringify(list));
+
+    fetchWithFallback(`${API_BASE}/acessos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(acesso)
+    });
+  },
+
+  async deleteAcesso(id, localKey = 'sofia_acessos') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(r => r.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/acessos/${id}`, { method: 'DELETE' });
+  },
+
   // --- HOME ASSISTANT ---
   async triggerHA(webhookId) {
     try {
