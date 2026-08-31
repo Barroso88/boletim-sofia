@@ -75,6 +75,7 @@ const Documentos = () => {
   const [acessoUsername, setAcessoUsername] = useState('');
   const [acessoPassword, setAcessoPassword] = useState('');
   const [showPasswords, setShowPasswords] = useState({});
+  const [expandedAcessos, setExpandedAcessos] = useState({});
 
   useEffect(() => {
     api.getDocumentos(defaultDocs).then(data => {
@@ -291,6 +292,10 @@ const Documentos = () => {
 
   const toggleShowPassword = (id) => {
     setShowPasswords(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleAcessoExpand = (id) => {
+    setExpandedAcessos(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   const copiarParaClipboard = (numero, id) => {
@@ -584,12 +589,16 @@ const Documentos = () => {
                     animation: 'tableRowFade 0.5s ease forwards'
                   }}>
                   
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <div 
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                    onClick={() => toggleAcessoExpand(acesso.id)}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      {expandedAcessos[acesso.id] ? <ChevronUp size={20} color="#8b5cf6" /> : <ChevronDown size={20} color="#8b5cf6" />}
                       <Lock size={18} color="#8b5cf6" />
                       <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#4c1d95' }}>{acesso.titulo}</h4>
                     </div>
-                    <div className="btn-action-group">
+                    <div className="btn-action-group" onClick={e => e.stopPropagation()}>
                       <button className="btn-action-edit" onClick={() => abrirEdicaoAcesso(acesso)} title="Editar acesso">
                         <Pencil size={17} />
                       </button>
@@ -599,7 +608,8 @@ const Documentos = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.5rem' }}>
+                  {expandedAcessos[acesso.id] && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(139, 92, 246, 0.2)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.85rem', color: 'var(--color-text-light)', width: '70px' }}>Utilizador:</span>
                       <code style={{ background: 'rgba(255,255,255,0.7)', padding: '0.2rem 0.5rem', borderRadius: '4px', flex: 1 }}>
@@ -622,6 +632,7 @@ const Documentos = () => {
                       </button>
                     </div>
                   </div>
+                  )}
 
                 </div>
               );
