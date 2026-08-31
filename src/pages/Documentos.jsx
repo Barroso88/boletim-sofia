@@ -593,6 +593,7 @@ const Documentos = () => {
                     style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                     onClick={() => toggleAcessoExpand(acesso.id)}
                   >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       {expandedAcessos[acesso.id] ? <ChevronUp size={20} color="#8b5cf6" /> : <ChevronDown size={20} color="#8b5cf6" />}
                       <div className="cell-icon-badge icon-bg-social" style={{ transform: 'scale(0.85)', transformOrigin: 'left center' }}>
                         <img src="/seg_social_logo.png" alt="NISS" className="doc-icon-img" />
