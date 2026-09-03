@@ -55,11 +55,17 @@ const Dashboard = () => {
     });
   }, []);
 
-  // Filter 5 Consultas
+  const isConsultaExameAnalise = (tipo) => {
+    if (!tipo) return false;
+    const t = tipo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    return t.includes('consulta') || t.includes('exame') || t.includes('analise');
+  };
+
+  // Filter 5 Consultas, Exames e Análises
   const getConsultas = (futuras) => {
     const hoje = new Date();
     const filtradas = eventos.filter(e => {
-      if (e.tipo !== 'Consulta') return false;
+      if (!isConsultaExameAnalise(e.tipo)) return false;
       const d = new Date(e.data);
       return futuras ? d >= hoje : d < hoje;
     });
@@ -73,6 +79,7 @@ const Dashboard = () => {
     return filtradas.slice(0, 5).map(c => ({
       id: c.id,
       titulo: c.titulo,
+      subtext: c.tipo || 'Consulta',
       dataFormatted: format(new Date(c.data), "d MMM, HH:mm", { locale: ptBR })
     }));
   };
