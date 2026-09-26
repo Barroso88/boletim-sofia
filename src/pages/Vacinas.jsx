@@ -61,7 +61,7 @@ const Vacinas = () => {
     localStorage.setItem('sofia_vacinas', JSON.stringify(novaLista));
   };
 
-  const toggleTomada = (id) => {
+  const toggleTomada = async (id) => {
     const vacina = vacinas.find(v => v.id === id);
     if (vacina.tomada) {
       setConfirmarUnmark(vacina.id);
@@ -80,10 +80,10 @@ const Vacinas = () => {
       return v;
     });
     persistVacinas(novaLista);
-    api.toggleVacina(id, novaLista);
+    await api.toggleVacina(id, novaLista);
   };
 
-  const unmarkVacina = () => {
+  const unmarkVacina = async () => {
     if (!confirmarUnmark) return;
     const novaLista = vacinas.map(v => {
       if (v.id === confirmarUnmark) {
@@ -96,7 +96,7 @@ const Vacinas = () => {
       return v;
     });
     persistVacinas(novaLista);
-    api.toggleVacina(confirmarUnmark, novaLista);
+    await api.toggleVacina(confirmarUnmark, novaLista);
     setConfirmarUnmark(null);
   };
 
@@ -109,7 +109,7 @@ const Vacinas = () => {
     setFormTomada(!!vacina.tomada);
   };
 
-  const guardarEdicaoVacina = (e) => {
+  const guardarEdicaoVacina = async (e) => {
     e.preventDefault();
     if (!editandoVacina) return;
     const novaLista = vacinas.map(v => {
@@ -126,7 +126,7 @@ const Vacinas = () => {
       return v;
     });
     persistVacinas(novaLista);
-    api.toggleVacina(editandoVacina.id, novaLista);
+    await api.toggleVacina(editandoVacina.id, novaLista);
     setEditandoVacina(null);
   };
 
@@ -139,7 +139,7 @@ const Vacinas = () => {
     setAdicionandoVacina(true);
   };
 
-  const adicionarNovaVacina = (e) => {
+  const adicionarNovaVacina = async (e) => {
     e.preventDefault();
     const novaVacina = {
       id: Date.now(),
@@ -151,15 +151,15 @@ const Vacinas = () => {
     };
     const novaLista = [...vacinas, novaVacina];
     persistVacinas(novaLista);
-    api.toggleVacina(novaVacina.id, novaLista);
+    await api.toggleVacina(novaVacina.id, novaLista);
     setAdicionandoVacina(false);
   };
 
-  const removerVacina = () => {
+  const removerVacina = async () => {
     if (!confirmarDelete) return;
     const novaLista = vacinas.filter(v => v.id !== confirmarDelete);
     persistVacinas(novaLista);
-    api.toggleVacina(confirmarDelete, novaLista);
+    await api.toggleVacina(confirmarDelete, novaLista);
     setConfirmarDelete(null);
   };
 
@@ -172,6 +172,25 @@ const Vacinas = () => {
     acc[grp].push(vacina);
     return acc;
   }, {});
+
+  const orderMap = {
+    'Nascimento': 0,
+    '2 Meses': 2,
+    '4 Meses': 4,
+    '6 Meses': 6,
+    '12 Meses': 12,
+    '18 Meses': 18,
+    '5 Anos': 60,
+    '10 Anos': 120,
+    'Sazonal': 998,
+    'Outras': 999
+  };
+
+  const sortedPorTomarGroups = Object.entries(groupedPorTomar).sort((a, b) => {
+    const orderA = orderMap[a[0]] !== undefined ? orderMap[a[0]] : 999;
+    const orderB = orderMap[b[0]] !== undefined ? orderMap[b[0]] : 999;
+    return orderA - orderB;
+  });
 
   const totalCount = vacinas.length;
   const takenCount = administradas.length;
@@ -290,7 +309,7 @@ const Vacinas = () => {
           </div>
         ) : (
           <div className="vacinas-container">
-            {Object.entries(groupedPorTomar).map(([grupo, lista], index) => (
+            {sortedPorTomarGroups.map(([grupo, lista], index) => (
               <div key={grupo} className="vacina-group animate-fade-in" style={{ animationDelay: `${index * 0.08}s` }}>
                 <h3 className="grupo-title flex-center" style={{ gap: '0.5rem', justifyContent: 'flex-start' }}>
                   <Calendar size={18} />
