@@ -34,6 +34,10 @@ const normalizeVaccineName = (nome) => {
   if (n.includes('sarampo')) return 'Vacina viva contra o Sarampo';
   if (n.includes('papilomavírus') || n.includes('papilomavirus') || n.includes('hpv')) return 'Vacina contra o papilomavírus humano (tipo 9)';
   if (n.includes('vírus sincicial') || n.includes('vsr') || n.includes('bronquiolite')) return 'Imunização contra o VSR (Bronquiolite)';
+  if (n.includes('rotavírus') || n.includes('rotavirus') || n.includes('rotarix') || n.includes('rotateq')) {
+    if (n.includes('2')) return 'Vacina contra o Rotavírus (Rotarix) - 2ª Dose';
+    return 'Vacina contra o Rotavírus (Rotarix) - 1ª Dose';
+  }
   return nome;
 };
 

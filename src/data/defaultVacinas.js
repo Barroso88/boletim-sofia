@@ -11,6 +11,10 @@ export const defaultVacinas = [
   { id: 7, nome: 'Vacina contra o meningococo do grupo B', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
   { id: 8, nome: 'Vacina contra o Tétano', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
   { id: 9, nome: 'Vacina pneumocócica conjugada de 20 componentes', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+  { id: 16, nome: 'Vacina contra o Rotavírus (Rotarix) - 1ª Dose', dataRecomendada: 'De 13/09/2026 a 13/10/2026', tomada: false, grupo: '2 Meses' },
+
+  // ── 4 Meses (De 13/11/2026 a 13/12/2026) ──────────────────────────────────
+  { id: 17, nome: 'Vacina contra o Rotavírus (Rotarix) - 2ª Dose', dataRecomendada: 'De 13/11/2026 a 13/12/2026', tomada: false, grupo: '4 Meses' },
 
   // ── 12 Meses (De 13/07/2027 a 13/08/2027) ─────────────────────────────────
   { id: 10, nome: 'Vacina contra a Parotidite Epidémica', dataRecomendada: 'De 13/07/2027 a 13/08/2027', tomada: false, grupo: '12 Meses' },
