@@ -103,7 +103,7 @@ export const api = {
     else list.push(registo);
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    fetchWithFallback(`${API_BASE}/peso`, {
+    await fetchWithFallback(`${API_BASE}/peso`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registo)
@@ -147,7 +147,7 @@ export const api = {
     else list.push(registo);
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    fetchWithFallback(`${API_BASE}/altura`, {
+    await fetchWithFallback(`${API_BASE}/altura`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registo)
@@ -189,7 +189,7 @@ export const api = {
     list.sort((a, b) => new Date(a.data) - new Date(b.data));
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    fetchWithFallback(`${API_BASE}/agenda`, {
+    await fetchWithFallback(`${API_BASE}/agenda`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(evento)
@@ -231,7 +231,7 @@ export const api = {
     list.sort((a, b) => new Date(a.data) - new Date(b.data));
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    fetchWithFallback(`${API_BASE}/marcos`, {
+    await fetchWithFallback(`${API_BASE}/marcos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(marco)
@@ -416,7 +416,7 @@ export const api = {
     list.sort((a, b) => b.hora.localeCompare(a.hora));
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    fetchWithFallback(`${API_BASE}/leite`, {
+    await fetchWithFallback(`${API_BASE}/leite`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registo)
@@ -458,7 +458,7 @@ export const api = {
     list.sort((a, b) => b.hora.localeCompare(a.hora));
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    fetchWithFallback(`${API_BASE}/fraldas`, {
+    await fetchWithFallback(`${API_BASE}/fraldas`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registo)
@@ -501,7 +501,7 @@ export const api = {
     list.sort((a, b) => b.hora_inicio.localeCompare(a.hora_inicio));
     localStorage.setItem(localKey, JSON.stringify(list));
 
-    fetchWithFallback(`${API_BASE}/sonos`, {
+    await fetchWithFallback(`${API_BASE}/sonos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registo)

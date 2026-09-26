@@ -565,7 +565,8 @@ const Dashboard = () => {
                   <button 
                     className="btn-primary" 
                     style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', padding: '0.4rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 'bold', border: 'none', color: '#fff', boxShadow: '0 4px 10px rgba(139, 92, 246, 0.2)', cursor: 'pointer' }}
-                    onClick={async () => {
+                    onClick={async (e) => {
+                      e.stopPropagation();
                       const horaAtual = format(new Date(), 'HH:mm');
                       const [hI, mI] = ultimoSono.hora_inicio.split(':').map(Number);
                       const [hF, mF] = horaAtual.split(':').map(Number);

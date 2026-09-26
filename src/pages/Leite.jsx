@@ -477,7 +477,7 @@ const Leite = () => {
     setAdicionandoSono(true);
   };
 
-  const adicionarRegistoSono = (e) => {
+  const adicionarRegistoSono = async (e) => {
     e.preventDefault();
     if (!novaHoraInicioSono) return;
     const duracao = novaHoraFimSono ? calcularDuracao(novaHoraInicioSono, novaHoraFimSono) : 0;
@@ -495,7 +495,7 @@ const Leite = () => {
       if (exists) return prev.map(r => r.id === registo.id ? registo : r);
       return [registo, ...prev];
     });
-    api.saveSono(registo);
+    await api.saveSono(registo);
     setAdicionandoSono(false);
     setEditandoIdSono(null);
   };
