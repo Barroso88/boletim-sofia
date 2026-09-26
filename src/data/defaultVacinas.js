@@ -20,4 +20,7 @@ export const defaultVacinas = [
 
   // ── 10 Anos (De 13/07/2036 a 13/07/2037) ──────────────────────────────────
   { id: 14, nome: 'Vacina contra o papilomavírus humano (tipo 9)', dataRecomendada: 'De 13/07/2036 a 13/07/2037', tomada: false, grupo: '10 Anos' },
+
+  // ── Sazonal (RSV / Bronquiolite) ──────────────────────────────────────────
+  { id: 15, nome: 'Imunização contra o VSR (Bronquiolite)', dataRecomendada: 'A partir de Outubro (Época de Inverno)', tomada: false, grupo: 'Sazonal' },
 ];

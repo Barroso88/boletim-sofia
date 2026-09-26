@@ -33,6 +33,7 @@ const normalizeVaccineName = (nome) => {
   if (n.includes('rubéola') || n.includes('rubeola')) return 'Vacina viva contra a Rubéola';
   if (n.includes('sarampo')) return 'Vacina viva contra o Sarampo';
   if (n.includes('papilomavírus') || n.includes('papilomavirus') || n.includes('hpv')) return 'Vacina contra o papilomavírus humano (tipo 9)';
+  if (n.includes('vírus sincicial') || n.includes('vsr') || n.includes('bronquiolite')) return 'Imunização contra o VSR (Bronquiolite)';
   return nome;
 };
 
