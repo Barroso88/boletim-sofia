@@ -255,36 +255,32 @@ export const api = {
   // --- VACINAS ---
   async getVacinas(defaultList, localKey = 'sofia_vacinas') {
     const remote = await fetchWithFallback(`${API_BASE}/vacinas`);
-    let loadedData;
-    if (remote && Array.isArray(remote) && remote.length > 0) {
-      loadedData = remote;
-    } else {
-      const saved = localStorage.getItem(localKey);
-      loadedData = saved ? JSON.parse(saved) : defaultList;
-    }
-
-    if (!defaultList) return loadedData;
-
+    const savedStr = localStorage.getItem(localKey);
+    const savedList = savedStr ? JSON.parse(savedStr) : [];
+    
     const seen = new Set();
     const cleanList = [];
 
-    (loadedData || []).forEach(v => {
-      const normName = normalizeVaccineName(v.nome);
-      const key = normName.toLowerCase().trim();
-      if (!seen.has(key)) {
-        seen.add(key);
-        cleanList.push({ ...v, nome: normName });
-      }
-    });
+    const addToList = (list) => {
+      if (!list || !Array.isArray(list)) return;
+      list.forEach(v => {
+        const normName = normalizeVaccineName(v.nome);
+        const key = normName.toLowerCase().trim();
+        if (!seen.has(key)) {
+          seen.add(key);
+          cleanList.push({ ...v, nome: normName });
+        }
+      });
+    };
 
-    defaultList.forEach(def => {
-      const normName = normalizeVaccineName(def.nome);
-      const key = normName.toLowerCase().trim();
-      if (!seen.has(key)) {
-        seen.add(key);
-        cleanList.push({ ...def, nome: normName });
-      }
-    });
+    // Prioridade 1: LocalStorage (tem sempre as edições mais recentes da sessão)
+    // Se a app estiver a usar backend, o LocalStorage e o Remote devem estar em sincronia,
+    // mas o LocalStorage é a fonte de verdade na interface se houver desvios.
+    addToList(savedList);
+    addToList(remote);
+    if (defaultList) {
+      addToList(defaultList);
+    }
 
     localStorage.setItem(localKey, JSON.stringify(cleanList));
     return cleanList;
@@ -294,7 +290,14 @@ export const api = {
     localStorage.setItem(localKey, JSON.stringify(novaLista));
     const target = novaLista.find(v => v.id === id);
     if (target) {
-      fetchWithFallback(`${API_BASE}/vacinas/${id}`, {
+      // Tenta fazer POST (cria ou faz upsert no backend)
+      await fetchWithFallback(`${API_BASE}/vacinas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(target)
+      });
+      // Também faz PUT para garantir a atualização
+      await fetchWithFallback(`${API_BASE}/vacinas/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tomada: target.tomada, dataAdministrada: target.dataAdministrada })
