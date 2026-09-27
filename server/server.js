@@ -910,6 +910,26 @@ function formatMinutosRelativos(totalMinutos) {
   return `${horas} ${horas === 1 ? 'hora' : 'horas'} e ${mins} ${mins === 1 ? 'minuto' : 'minutos'}`;
 }
 
+function formatProximaData(targetDate, nowLisbon) {
+  const dTarget = targetDate.toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' });
+  const dNow = nowLisbon.toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' });
+
+  const tomorrow = new Date(nowLisbon);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dTomorrow = tomorrow.toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' });
+
+  const timeStr = targetDate.toLocaleTimeString('pt-PT', { timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit', hour12: false });
+  const dayName = targetDate.toLocaleDateString('pt-PT', { timeZone: 'Europe/Lisbon', weekday: 'long', day: 'numeric', month: 'long' });
+
+  if (dTarget === dNow) {
+    return `hoje às ${timeStr}`;
+  } else if (dTarget === dTomorrow) {
+    return `amanhã, ${dayName} às ${timeStr}`;
+  } else {
+    return `${dayName} às ${timeStr}`;
+  }
+}
+
 app.get('/api/ha/status', async (req, res) => {
   try {
     const now = new Date();
@@ -988,12 +1008,62 @@ app.get('/api/ha/status', async (req, res) => {
       };
     }
 
+    // 4. Próxima Consulta
+    const agendaRes = await pool.query('SELECT * FROM agenda ORDER BY data ASC');
+    let proximaConsulta = null;
+    const consultasFuturas = agendaRes.rows.filter(ev => {
+      const evDate = new Date(ev.data);
+      const isFuture = evDate >= now;
+      const t = (ev.tipo || '').toLowerCase();
+      const isMedical = t !== 'mêsversário' && t !== 'aniversário' && t !== 'mesversario';
+      return isFuture && isMedical;
+    });
+
+    if (consultasFuturas.length > 0) {
+      const prox = consultasFuturas[0];
+      const evDate = new Date(prox.data);
+      const quandoFormatado = formatProximaData(evDate, nowLisbon);
+      proximaConsulta = {
+        titulo: prox.titulo,
+        data_iso: prox.data,
+        tipo: prox.tipo,
+        notas: prox.notas || '',
+        quando: quandoFormatado,
+        frase: `A próxima consulta da Sofia é ${prox.titulo}, ${quandoFormatado}.`
+      };
+    } else {
+      proximaConsulta = {
+        titulo: null,
+        frase: 'A Sofia não tem nenhuma consulta marcada na agenda para os próximos tempos.'
+      };
+    }
+
+    // 5. Próxima Vacina
+    const vacinasRes = await pool.query('SELECT * FROM vacinas WHERE tomada = FALSE ORDER BY id ASC');
+    let proximaVacina = null;
+    if (vacinasRes.rows.length > 0) {
+      const v = vacinasRes.rows[0];
+      proximaVacina = {
+        nome: v.nome,
+        grupo: v.grupo,
+        dataRecomendada: v.data_recomendada,
+        frase: `A próxima vacina recomendada para a Sofia é ${v.nome} (${v.grupo}), recomendada para ${v.data_recomendada}.`
+      };
+    } else {
+      proximaVacina = {
+        nome: null,
+        frase: 'A Sofia tem todas as vacinas em dia.'
+      };
+    }
+
     res.json({
       status: 'OK',
       timestamp: now.toISOString(),
       ultima_mamada: ultimaMamada,
       ultimo_sono: ultimoSono,
-      ultima_fralda: ultimaFralda
+      ultima_fralda: ultimaFralda,
+      proxima_consulta: proximaConsulta,
+      proxima_vacina: proximaVacina
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
