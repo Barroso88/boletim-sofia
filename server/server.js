@@ -564,7 +564,7 @@ function getNowLisbon() {
 // --- LEITE ---
 app.get('/api/leite', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM leite ORDER BY hora DESC, id DESC');
+    const result = await pool.query('SELECT * FROM leite ORDER BY data DESC, hora DESC, id DESC');
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -627,7 +627,7 @@ app.delete('/api/leite/:id', async (req, res) => {
 // --- FRALDAS ---
 app.get('/api/fraldas', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM fraldas ORDER BY hora DESC, id DESC');
+    const result = await pool.query('SELECT * FROM fraldas ORDER BY data DESC, hora DESC, id DESC');
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -895,6 +895,107 @@ app.post('/api/ha/webhook/:id', async (req, res) => {
     }
   } catch (err) {
     console.error('Erro no proxy para Home Assistant:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- HOME ASSISTANT STATUS ENDPOINT (VOZ / ASSIST / SENSORES) ---
+function formatMinutosRelativos(totalMinutos) {
+  if (totalMinutos <= 0) return 'menos de um minuto';
+  if (totalMinutos === 1) return '1 minuto';
+  if (totalMinutos < 60) return `${totalMinutos} minutos`;
+  const horas = Math.floor(totalMinutos / 60);
+  const mins = totalMinutos % 60;
+  if (mins === 0) return `${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+  return `${horas} ${horas === 1 ? 'hora' : 'horas'} e ${mins} ${mins === 1 ? 'minuto' : 'minutos'}`;
+}
+
+app.get('/api/ha/status', async (req, res) => {
+  try {
+    const now = new Date();
+    const nowLisbon = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Lisbon' }));
+
+    // 1. Leite
+    const leiteRes = await pool.query('SELECT * FROM leite ORDER BY data DESC, hora DESC, id DESC LIMIT 1');
+    let ultimaMamada = null;
+    if (leiteRes.rows.length > 0) {
+      const row = leiteRes.rows[0];
+      const past = new Date(`${row.data}T${row.hora}:00`);
+      const diffMin = Math.max(0, Math.floor((nowLisbon - past) / (1000 * 60)));
+      const tempo = formatMinutosRelativos(diffMin);
+      ultimaMamada = {
+        data: row.data,
+        hora: row.hora,
+        quantidade_ml: row.quantidade_ml,
+        minutos_decorridos: diffMin,
+        tempo_relativo: tempo,
+        frase: `A Sofia mamou há ${tempo} (${row.quantidade_ml} ml às ${row.hora}).`
+      };
+    }
+
+    // 2. Sono
+    const sonosRes = await pool.query('SELECT * FROM sonos ORDER BY data DESC, hora_inicio DESC, id DESC LIMIT 10');
+    let ultimoSono = null;
+    if (sonosRes.rows.length > 0) {
+      const sonoEmCurso = sonosRes.rows.find(s => !s.hora_fim);
+      const row = sonoEmCurso || sonosRes.rows[0];
+      const aDormir = !row.hora_fim;
+      
+      let refHora = aDormir ? row.hora_inicio : row.hora_fim;
+      let past = new Date(`${row.data}T${refHora}:00`);
+      if (!aDormir && row.hora_fim < row.hora_inicio) {
+        past.setDate(past.getDate() + 1);
+      }
+      if (past > nowLisbon) {
+        past.setDate(past.getDate() - 1);
+      }
+
+      const diffMin = Math.max(0, Math.floor((nowLisbon - past) / (1000 * 60)));
+      const tempo = formatMinutosRelativos(diffMin);
+      const duracao = formatMinutosRelativos(row.duracao_minutos);
+
+      ultimoSono = {
+        a_dormir: aDormir,
+        hora_inicio: row.hora_inicio,
+        hora_fim: row.hora_fim || null,
+        duracao_minutos: row.duracao_minutos,
+        minutos_decorridos: diffMin,
+        tempo_relativo: tempo,
+        frase: aDormir
+          ? `A Sofia está a dormir há ${tempo}, adormeceu às ${row.hora_inicio}.`
+          : `A Sofia está acordada há ${tempo}. Acordou às ${row.hora_fim} após dormir ${duracao}.`
+      };
+    }
+
+    // 3. Fralda
+    const fraldaRes = await pool.query('SELECT * FROM fraldas ORDER BY data DESC, hora DESC, id DESC LIMIT 1');
+    let ultimaFralda = null;
+    if (fraldaRes.rows.length > 0) {
+      const row = fraldaRes.rows[0];
+      let past = new Date(`${row.data}T${row.hora}:00`);
+      if (past > nowLisbon) {
+        past.setDate(past.getDate() - 1);
+      }
+      const diffMin = Math.max(0, Math.floor((nowLisbon - past) / (1000 * 60)));
+      const tempo = formatMinutosRelativos(diffMin);
+      ultimaFralda = {
+        data: row.data,
+        hora: row.hora,
+        tipo: row.tipo,
+        minutos_decorridos: diffMin,
+        tempo_relativo: tempo,
+        frase: `A última fralda da Sofia foi mudada há ${tempo} às ${row.hora} (${row.tipo}).`
+      };
+    }
+
+    res.json({
+      status: 'OK',
+      timestamp: now.toISOString(),
+      ultima_mamada: ultimaMamada,
+      ultimo_sono: ultimoSono,
+      ultima_fralda: ultimaFralda
+    });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
