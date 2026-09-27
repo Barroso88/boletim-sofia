@@ -554,6 +554,13 @@ app.delete('/api/documentos/:id', async (req, res) => {
   }
 });
 
+function getNowLisbon() {
+  const now = new Date();
+  const data = now.toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' });
+  const hora = now.toLocaleTimeString('pt-PT', { timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit', hour12: false });
+  return { data, hora };
+}
+
 // --- LEITE ---
 app.get('/api/leite', async (req, res) => {
   try {
@@ -564,18 +571,49 @@ app.get('/api/leite', async (req, res) => {
   }
 });
 
-app.post('/api/leite', async (req, res) => {
-  const { id, data, hora, quantidade_ml } = req.body;
+const handleSaveLeite = async (req, res) => {
+  let { id, data, hora, quantidade_ml, quantidade, ml, valor } = req.body || {};
+
+  // Se parâmetros vierem via query string (GET ou POST com query)
+  if (quantidade_ml === undefined && req.query) {
+    quantidade_ml = req.query.quantidade_ml || req.query.quantidade || req.query.ml || req.query.valor;
+  }
+  if (!data && req.query && req.query.data) data = req.query.data;
+  if (!hora && req.query && req.query.hora) hora = req.query.hora;
+
+  // Extrair quantidade
+  let rawQty = quantidade_ml !== undefined ? quantidade_ml : (quantidade !== undefined ? quantidade : (ml !== undefined ? ml : valor));
+  let qty = null;
+  if (typeof rawQty === 'string') {
+    const match = rawQty.match(/\d+/);
+    qty = match ? parseInt(match[0], 10) : parseInt(rawQty, 10);
+  } else if (typeof rawQty === 'number') {
+    qty = rawQty;
+  }
+
+  if (!qty || isNaN(qty)) {
+    return res.status(400).json({ error: 'Quantidade de leite em ml é obrigatória. Ex: {"quantidade_ml": 150}' });
+  }
+
+  const { data: currentData, hora: currentHora } = getNowLisbon();
+  const recordId = id || Date.now();
+  const recordData = data || currentData;
+  const recordHora = hora || currentHora;
+
   try {
     await pool.query(
       'INSERT INTO leite (id, data, hora, quantidade_ml) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, quantidade_ml = $4',
-      [id, data, hora, quantidade_ml]
+      [recordId, recordData, recordHora, qty]
     );
-    res.json({ success: true });
+    res.json({ success: true, id: recordId, data: recordData, hora: recordHora, quantidade_ml: qty });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+};
+
+app.post('/api/leite', handleSaveLeite);
+app.get('/api/leite/registar', handleSaveLeite);
+app.all('/api/webhook/leite', handleSaveLeite);
 
 app.delete('/api/leite/:id', async (req, res) => {
   try {
@@ -596,27 +634,41 @@ app.get('/api/fraldas', async (req, res) => {
   }
 });
 
-app.post('/api/fraldas', async (req, res) => {
-  let { id, data, hora, tipo } = req.body;
+const handleSaveFralda = async (req, res) => {
+  let { id, data, hora, tipo } = req.body || {};
+  if (!tipo && req.query && req.query.tipo) {
+    tipo = req.query.tipo;
+  }
   
   // Normalizar tipos vindos do Home Assistant ou minúsculas
   if (tipo) {
     const t = tipo.toLowerCase().trim();
     if (t === 'xixi') tipo = 'Xixi';
     else if (t === 'cocó' || t === 'coco') tipo = 'Cocó';
-    else if (t === 'ambos' || t === 'cocó + xixi' || t === 'coco + xixi') tipo = 'Cocó + Xixi';
+    else if (t === 'ambos' || t === 'cocó + xixi' || t === 'coco + xixi' || t === 'tudo') tipo = 'Cocó + Xixi';
+  } else {
+    tipo = 'Xixi';
   }
+
+  const { data: currentData, hora: currentHora } = getNowLisbon();
+  const recordId = id || Date.now();
+  const recordData = data || currentData;
+  const recordHora = hora || currentHora;
 
   try {
     await pool.query(
       'INSERT INTO fraldas (id, data, hora, tipo) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, tipo = $4',
-      [id, data, hora, tipo]
+      [recordId, recordData, recordHora, tipo]
     );
-    res.json({ success: true });
+    res.json({ success: true, id: recordId, data: recordData, hora: recordHora, tipo });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+};
+
+app.post('/api/fraldas', handleSaveFralda);
+app.get('/api/fraldas/registar', handleSaveFralda);
+app.all('/api/webhook/fraldas', handleSaveFralda);
 
 app.delete('/api/fraldas/:id', async (req, res) => {
   const { id } = req.params;
