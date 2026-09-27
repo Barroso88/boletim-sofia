@@ -1064,6 +1064,38 @@ app.get('/api/ha/status', async (req, res) => {
       };
     }
 
+    // 1.1 Totais de Leite Hoje e Ontem
+    const hojeStr = nowLisbon.toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' });
+    const ontemDate = new Date(nowLisbon);
+    ontemDate.setDate(ontemDate.getDate() - 1);
+    const ontemStr = ontemDate.toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' });
+
+    const leiteHojeRes = await pool.query('SELECT COALESCE(SUM(quantidade_ml), 0) AS total_ml, COUNT(*) AS num_mamadas FROM leite WHERE data = $1', [hojeStr]);
+    const leiteOntemRes = await pool.query('SELECT COALESCE(SUM(quantidade_ml), 0) AS total_ml, COUNT(*) AS num_mamadas FROM leite WHERE data = $1', [ontemStr]);
+
+    const hojeMl = parseInt(leiteHojeRes.rows[0].total_ml, 10);
+    const hojeCount = parseInt(leiteHojeRes.rows[0].num_mamadas, 10);
+    const ontemMl = parseInt(leiteOntemRes.rows[0].total_ml, 10);
+    const ontemCount = parseInt(leiteOntemRes.rows[0].num_mamadas, 10);
+
+    const leiteHoje = {
+      data: hojeStr,
+      total_ml: hojeMl,
+      num_mamadas: hojeCount,
+      frase: hojeCount > 0
+        ? `Hoje a Sofia já mamou ${hojeMl} ml, num total de ${hojeCount} ${hojeCount === 1 ? 'mamada' : 'mamadas'}.`
+        : `Hoje a Sofia ainda não mamou.`
+    };
+
+    const leiteOntem = {
+      data: ontemStr,
+      total_ml: ontemMl,
+      num_mamadas: ontemCount,
+      frase: ontemCount > 0
+        ? `Ontem a Sofia mamou um total de ${ontemMl} ml em ${ontemCount} ${ontemCount === 1 ? 'mamada' : 'mamadas'}.`
+        : `Ontem a Sofia não tem registo de mamadas.`
+    };
+
     // 2. Sono
     const sonosRes = await pool.query('SELECT * FROM sonos ORDER BY data DESC, hora_inicio DESC, id DESC LIMIT 10');
     let ultimoSono = null;
@@ -1171,6 +1203,8 @@ app.get('/api/ha/status', async (req, res) => {
       status: 'OK',
       timestamp: now.toISOString(),
       ultima_mamada: ultimaMamada,
+      leite_hoje: leiteHoje,
+      leite_ontem: leiteOntem,
       ultimo_sono: ultimoSono,
       ultima_fralda: ultimaFralda,
       proxima_consulta: proximaConsulta,
