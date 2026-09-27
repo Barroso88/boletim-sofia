@@ -643,9 +643,15 @@ const handleSaveFralda = async (req, res) => {
   // Normalizar tipos vindos do Home Assistant ou minúsculas
   if (tipo) {
     const t = tipo.toLowerCase().trim();
-    if (t === 'xixi') tipo = 'Xixi';
-    else if (t === 'cocó' || t === 'coco') tipo = 'Cocó';
-    else if (t === 'ambos' || t === 'cocó + xixi' || t === 'coco + xixi' || t === 'tudo') tipo = 'Cocó + Xixi';
+    if ((t.includes('xixi') && (t.includes('cocó') || t.includes('coco'))) || t === 'ambos' || t === 'tudo') {
+      tipo = 'Cocó + Xixi';
+    } else if (t.includes('cocó') || t.includes('coco')) {
+      tipo = 'Cocó';
+    } else if (t.includes('xixi')) {
+      tipo = 'Xixi';
+    } else {
+      tipo = 'Xixi';
+    }
   } else {
     tipo = 'Xixi';
   }
@@ -690,8 +696,113 @@ app.get('/api/sonos', async (req, res) => {
   }
 });
 
+const handleDormir = async (req, res) => {
+  const { data: currentData, hora: currentHora } = getNowLisbon();
+  let { hora_inicio, data } = req.body || {};
+  if (!hora_inicio && req.query && req.query.hora_inicio) hora_inicio = req.query.hora_inicio;
+  if (!data && req.query && req.query.data) data = req.query.data;
+
+  hora_inicio = hora_inicio || currentHora;
+  data = data || currentData;
+
+  try {
+    const sonosRes = await pool.query("SELECT * FROM sonos WHERE hora_fim = '' OR hora_fim IS NULL ORDER BY data DESC, hora_inicio DESC LIMIT 1");
+    if (sonosRes.rows.length > 0) {
+      const sonoAtual = sonosRes.rows[0];
+      return res.json({
+        success: true,
+        already_sleeping: true,
+        id: sonoAtual.id,
+        hora_inicio: sonoAtual.hora_inicio,
+        frase: `A Sofia já está a dormir desde as ${sonoAtual.hora_inicio}.`
+      });
+    }
+
+    const recordId = Date.now();
+    await pool.query(
+      'INSERT INTO sonos (id, data, hora_inicio, hora_fim, duracao_minutos) VALUES ($1, $2, $3, $4, $5)',
+      [recordId, data, hora_inicio, '', 0]
+    );
+
+    res.json({
+      success: true,
+      id: recordId,
+      data,
+      hora_inicio,
+      frase: `Registei que a Sofia adormeceu às ${hora_inicio}. Bons sonhos!`
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const handleAcordou = async (req, res) => {
+  const { data: currentData, hora: currentHora } = getNowLisbon();
+  let { hora_fim } = req.body || {};
+  if (!hora_fim && req.query && req.query.hora_fim) hora_fim = req.query.hora_fim;
+  hora_fim = hora_fim || currentHora;
+
+  try {
+    const sonosRes = await pool.query("SELECT * FROM sonos WHERE hora_fim = '' OR hora_fim IS NULL ORDER BY data DESC, hora_inicio DESC LIMIT 1");
+    if (sonosRes.rows.length === 0) {
+      return res.json({
+        success: false,
+        no_active_sleep: true,
+        frase: 'Não havia nenhum sono em curso registado para a Sofia.'
+      });
+    }
+
+    const sono = sonosRes.rows[0];
+    const [hI, mI] = sono.hora_inicio.split(':').map(Number);
+    const [hF, mF] = hora_fim.split(':').map(Number);
+    let duracao = (hF * 60 + mF) - (hI * 60 + mI);
+    if (duracao < 0) {
+      duracao += 24 * 60; // Passou da meia-noite
+    }
+
+    await pool.query(
+      'UPDATE sonos SET hora_fim = $1, duracao_minutos = $2 WHERE id = $3',
+      [hora_fim, duracao, sono.id]
+    );
+
+    const duracaoFormatada = formatMinutosRelativos(duracao);
+    res.json({
+      success: true,
+      id: sono.id,
+      hora_inicio: sono.hora_inicio,
+      hora_fim,
+      duracao_minutos: duracao,
+      frase: `A Sofia acordou às ${hora_fim}, após dormir ${duracaoFormatada}.`
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+app.post('/api/sonos/dormir', handleDormir);
+app.get('/api/sonos/dormir', handleDormir);
+app.all('/api/webhook/sono/dormir', handleDormir);
+
+app.post('/api/sonos/acordou', handleAcordou);
+app.get('/api/sonos/acordou', handleAcordou);
+app.all('/api/webhook/sono/acordou', handleAcordou);
+
 app.post('/api/sonos', async (req, res) => {
-  const { id, data, hora_inicio, hora_fim, duracao_minutos } = req.body;
+  let { id, data, hora_inicio, hora_fim, duracao_minutos, acao, estado } = req.body || {};
+  const act = (acao || estado || '').toLowerCase();
+  if (act === 'dormir' || act === 'adormeceu') {
+    return handleDormir(req, res);
+  }
+  if (act === 'acordou') {
+    return handleAcordou(req, res);
+  }
+
+  const { data: currentData, hora: currentHora } = getNowLisbon();
+  hora_inicio = hora_inicio || currentHora;
+  data = data || currentData;
+  hora_fim = hora_fim || '';
+  duracao_minutos = duracao_minutos !== undefined ? duracao_minutos : 0;
+
   try {
     await pool.query(
       'INSERT INTO sonos (id, data, hora_inicio, hora_fim, duracao_minutos) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET data = $2, hora_inicio = $3, hora_fim = $4, duracao_minutos = $5',
