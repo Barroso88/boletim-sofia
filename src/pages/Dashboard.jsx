@@ -149,12 +149,19 @@ const Dashboard = () => {
   });
   const ultimaFralda = sortedFraldas[0];
 
+  const getSonoEffectiveTime = (s) => {
+    let d = new Date(`${s.data}T${s.hora_inicio}:00`);
+    if (d > new Date()) {
+      d.setDate(d.getDate() - 1);
+    }
+    return d.getTime();
+  };
+
+  const sonoEmCurso = registosSonos.find(s => !s.hora_fim);
   const sortedSonos = [...registosSonos].sort((a, b) => {
-    const dtA = `${a.data}T${a.hora_inicio}`;
-    const dtB = `${b.data}T${b.hora_inicio}`;
-    return dtB.localeCompare(dtA);
+    return getSonoEffectiveTime(b) - getSonoEffectiveTime(a);
   });
-  const ultimoSono = sortedSonos[0];
+  const ultimoSono = sonoEmCurso || sortedSonos[0];
 
   const getTempoDecorredor = (dataStr, horaStr, isHoraFim = false, horaInicioStr = null) => {
     if (!dataStr || !horaStr) return null;
@@ -585,8 +592,30 @@ const Dashboard = () => {
                   </div>
                 </div>
               ) : (
-                <div className="snapshot-meta">
-                  <span>{ultimoSono.hora_inicio} - {ultimoSono.hora_fim} ({formatDataLabel(ultimoSono.data)})</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                  <button 
+                    className="btn-primary" 
+                    style={{ background: 'linear-gradient(135deg, #8b5cf6, #c084fc)', padding: '0.4rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 'bold', border: 'none', color: '#fff', boxShadow: '0 4px 10px rgba(139, 92, 246, 0.2)', cursor: 'pointer' }}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      const horaAtual = format(new Date(), 'HH:mm');
+                      const dataAtual = format(new Date(), 'yyyy-MM-dd');
+                      const novoSono = {
+                        id: Date.now(),
+                        data: dataAtual,
+                        hora_inicio: horaAtual,
+                        hora_fim: '',
+                        duracao_minutos: 0
+                      };
+                      setRegistosSonos(prev => [novoSono, ...prev]);
+                      await api.saveSono(novoSono);
+                    }}
+                  >
+                    Adormeceu
+                  </button>
+                  <div className="snapshot-meta" style={{ marginTop: '0' }}>
+                    <span>{ultimoSono.hora_inicio} - {ultimoSono.hora_fim} ({formatDataLabel(ultimoSono.data)})</span>
+                  </div>
                 </div>
               )}
             </div>
