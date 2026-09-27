@@ -571,6 +571,46 @@ app.get('/api/leite', async (req, res) => {
   }
 });
 
+function parsePortugueseNumber(str) {
+  if (str === undefined || str === null) return null;
+  if (typeof str === 'number') return str;
+  const s = String(str).toLowerCase().trim();
+
+  // Se contiver dígitos numéricos
+  const match = s.match(/\d+/);
+  if (match) return parseInt(match[0], 10);
+
+  // Números compostos e por extenso
+  if (s.includes('duzentos')) return 200;
+  if (s.includes('cento e noventa')) return 190;
+  if (s.includes('cento e oitenta')) return 180;
+  if (s.includes('cento e setenta')) return 170;
+  if (s.includes('cento e sessenta')) return 160;
+  if (s.includes('cento e cinquenta')) return 150;
+  if (s.includes('cento e quarenta')) return 140;
+  if (s.includes('cento e trinta')) return 130;
+  if (s.includes('cento e vinte')) return 120;
+  if (s.includes('cento e dez')) return 110;
+  if (s.includes('cento e cinco')) return 105;
+  if (s.includes('cento')) return 100;
+
+  // "sem" ou "cem" (o microfone do assistente confunde quase sempre "100" com a preposição "sem")
+  if (s.includes('sem') || s.includes('cem')) return 100;
+
+  if (s.includes('noventa')) return 90;
+  if (s.includes('oitenta')) return 80;
+  if (s.includes('setenta')) return 70;
+  if (s.includes('sessenta')) return 60;
+  if (s.includes('cinquenta')) return 50;
+  if (s.includes('quarenta')) return 40;
+  if (s.includes('trinta')) return 30;
+  if (s.includes('vinte')) return 20;
+  if (s.includes('dez')) return 10;
+
+  const parsed = parseInt(s, 10);
+  return isNaN(parsed) ? null : parsed;
+}
+
 const handleSaveLeite = async (req, res) => {
   let { id, data, hora, quantidade_ml, quantidade, ml, valor } = req.body || {};
 
@@ -583,13 +623,7 @@ const handleSaveLeite = async (req, res) => {
 
   // Extrair quantidade
   let rawQty = quantidade_ml !== undefined ? quantidade_ml : (quantidade !== undefined ? quantidade : (ml !== undefined ? ml : valor));
-  let qty = null;
-  if (typeof rawQty === 'string') {
-    const match = rawQty.match(/\d+/);
-    qty = match ? parseInt(match[0], 10) : parseInt(rawQty, 10);
-  } else if (typeof rawQty === 'number') {
-    qty = rawQty;
-  }
+  let qty = parsePortugueseNumber(rawQty);
 
   if (!qty || isNaN(qty)) {
     return res.status(400).json({ error: 'Quantidade de leite em ml é obrigatória. Ex: {"quantidade_ml": 150}' });
