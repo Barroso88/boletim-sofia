@@ -645,9 +645,109 @@ const handleSaveLeite = async (req, res) => {
   }
 };
 
+function normalizeTime(str) {
+  if (!str) return null;
+  let s = String(str).trim().toLowerCase().replace('h', ':').replace('.', ':');
+  const match = s.match(/(\d{1,2}):(\d{2})/);
+  if (match) {
+    const hh = match[1].padStart(2, '0');
+    const mm = match[2];
+    return `${hh}:${mm}`;
+  }
+  const matchH = s.match(/^(\d{1,2})$/);
+  if (matchH) {
+    const hh = matchH[1].padStart(2, '0');
+    return `${hh}:00`;
+  }
+  return null;
+}
+
+const handleCorrigirUltimaMamada = async (req, res) => {
+  let { quantidade_ml, quantidade, ml, valor, hora, data } = req.body || {};
+  if (quantidade_ml === undefined && req.query) {
+    quantidade_ml = req.query.quantidade_ml || req.query.quantidade || req.query.ml || req.query.valor;
+  }
+  if (!hora && req.query && req.query.hora) hora = req.query.hora;
+  if (!data && req.query && req.query.data) data = req.query.data;
+
+  try {
+    const lastResult = await pool.query('SELECT * FROM leite ORDER BY data DESC, hora DESC, id DESC LIMIT 1');
+    if (lastResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Nenhuma mamada encontrada para corrigir.' });
+    }
+
+    const current = lastResult.rows[0];
+    let newQty = current.quantidade_ml;
+    let newHora = current.hora;
+    let newData = current.data;
+
+    const rawQty = quantidade_ml !== undefined ? quantidade_ml : (quantidade !== undefined ? quantidade : (ml !== undefined ? ml : valor));
+    if (rawQty !== undefined && rawQty !== null && String(rawQty).trim() !== '') {
+      const parsedQty = parsePortugueseNumber(rawQty);
+      if (parsedQty && !isNaN(parsedQty)) {
+        newQty = parsedQty;
+      }
+    }
+
+    if (hora && String(hora).trim() !== '') {
+      const parsedHora = normalizeTime(hora);
+      if (parsedHora) {
+        newHora = parsedHora;
+      }
+    }
+
+    if (data && String(data).trim() !== '') {
+      newData = String(data).trim();
+    }
+
+    await pool.query(
+      'UPDATE leite SET quantidade_ml = $1, hora = $2, data = $3 WHERE id = $4',
+      [newQty, newHora, newData, current.id]
+    );
+
+    res.json({
+      success: true,
+      id: current.id,
+      quantidade_ml: newQty,
+      hora: newHora,
+      data: newData,
+      mensagem: `Última mamada atualizada para ${newQty}ml às ${newHora}.`
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const handleApagarUltimaMamada = async (req, res) => {
+  try {
+    const lastResult = await pool.query('SELECT * FROM leite ORDER BY data DESC, hora DESC, id DESC LIMIT 1');
+    if (lastResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Nenhuma mamada encontrada para apagar.' });
+    }
+    const current = lastResult.rows[0];
+    await pool.query('DELETE FROM leite WHERE id = $1', [current.id]);
+    res.json({
+      success: true,
+      id: current.id,
+      quantidade_ml: current.quantidade_ml,
+      hora: current.hora,
+      data: current.data,
+      mensagem: `Última mamada (${current.quantidade_ml}ml às ${current.hora}) foi apagada.`
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 app.post('/api/leite', handleSaveLeite);
 app.get('/api/leite/registar', handleSaveLeite);
 app.all('/api/webhook/leite', handleSaveLeite);
+
+app.post('/api/leite/corrigir-ultima', handleCorrigirUltimaMamada);
+app.all('/api/webhook/leite/corrigir', handleCorrigirUltimaMamada);
+
+app.post('/api/leite/apagar-ultima', handleApagarUltimaMamada);
+app.all('/api/webhook/leite/apagar', handleApagarUltimaMamada);
 
 app.delete('/api/leite/:id', async (req, res) => {
   try {
