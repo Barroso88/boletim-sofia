@@ -611,6 +611,23 @@ function parsePortugueseNumber(str) {
   return isNaN(parsed) ? null : parsed;
 }
 
+function normalizeTime(str) {
+  if (!str) return null;
+  let s = String(str).trim().toLowerCase().replace('h', ':').replace('.', ':');
+  const match = s.match(/(\d{1,2}):(\d{2})/);
+  if (match) {
+    const hh = match[1].padStart(2, '0');
+    const mm = match[2];
+    return `${hh}:${mm}`;
+  }
+  const matchH = s.match(/^(\d{1,2})$/);
+  if (matchH) {
+    const hh = matchH[1].padStart(2, '0');
+    return `${hh}:00`;
+  }
+  return null;
+}
+
 const handleSaveLeite = async (req, res) => {
   let { id, data, hora, quantidade_ml, quantidade, ml, valor } = req.body || {};
 
@@ -632,7 +649,11 @@ const handleSaveLeite = async (req, res) => {
   const { data: currentData, hora: currentHora } = getNowLisbon();
   const recordId = id || Date.now();
   const recordData = data || currentData;
-  const recordHora = hora || currentHora;
+  let recordHora = currentHora;
+  if (hora && String(hora).trim() !== '') {
+    const norm = normalizeTime(hora);
+    if (norm) recordHora = norm;
+  }
 
   try {
     await pool.query(
@@ -644,23 +665,6 @@ const handleSaveLeite = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-function normalizeTime(str) {
-  if (!str) return null;
-  let s = String(str).trim().toLowerCase().replace('h', ':').replace('.', ':');
-  const match = s.match(/(\d{1,2}):(\d{2})/);
-  if (match) {
-    const hh = match[1].padStart(2, '0');
-    const mm = match[2];
-    return `${hh}:${mm}`;
-  }
-  const matchH = s.match(/^(\d{1,2})$/);
-  if (matchH) {
-    const hh = matchH[1].padStart(2, '0');
-    return `${hh}:00`;
-  }
-  return null;
-}
 
 const handleCorrigirUltimaMamada = async (req, res) => {
   let { quantidade_ml, quantidade, ml, valor, hora, data } = req.body || {};
