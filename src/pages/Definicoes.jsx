@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image, TreePine } from 'lucide-react';
-import { isNatalAtivo, setNatalAtivo, aplicarTema, isNeveAtiva, setNeveAtiva } from '../services/natal';
+import { isNatalAtivo, setNatalAtivo, aplicarTema, getNeve, setNeve } from '../services/natal';
 import './Definicoes.css';
 
 const BABY_THEMES = [
@@ -44,7 +44,7 @@ const Definicoes = () => {
   const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
   const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [natal, setNatal] = useState(isNatalAtivo);
-  const [neve, setNeve] = useState(isNeveAtiva);
+  const [neve, setNeveEscolhida] = useState(getNeve);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('sofia_theme');
@@ -77,10 +77,9 @@ const Definicoes = () => {
     setTimeout(() => setMensagemSucesso(''), 4000);
   };
 
-  const toggleNeve = () => {
-    const nova = !neve;
-    setNeveAtiva(nova);
-    setNeve(nova);
+  const escolherNeve = (tipo) => {
+    setNeve(tipo);
+    setNeveEscolhida(tipo);
   };
 
   const changeTheme = (themeId) => {
@@ -156,17 +155,24 @@ const Definicoes = () => {
           </p>
           {natal && (
             <div className="natal-row natal-subrow">
-              <span className="text-small" style={{ fontWeight: 600 }}>✨ Neve de estrelas</span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={neve}
-                aria-label="Neve de estrelas"
-                className={`natal-switch ${neve ? 'on' : ''}`}
-                onClick={toggleNeve}
-              >
-                <span className="natal-switch-knob" />
-              </button>
+              <span className="text-small" style={{ fontWeight: 600 }}>Neve</span>
+              <div className="natal-seg" role="radiogroup" aria-label="Tipo de neve">
+                {[
+                  { id: 'estrelas', nome: '✨ Estrelas' },
+                  { id: 'flocos', nome: '❄️ Flocos' },
+                  { id: 'desligada', nome: 'Sem neve' },
+                ].map((opcao) => (
+                  <button
+                    key={opcao.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={neve === opcao.id}
+                    onClick={() => escolherNeve(opcao.id)}
+                  >
+                    {opcao.nome}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>

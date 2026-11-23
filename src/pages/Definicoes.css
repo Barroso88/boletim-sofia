@@ -165,3 +165,43 @@
   padding-top: 0.75rem;
   border-top: 1px solid var(--color-border);
 }
+
+/* Modo Natal: escolha do tipo de neve (estrelas, flocos ou sem neve) */
+.natal-subrow {
+  flex-wrap: wrap;
+}
+
+.natal-seg {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.natal-seg button {
+  border: none;
+  background: transparent;
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.natal-seg button[aria-checked="true"] {
+  background: #15803d;
+  color: #ffffff;
+}
+
+.natal-seg button:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 1px;
+}

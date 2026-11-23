@@ -35,23 +35,29 @@ export const setNatalAtivo = (ativo) => {
   window.dispatchEvent(new CustomEvent('natalModeChanged', { detail: ativo }));
 };
 
-// Neve de estrelas (só existe dentro do modo Natal). Ligada por defeito.
+// Neve do modo Natal (só existe dentro do modo Natal):
+//   'estrelas'  -> estrelas coloridas a cair (por defeito)
+//   'flocos'    -> flocos de neve brancos em estrela
+//   'desligada' -> sem neve
 const CHAVE_NEVE = 'sofia_natal_neve';
 
-export const isNeveAtiva = () => {
+export const getNeve = () => {
   try {
-    return localStorage.getItem(CHAVE_NEVE) !== '0';
+    const valor = localStorage.getItem(CHAVE_NEVE);
+    if (valor === '0' || valor === 'desligada') return 'desligada';
+    if (valor === 'flocos') return 'flocos';
+    return 'estrelas';
   } catch {
-    return true;
+    return 'estrelas';
   }
 };
 
-export const setNeveAtiva = (ativa) => {
+export const setNeve = (tipo) => {
   try {
-    if (ativa) localStorage.removeItem(CHAVE_NEVE);
-    else localStorage.setItem(CHAVE_NEVE, '0');
+    if (tipo === 'estrelas') localStorage.removeItem(CHAVE_NEVE);
+    else localStorage.setItem(CHAVE_NEVE, tipo === 'flocos' ? 'flocos' : '0');
   } catch {
     // sem acesso ao armazenamento local
   }
-  window.dispatchEvent(new CustomEvent('natalSnowChanged', { detail: ativa }));
+  window.dispatchEvent(new CustomEvent('natalSnowChanged', { detail: tipo }));
 };

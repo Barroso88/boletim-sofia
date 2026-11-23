@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList, RefreshCw } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
-import { isNatalAtivo, isNeveAtiva, NATAL_CABECALHO } from '../services/natal';
+import { isNatalAtivo, getNeve, NATAL_CABECALHO } from '../services/natal';
 import NatalBow from './NatalBow';
 import NatalSnow from './NatalSnow';
 import './Layout.css';
@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
   const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [natal, setNatal] = useState(isNatalAtivo);
-  const [neve, setNeve] = useState(isNeveAtiva);
+  const [neve, setNeve] = useState(getNeve);
 
   useEffect(() => {
     const savedPattern = localStorage.getItem('sofia_header_pattern');
@@ -88,7 +88,7 @@ const Layout = ({ children }) => {
   return (
     <div className="layout">
       <VitaminaModal />
-      {natal && neve && <NatalSnow />}
+      {natal && neve !== 'desligada' && <NatalSnow key={neve} tipo={neve} />}
       <nav
         className={`navbar glass-card theme-neon${natal ? ' navbar-natal' : ''}`}
         style={{
