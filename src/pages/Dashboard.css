@@ -659,7 +659,7 @@
     0 8px 32px -4px rgba(236, 72, 153, 0.25) !important;
 }
 
-/* ─── Modo Natal: contador de idade com fiada de luzes e três bolas de Natal ─── */
+/* ─── Modo Natal: contador de idade com três bolas de Natal 3D penduradas ─── */
 [data-theme="baby-natal"] .hero-card.glass-card {
   background: linear-gradient(160deg, rgba(240, 253, 244, 0.95), rgba(255, 247, 247, 0.95));
   /* o contorno do cartão está definido no código da página, por isso precisa de !important */
@@ -669,85 +669,135 @@
     inset 0 0 0 1.5px rgba(255, 255, 255, 0.9),
     0 0 14px rgba(245, 197, 66, 0.55),
     0 8px 24px -6px rgba(22, 101, 52, 0.35) !important;
-  padding-top: 2.4rem;
+  padding-top: 3.2rem;
 }
 
-/* Fiada de luzes: fio dourado com lâmpadas vermelhas, douradas e verdes */
-[data-theme="baby-natal"] .hero-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 20px;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 12px, #dc2626 0 3.5px, transparent 4.5px) 0 0 / 66px 20px repeat-x,
-    radial-gradient(circle at 50% 12px, #f5c542 0 3.5px, transparent 4.5px) 22px 0 / 66px 20px repeat-x,
-    radial-gradient(circle at 50% 12px, #16a34a 0 3.5px, transparent 4.5px) 44px 0 / 66px 20px repeat-x,
-    linear-gradient(#c9a24a, #c9a24a) 0 5px / 100% 1.5px no-repeat;
-  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.95));
+[data-theme="baby-natal"] .age-stats {
+  max-width: 380px;
 }
 
-/* Cada contador é uma bola de Natal pendurada, com brilho e cápsula dourada */
+/* Cada contador é uma esfera: corpo com gradiente, brilho de luz, luz refletida e sombra */
 [data-theme="baby-natal"] .stat-box {
   position: relative;
-  margin-top: 0.4rem;
-  border-width: 2px;
-  background:
-    radial-gradient(circle at 27% 21%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0.55) 6%, rgba(255, 255, 255, 0) 20%),
-    #ffffff;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  transform-origin: 50% -50px; /* balança presa ao fio */
 }
 
-[data-theme="baby-natal"] .stat-box::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  width: 16px;
-  height: 8px;
-  margin-left: -8px;
-  box-sizing: border-box;
-  border: 1px solid #a8801f;
-  border-radius: 3px 3px 1px 1px;
-  background: linear-gradient(#f5d77a, #c9a24a);
+[data-theme="baby-natal"] .stat-box:hover {
+  transform: none;
+}
+
+[data-theme="baby-natal"] .stat-box.box-years,
+[data-theme="baby-natal"] .stat-box.box-months,
+[data-theme="baby-natal"] .stat-box.box-days {
+  border: 0;
+  box-shadow:
+    inset -7px -9px 16px rgba(0, 0, 0, 0.35),
+    inset 3px 4px 8px rgba(255, 255, 255, 0.18),
+    0 10px 14px -4px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme="baby-natal"] .stat-box.box-years {
-  border-color: #dc2626;
   background:
-    radial-gradient(circle at 27% 21%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0.55) 6%, rgba(255, 255, 255, 0) 20%),
-    #fef2f2;
+    radial-gradient(ellipse 24% 15% at 31% 19%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle at 72% 84%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 42%),
+    radial-gradient(circle at 34% 28%, #ff7a7a 0%, #e0172a 38%, #a50e1c 70%, #5e0610 100%);
 }
 
 [data-theme="baby-natal"] .stat-box.box-months {
-  border-color: #15803d;
   background:
-    radial-gradient(circle at 27% 21%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0.55) 6%, rgba(255, 255, 255, 0) 20%),
-    #f0fdf4;
+    radial-gradient(ellipse 24% 15% at 31% 19%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle at 72% 84%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 42%),
+    radial-gradient(circle at 34% 28%, #6fe39a 0%, #1fa855 38%, #0f7a3a 70%, #06451f 100%);
 }
 
 [data-theme="baby-natal"] .stat-box.box-days {
-  border-color: #c9a24a;
   background:
-    radial-gradient(circle at 27% 21%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0.55) 6%, rgba(255, 255, 255, 0) 20%),
-    #fffbeb;
+    radial-gradient(ellipse 24% 15% at 31% 19%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle at 72% 84%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 42%),
+    radial-gradient(circle at 34% 28%, #fff1a8 0%, #f2c230 38%, #c58f0c 70%, #7a5106 100%);
 }
 
-[data-theme="baby-natal"] .stat-box.box-years .stat-value {
-  background: none;
-  -webkit-text-fill-color: #d0101f;
-  color: #d0101f;
+/* Cápsula metálica da bola */
+[data-theme="baby-natal"] .stat-box::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 22px;
+  height: 11px;
+  margin-left: -11px;
+  box-sizing: border-box;
+  border-radius: 3px 3px 2px 2px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 1px, rgba(0, 0, 0, 0) 1px 4px),
+    linear-gradient(90deg, #8a6410, #f6e08a 38%, #fff6c4 50%, #c9961c 70%, #7a560c);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
-[data-theme="baby-natal"] .stat-box.box-months .stat-value {
-  background: none;
-  -webkit-text-fill-color: #15803d;
-  color: #15803d;
+/* Argola e fio pelo qual a bola está pendurada */
+[data-theme="baby-natal"] .stat-box::after {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  width: 14px;
+  height: 44px;
+  margin-left: -7px;
+  background:
+    radial-gradient(circle at 50% 38px, rgba(0, 0, 0, 0) 0 2.8px, #d9b13b 3.2px 5px, rgba(0, 0, 0, 0) 5.4px),
+    linear-gradient(#b8923a, #b8923a) 50% 0 / 1.5px 33px no-repeat;
+  pointer-events: none;
 }
 
+/* Números e etiquetas em branco, com sombra, a condizer com o brilho da bola */
+[data-theme="baby-natal"] .stat-box .stat-value,
+[data-theme="baby-natal"] .stat-box.box-years .stat-value,
+[data-theme="baby-natal"] .stat-box.box-months .stat-value,
 [data-theme="baby-natal"] .stat-box.box-days .stat-value {
   background: none;
-  -webkit-text-fill-color: #b7791f;
-  color: #b7791f;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+  margin-top: 0.15rem;
+}
+
+[data-theme="baby-natal"] .stat-box .stat-label {
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+/* As bolas balançam devagar, cada uma ao seu ritmo */
+@media (prefers-reduced-motion: no-preference) {
+  [data-theme="baby-natal"] .stat-box {
+    animation: natal-balanco 4.2s ease-in-out infinite alternate;
+  }
+
+  [data-theme="baby-natal"] .stat-box.box-months {
+    animation-duration: 5s;
+    animation-delay: -1.4s;
+  }
+
+  [data-theme="baby-natal"] .stat-box.box-days {
+    animation-duration: 3.7s;
+    animation-delay: -2.3s;
+  }
+}
+
+@keyframes natal-balanco {
+  from { transform: rotate(-2.2deg); }
+  to { transform: rotate(2.2deg); }
+}
+
+/* Na bola dourada, sombra mais escura no texto para manter a leitura */
+[data-theme="baby-natal"] .stat-box.box-days .stat-value {
+  text-shadow: 0 1px 3px rgba(90, 55, 0, 0.75);
+}
+
+[data-theme="baby-natal"] .stat-box.box-days .stat-label {
+  text-shadow: 0 1px 2px rgba(90, 55, 0, 0.8);
 }
