@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList, RefreshCw } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
 import { isNatalAtivo, NATAL_CABECALHO } from '../services/natal';
+import NatalBow from './NatalBow';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -153,6 +154,7 @@ const Layout = ({ children }) => {
 
       {/* On mobile, this standalone nav-links sits at the very root of the layout avoiding ALL stacking context traps */}
       <div className={`nav-links mobile-only${natal ? ' nav-links-natal' : ''}`}>
+        {natal && <NatalBow />}
         {navItems.map((item) => (
           <Link
             key={item.path}
