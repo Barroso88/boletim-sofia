@@ -34,6 +34,24 @@ export const setFundo = (tipo) => {
   aplicarTema();
 };
 
+// Ícone da app (separador do browser, ecrã principal): no modo Natal usa a foto natalícia.
+// Guarda o endereço original no próprio elemento para o repor ao desligar o modo.
+// Nota: o ícone do ecrã principal só muda ao (re)adicionar a app ao ecrã principal.
+const ICONES_NATAL = {
+  'link[rel="icon"]': '/natal-icone-192.png?v=1',
+  'link[rel="apple-touch-icon"]': '/natal-icone-512.png?v=1',
+  'link[rel="manifest"]': '/manifest-natal.json?v=1',
+};
+
+export const aplicarIcone = (natal) => {
+  Object.entries(ICONES_NATAL).forEach(([seletor, hrefNatal]) => {
+    const el = document.querySelector(seletor);
+    if (!el) return;
+    if (!el.dataset.original) el.dataset.original = el.getAttribute('href');
+    el.setAttribute('href', natal ? hrefNatal : el.dataset.original);
+  });
+};
+
 // Aplica ao <html> o tema de Natal (se ativo) ou o tema guardado pelo utilizador.
 export const aplicarTema = () => {
   let tema = 'rosegold';
@@ -47,6 +65,8 @@ export const aplicarTema = () => {
   // Fundo do modo Natal: o atributo só existe com o modo ligado
   if (tema === NATAL_TEMA) document.documentElement.setAttribute('data-natal-fundo', getFundo());
   else document.documentElement.removeAttribute('data-natal-fundo');
+
+  aplicarIcone(tema === NATAL_TEMA);
 };
 
 export const setNatalAtivo = (ativo) => {
