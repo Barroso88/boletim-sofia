@@ -643,3 +643,13 @@
   -webkit-text-fill-color: #d0101f !important;
   color: #d0101f !important;
 }
+
+/* ─── Modo Natal: neve de estrelas por cima da app (não apanha toques; abaixo dos pop-ups) ─── */
+.natal-snow {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 900;
+}

@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList, RefreshCw } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
-import { isNatalAtivo, NATAL_CABECALHO } from '../services/natal';
+import { isNatalAtivo, isNeveAtiva, NATAL_CABECALHO } from '../services/natal';
 import NatalBow from './NatalBow';
+import NatalSnow from './NatalSnow';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -12,6 +13,7 @@ const Layout = ({ children }) => {
   const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [natal, setNatal] = useState(isNatalAtivo);
+  const [neve, setNeve] = useState(isNeveAtiva);
 
   useEffect(() => {
     const savedPattern = localStorage.getItem('sofia_header_pattern');
@@ -30,6 +32,10 @@ const Layout = ({ children }) => {
     const handleNatalChange = (e) => {
       setNatal(e.detail);
     };
+
+    const handleNeveChange = (e) => {
+      setNeve(e.detail);
+    };
     
     const handleFontChange = (e) => {
       setHeaderFont(e.detail);
@@ -46,11 +52,13 @@ const Layout = ({ children }) => {
     window.addEventListener('headerPatternChanged', handlePatternChange);
     window.addEventListener('headerFontChanged', handleFontChange);
     window.addEventListener('natalModeChanged', handleNatalChange);
+    window.addEventListener('natalSnowChanged', handleNeveChange);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
       window.removeEventListener('headerPatternChanged', handlePatternChange);
       window.removeEventListener('headerFontChanged', handleFontChange);
       window.removeEventListener('natalModeChanged', handleNatalChange);
+      window.removeEventListener('natalSnowChanged', handleNeveChange);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
@@ -80,6 +88,7 @@ const Layout = ({ children }) => {
   return (
     <div className="layout">
       <VitaminaModal />
+      {natal && neve && <NatalSnow />}
       <nav
         className={`navbar glass-card theme-neon${natal ? ' navbar-natal' : ''}`}
         style={{

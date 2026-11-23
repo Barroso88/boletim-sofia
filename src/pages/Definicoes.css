@@ -159,3 +159,9 @@
 .natal-switch.on .natal-switch-knob {
   transform: translateX(22px);
 }
+
+.natal-subrow {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image, TreePine } from 'lucide-react';
-import { isNatalAtivo, setNatalAtivo, aplicarTema } from '../services/natal';
+import { isNatalAtivo, setNatalAtivo, aplicarTema, isNeveAtiva, setNeveAtiva } from '../services/natal';
 import './Definicoes.css';
 
 const BABY_THEMES = [
@@ -44,6 +44,7 @@ const Definicoes = () => {
   const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
   const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [natal, setNatal] = useState(isNatalAtivo);
+  const [neve, setNeve] = useState(isNeveAtiva);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('sofia_theme');
@@ -74,6 +75,12 @@ const Definicoes = () => {
     setNatal(novo);
     setMensagemSucesso(novo ? 'Modo Natal ativado!' : 'Modo Natal desativado.');
     setTimeout(() => setMensagemSucesso(''), 4000);
+  };
+
+  const toggleNeve = () => {
+    const nova = !neve;
+    setNeveAtiva(nova);
+    setNeve(nova);
   };
 
   const changeTheme = (themeId) => {
@@ -147,6 +154,21 @@ const Definicoes = () => {
           <p className="text-small" style={{ marginTop: '0.75rem' }}>
             Fundo de Natal com bolachas de gengibre e cabeçalho com bolas rosa. Ao desligar, voltas ao tema e ao padrão do cabeçalho que tinhas escolhido.
           </p>
+          {natal && (
+            <div className="natal-row natal-subrow">
+              <span className="text-small" style={{ fontWeight: 600 }}>✨ Neve de estrelas</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={neve}
+                aria-label="Neve de estrelas"
+                className={`natal-switch ${neve ? 'on' : ''}`}
+                onClick={toggleNeve}
+              >
+                <span className="natal-switch-knob" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Selector de Padrão do Cabeçalho */}

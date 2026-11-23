@@ -34,3 +34,24 @@ export const setNatalAtivo = (ativo) => {
   aplicarTema();
   window.dispatchEvent(new CustomEvent('natalModeChanged', { detail: ativo }));
 };
+
+// Neve de estrelas (só existe dentro do modo Natal). Ligada por defeito.
+const CHAVE_NEVE = 'sofia_natal_neve';
+
+export const isNeveAtiva = () => {
+  try {
+    return localStorage.getItem(CHAVE_NEVE) !== '0';
+  } catch {
+    return true;
+  }
+};
+
+export const setNeveAtiva = (ativa) => {
+  try {
+    if (ativa) localStorage.removeItem(CHAVE_NEVE);
+    else localStorage.setItem(CHAVE_NEVE, '0');
+  } catch {
+    // sem acesso ao armazenamento local
+  }
+  window.dispatchEvent(new CustomEvent('natalSnowChanged', { detail: ativa }));
+};
