@@ -586,3 +586,12 @@
     overflow: visible;
   }
 }
+
+/* ─── Modo Natal: nome sobre a fotografia do cabeçalho, com contorno branco para se ler em qualquer zona ─── */
+.navbar.navbar-natal .brand-title {
+  filter:
+    drop-shadow(0 0 1px #fff)
+    drop-shadow(0 0 2px #fff)
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 2px 4px rgba(127, 29, 29, 0.35));
+}
