@@ -540,3 +540,29 @@
     font-size: 0.58rem;
   }
 }
+
+/* ─── Modo Natal: contorno da barra inferior em bengala de doce (rosa e branco) ─── */
+@media (max-width: 1024px) {
+  .nav-links.nav-links-natal {
+    border: none;
+    padding: 0.5rem;
+  }
+
+  .nav-links.nav-links-natal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+      135deg,
+      var(--color-primary) 0 7px,
+      #ffffff 7px 14px
+    );
+    /* Mostra só o anel de 3px: recorta o interior da pseudo-camada */
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}
