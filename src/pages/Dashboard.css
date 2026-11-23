@@ -932,3 +932,41 @@
   font-size: 0.9rem;
   text-shadow: 0 0 6px rgba(246, 224, 138, 0.8);
 }
+
+/* ─── Modo Natal: indicadores de tempo ("há 25 min") como fitas de cetim com rebordo dourado ───
+   Em dia (ok) a verde, a pedir atenção (urgent) a vermelho. */
+[data-theme="baby-natal"] .snapshot-timer-pill {
+  border: 1.5px solid #e8c766;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="baby-natal"] .snapshot-timer-pill.ok {
+  background: linear-gradient(160deg, #26a653 0%, #15803d 55%, #0f5d2c 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 6px 12px -4px rgba(15, 93, 44, 0.55);
+}
+
+[data-theme="baby-natal"] .snapshot-timer-pill.urgent {
+  background: linear-gradient(160deg, #e0233b 0%, #b30f27 55%, #8f0b1e 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 6px 12px -4px rgba(143, 11, 30, 0.6);
+}
+
+/* Estrelinha dourada a fechar a fita */
+[data-theme="baby-natal"] .snapshot-timer-pill::after {
+  content: '✦';
+  color: #f6e08a;
+  font-size: 0.85em;
+  text-shadow: 0 0 6px rgba(246, 224, 138, 0.85);
+}
+
+/* O indicador vermelho pulsa devagar (desligado se o sistema pedir menos movimento) */
+@media (prefers-reduced-motion: no-preference) {
+  [data-theme="baby-natal"] .snapshot-timer-pill.urgent {
+    animation: natal-pulso 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes natal-pulso {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)); }
+  50% { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.85)); }
+}
