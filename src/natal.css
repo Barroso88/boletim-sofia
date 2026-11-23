@@ -1,0 +1,237 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Modo Natal — estilo das páginas (Agenda, Marcos, Documentos, Peso, Vacinas,
+   Registos, Definições e Perfil). Tudo preso ao tema [data-theme="baby-natal"],
+   que só existe com o modo Natal ligado: com o modo desligado nada muda.
+   Paleta: vermelho #c8102e, verde #15803d, dourado #c9a24a.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Títulos das páginas: vermelho de Natal com um halo branco para se lerem sobre o fundo ── */
+[data-theme="baby-natal"] .page-container .text-gradient {
+  background: linear-gradient(135deg, #c8102e 0%, #8f0b1e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+}
+
+[data-theme="baby-natal"] .page-container .h1,
+[data-theme="baby-natal"] .page-container .page-title {
+  background: none;
+  -webkit-text-fill-color: #9f0f22;
+  color: #9f0f22;
+  text-shadow: 0 0 4px #fff, 0 0 10px rgba(255, 255, 255, 0.9);
+}
+
+/* ── Botões principais: fita vermelha de cetim com rebordo dourado ── */
+[data-theme="baby-natal"] .btn-primary,
+[data-theme="baby-natal"] .btn-quick-add {
+  background: linear-gradient(160deg, #e0233b 0%, #b30f27 55%, #8f0b1e 100%);
+  border: 1.5px solid #e8c766;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 6px 14px -4px rgba(159, 15, 34, 0.55);
+}
+
+[data-theme="baby-natal"] .btn-primary:hover,
+[data-theme="baby-natal"] .btn-quick-add:hover {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 20px -4px rgba(159, 15, 34, 0.65);
+}
+
+[data-theme="baby-natal"] .btn-outline {
+  border-color: #c8102e;
+  color: #8f0b1e;
+}
+
+[data-theme="baby-natal"] .btn-outline:hover {
+  background: #fef2f2;
+  border-color: #c8102e;
+  color: #8f0b1e;
+}
+
+/* ── Cartões das páginas: contorno vermelho (ou verde, alternados), faixa de bengala de doce e brilho dourado ──
+      O estilo de algumas páginas está no código (inline), por isso usa !important. */
+[data-theme="baby-natal"] .page-container .glass-card:not(.vacina-card):not(.evento-card),
+[data-theme="baby-natal"] .calendar-section,
+[data-theme="baby-natal"] .leite-hero-card,
+[data-theme="baby-natal"] .sns-card,
+[data-theme="baby-natal"] .marco-card,
+[data-theme="baby-natal"] .executive-add-card {
+  --nat: #c8102e;
+  background:
+    repeating-linear-gradient(135deg, var(--nat) 0 7px, #ffffff 7px 14px) top / 100% 7px no-repeat,
+    linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(255, 246, 246, 0.93)) !important;
+  border: 2px solid var(--nat) !important;
+  border-bottom: 3px solid color-mix(in srgb, var(--nat) 70%, #000) !important;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.9),
+    0 0 12px color-mix(in srgb, var(--nat) 30%, transparent),
+    0 8px 22px -8px color-mix(in srgb, var(--nat) 40%, transparent) !important;
+}
+
+[data-theme="baby-natal"] .page-container .glass-card:not(.vacina-card):not(.evento-card):nth-child(even),
+[data-theme="baby-natal"] .marco-item:nth-child(even) .marco-card,
+[data-theme="baby-natal"] .sns-card {
+  --nat: #15803d;
+}
+
+/* ── Separadores (sub-menus de cada página) ── */
+[data-theme="baby-natal"] .marcos-tabs {
+  background: rgba(200, 16, 46, 0.07);
+}
+
+[data-theme="baby-natal"] .marcos-tab.active {
+  color: #c8102e;
+  box-shadow: 0 2px 8px rgba(200, 16, 46, 0.25), inset 0 -2px 0 #c9a24a;
+}
+
+[data-theme="baby-natal"] .sub-tab:hover,
+[data-theme="baby-natal"] .sub-tab.active {
+  color: #c8102e;
+}
+
+/* Sublinhado do separador ativo em bengala de doce */
+[data-theme="baby-natal"] .sub-tab.active::after {
+  height: 4px;
+  background: repeating-linear-gradient(135deg, #c8102e 0 5px, #ffffff 5px 10px);
+}
+
+[data-theme="baby-natal"] .subtab-btn.active,
+[data-theme="baby-natal"] .chip-btn.active {
+  background: linear-gradient(160deg, #e0233b 0%, #b30f27 55%, #8f0b1e 100%);
+  color: #fff !important;
+  border-color: #e8c766;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 12px -3px rgba(159, 15, 34, 0.5);
+}
+
+[data-theme="baby-natal"] .subtab-btn:hover {
+  color: #c8102e;
+}
+
+[data-theme="baby-natal"] .sub-tab-btn.btn-leite.active {
+  background: linear-gradient(135deg, rgba(255, 247, 247, 0.97), rgba(254, 226, 226, 0.9));
+  color: #8f0b1e;
+  border-color: #c8102e;
+  box-shadow: 0 0 10px rgba(200, 16, 46, 0.4), inset 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="baby-natal"] .sub-tab-btn.btn-fraldas.active {
+  background: linear-gradient(135deg, rgba(247, 255, 250, 0.97), rgba(220, 252, 231, 0.9));
+  color: #0f4d27;
+  border-color: #15803d;
+  box-shadow: 0 0 10px rgba(21, 128, 61, 0.4), inset 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="baby-natal"] .sub-tab-btn.btn-sono.active {
+  background: linear-gradient(135deg, rgba(255, 253, 245, 0.97), rgba(254, 243, 199, 0.9));
+  color: #7a560c;
+  border-color: #c9a24a;
+  box-shadow: 0 0 10px rgba(201, 162, 74, 0.5), inset 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
+/* ── Agenda: dia selecionado é uma bola de Natal vermelha; hoje tem contorno verde ── */
+[data-theme="baby-natal"] .calendar-cell.selected {
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.65) 0, rgba(255, 255, 255, 0) 28%),
+    radial-gradient(circle at 35% 30%, #ff7a7a 0%, #e0172a 40%, #a50e1c 100%);
+  box-shadow: 0 6px 14px -3px rgba(160, 14, 28, 0.6), inset -2px -3px 6px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="baby-natal"] .calendar-cell.today {
+  border-color: #15803d;
+  color: #0f4d27;
+}
+
+/* O dia selecionado (bola vermelha) mantém o número branco, mesmo sendo hoje */
+[data-theme="baby-natal"] .calendar-cell.selected,
+[data-theme="baby-natal"] .calendar-cell.selected.today {
+  color: #ffffff;
+}
+
+/* ── Marcos: linha do tempo vermelha e verde ── */
+[data-theme="baby-natal"] .timeline-container::before {
+  background: linear-gradient(to bottom, #c8102e, #15803d);
+  opacity: 0.5;
+}
+
+[data-theme="baby-natal"] .marco-card::before {
+  background: linear-gradient(to bottom, #c8102e, #15803d);
+}
+
+[data-theme="baby-natal"] .marco-dot {
+  border-color: #c8102e;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="baby-natal"] .marco-date-badge {
+  color: #8f0b1e;
+  background: rgba(200, 16, 46, 0.08);
+}
+
+/* ── Documentos: cada documento é um cartão, vermelho e verde alternados (estilo no código => !important) ── */
+[data-theme="baby-natal"] .executive-card {
+  --nat: #c8102e;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(255, 246, 246, 0.93)) !important;
+  border: 2px solid var(--nat) !important;
+  border-bottom: 3px solid color-mix(in srgb, var(--nat) 70%, #000) !important;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.9),
+    0 0 10px color-mix(in srgb, var(--nat) 30%, transparent),
+    0 6px 16px -6px color-mix(in srgb, var(--nat) 40%, transparent) !important;
+}
+
+[data-theme="baby-natal"] .executive-card:nth-child(even) {
+  --nat: #15803d;
+}
+
+[data-theme="baby-natal"] .executive-card:hover {
+  background: linear-gradient(135deg, #ffffff, #fef2f2) !important;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.9),
+    0 4px 15px color-mix(in srgb, var(--nat) 45%, transparent) !important;
+}
+
+/* ── Registos (leite, fraldas, sono) ── */
+[data-theme="baby-natal"] .hero-stat-value {
+  background: linear-gradient(135deg, #8f0b1e, #c8102e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="baby-natal"] .icon-badge-glow {
+  background: linear-gradient(160deg, #e0233b 0%, #b30f27 55%, #8f0b1e 100%);
+  box-shadow: 0 8px 20px -6px rgba(159, 15, 34, 0.55);
+}
+
+[data-theme="baby-natal"] .date-selector-bar {
+  border-color: rgba(200, 16, 46, 0.35);
+}
+
+/* ── Vacinas: por tomar em vermelho, tomadas em verde, barra de progresso em bengala de doce ── */
+[data-theme="baby-natal"] .vacina-card:not(.tomada) {
+  border: 2px solid #c8102e;
+  box-shadow: 0 0 10px rgba(200, 16, 46, 0.25), inset 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="baby-natal"] .vacina-card:not(.tomada):hover {
+  border-color: #c8102e;
+  box-shadow: 0 0 14px rgba(200, 16, 46, 0.45), inset 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="baby-natal"] .vacina-card.tomada {
+  border: 2px solid #15803d;
+  box-shadow: 0 0 10px rgba(21, 128, 61, 0.35), inset 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="baby-natal"] .grupo-title {
+  border-left-color: #c8102e;
+}
+
+[data-theme="baby-natal"] .sns-progress-bar-fill {
+  background: repeating-linear-gradient(135deg, #c8102e 0 8px, #ffffff 8px 16px);
+}
+
+/* ── Definições: interruptores ligados em verde de Natal ── */
+[data-theme="baby-natal"] .natal-switch.on {
+  background: #15803d;
+}
