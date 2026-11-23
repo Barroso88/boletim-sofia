@@ -653,3 +653,13 @@
   pointer-events: none;
   z-index: 900;
 }
+
+/* ─── Modo Natal: glow branco no contorno do cabeçalho, para se destacar do fundo ─── */
+.navbar.navbar-natal.theme-neon {
+  box-shadow:
+    0 0 3px rgba(255, 255, 255, 0.95),
+    0 0 10px rgba(255, 255, 255, 0.9),
+    0 0 22px rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.55),
+    0 10px 28px -6px rgba(143, 11, 30, 0.35) !important;
+}
