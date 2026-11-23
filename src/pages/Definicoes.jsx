@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image, TreePine } from 'lucide-react';
 import { isNatalAtivo, setNatalAtivo, aplicarTema, getNeve, setNeve, getFundo, setFundo } from '../services/natal';
+import { carregarTodasAsFontes } from '../services/fontes';
 import './Definicoes.css';
 
 const BABY_THEMES = [
@@ -60,6 +61,8 @@ const Definicoes = () => {
     if (savedFont) {
       setHeaderFont(savedFont);
     }
+    // As pré-visualizações das letras só precisam das fontes nesta página
+    carregarTodasAsFontes();
   }, []);
 
   // Escolher um tema ou padrão próprio desliga o modo Natal

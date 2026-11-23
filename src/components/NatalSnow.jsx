@@ -152,20 +152,24 @@ const NatalSnow = ({ tipo = 'estrelas' }) => {
     let particulas = [];
     let frame = 0;
     let ultimo = 0;
+    const INTERVALO = 31; // ~30 imagens por segundo bastam para neve a cair devagar
 
     const ajustar = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // A neve é suave, não precisa de resolução de ecrã retina: 1 píxel por píxel de CSS poupa muito trabalho
+      const dpr = 1;
       largura = window.innerWidth;
       altura = window.innerHeight;
       canvas.width = Math.round(largura * dpr);
       canvas.height = Math.round(altura * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const total = Math.max(22, Math.min(60, Math.round(largura / 14)));
+      const total = Math.max(16, Math.min(40, Math.round(largura / 18)));
       particulas = Array.from({ length: total }, () => novaParticula(largura, altura, false, mov, sprites.length));
     };
 
     const desenhar = (agora) => {
-      const dt = Math.min((agora - (ultimo || agora)) / 1000, 0.05);
+      frame = requestAnimationFrame(desenhar);
+      if (ultimo && agora - ultimo < INTERVALO) return;
+      const dt = Math.min((agora - (ultimo || agora)) / 1000, 0.1);
       ultimo = agora;
       ctx.clearRect(0, 0, largura, altura);
 
@@ -188,8 +192,6 @@ const NatalSnow = ({ tipo = 'estrelas' }) => {
         ctx.drawImage(sprites[p.sprite], -lado / 2, -lado / 2, lado, lado);
         ctx.restore();
       });
-
-      frame = requestAnimationFrame(desenhar);
     };
 
     ajustar();

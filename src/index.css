@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@600&family=Cookie&family=Dancing+Script:wght@600&family=Great+Vibes&family=Pacifico&family=Parisienne&family=Sacramento&family=Satisfy&display=swap');
-
 :root, [data-theme="rosegold"] {
   --color-primary: #F43F5E; /* Rose 500 */
   --color-primary-light: #FDA4AF;
@@ -234,7 +231,7 @@
   --theme-bg-pattern: linear-gradient(var(--theme-bg-veil), var(--theme-bg-veil)), url("/natal-fundo.jpg");
 }
 
-[data-theme="baby-natal"] body {
+[data-theme="baby-natal"] body::before {
   background-size: auto, 440px auto;
 }
 
@@ -243,7 +240,7 @@
   --shadow-sm: 0 4px 12px -2px rgba(15, 23, 42, 0.04);
   --shadow-md: 0 12px 32px -8px rgba(15, 23, 42, 0.06);
   --shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, 0.1);
-  --glass-blur: blur(20px);
+  --glass-blur: blur(12px);
   
   /* Border Radius */
   --radius-sm: 12px;
@@ -266,14 +263,23 @@
 body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--color-bg);
-  background-image: var(--theme-bg-pattern, none);
-  background-repeat: repeat;
-  background-attachment: fixed;
-  background-size: 160px 160px;
   color: var(--color-text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* O fundo (padrão ou imagem do tema) vive numa camada fixa própria. Assim não é repintado a cada
+   imagem do scroll, como acontecia com background-attachment: fixed (pesado, sobretudo no telemóvel). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--theme-bg-pattern, none);
+  background-repeat: repeat;
+  background-size: 160px 160px;
 }
 
 a {

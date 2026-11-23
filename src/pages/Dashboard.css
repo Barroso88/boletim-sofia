@@ -959,16 +959,31 @@
   text-shadow: 0 0 6px rgba(246, 224, 138, 0.85);
 }
 
-/* O indicador vermelho pulsa devagar (desligado se o sistema pedir menos movimento) */
+/* O indicador vermelho pulsa devagar (desligado se o sistema pedir menos movimento).
+   O brilho é uma camada própria que só muda de opacidade: não obriga a redesenhar a fita. */
+[data-theme="baby-natal"] .snapshot-timer-pill {
+  position: relative;
+}
+
+[data-theme="baby-natal"] .snapshot-timer-pill::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  [data-theme="baby-natal"] .snapshot-timer-pill.urgent {
+  [data-theme="baby-natal"] .snapshot-timer-pill.urgent::before {
     animation: natal-pulso 2.4s ease-in-out infinite;
   }
 }
 
 @keyframes natal-pulso {
-  0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)); }
-  50% { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.85)); }
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
 /* Modo Natal: títulos "Consultas" e "Vacinas" mais compactos em ecrãs muito estreitos

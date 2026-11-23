@@ -7,11 +7,12 @@
 
 /* ── Títulos das páginas: vermelho de Natal com um halo branco para se lerem sobre o fundo ── */
 [data-theme="baby-natal"] .page-container .text-gradient {
-  background: linear-gradient(135deg, #c8102e 0%, #8f0b1e 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+  /* cor sólida + text-shadow: o degradê recortado no texto obrigava a usar filter: drop-shadow, que pesa no scroll */
+  background: none;
+  -webkit-text-fill-color: #b30f27;
+  color: #b30f27;
+  text-shadow: 0 0 2px #fff, 0 0 6px rgba(255, 255, 255, 0.9);
+  filter: none;
 }
 
 [data-theme="baby-natal"] .page-container .h1,
@@ -244,7 +245,7 @@
   --theme-bg-pattern: linear-gradient(var(--theme-bg-veil), var(--theme-bg-veil)), url("/natal-fundo-vermelho.jpg");
 }
 
-[data-theme="baby-natal"][data-natal-fundo="vermelho"] body {
+[data-theme="baby-natal"][data-natal-fundo="vermelho"] body::before {
   background-size: auto, 760px auto;
 }
 
@@ -266,4 +267,21 @@
    no modo Natal passa a quebrar linha em ecrãs estreitos, em vez de a linha encolher e sair do ecrã. */
 [data-theme="baby-natal"] .flex-wrap {
   flex-wrap: wrap;
+}
+
+/* ═══ Desempenho (modo Natal) ═══
+   Os cartões já são quase opacos (fundo a 93-97%), por isso o desfoque do fundo (backdrop-filter)
+   quase não se vê e custa muito a desenhar, sobretudo no telemóvel. Aqui desliga-se. */
+[data-theme="baby-natal"] .page-container .glass-card,
+[data-theme="baby-natal"] .calendar-section,
+[data-theme="baby-natal"] .leite-hero-card,
+[data-theme="baby-natal"] .sns-card,
+[data-theme="baby-natal"] .marco-card,
+[data-theme="baby-natal"] .executive-add-card,
+[data-theme="baby-natal"] .hero-card.glass-card,
+[data-theme="baby-natal"] .quick-snapshot-card,
+[data-theme="baby-natal"] .health-section,
+[data-theme="baby-natal"] .ha-action-btn {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }

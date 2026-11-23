@@ -5,6 +5,7 @@ import VitaminaModal from './VitaminaModal';
 import { isNatalAtivo, getNeve, NATAL_CABECALHO } from '../services/natal';
 import NatalBow from './NatalBow';
 import NatalSnow from './NatalSnow';
+import { carregarFonteCabecalho } from '../services/fontes';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -23,6 +24,7 @@ const Layout = ({ children }) => {
     const savedFont = localStorage.getItem('sofia_header_font');
     if (savedFont) {
       setHeaderFont(savedFont);
+      carregarFonteCabecalho(savedFont);
     }
     
     const handlePatternChange = (e) => {
@@ -39,6 +41,7 @@ const Layout = ({ children }) => {
     
     const handleFontChange = (e) => {
       setHeaderFont(e.detail);
+      carregarFonteCabecalho(e.detail);
     };
     
     // Auto-refresh when app comes to foreground (after being backgrounded on iOS)
