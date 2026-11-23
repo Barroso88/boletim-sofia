@@ -636,3 +636,10 @@
     radial-gradient(circle at 70% 90%, rgba(255, 224, 140, 0.55) 0 3%, rgba(255, 224, 140, 0) 7%),
     radial-gradient(circle at 50% 42%, #3f8f63 0%, #1f6a45 55%, #124a2f 100%);
 }
+
+/* ─── Modo Natal: nome da Sofia em vermelho forte de Natal (mantém o contorno branco para se ler) ─── */
+.navbar.navbar-natal .brand-title {
+  background: none !important;
+  -webkit-text-fill-color: #d0101f !important;
+  color: #d0101f !important;
+}
