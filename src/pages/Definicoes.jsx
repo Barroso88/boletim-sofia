@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image, TreePine } from 'lucide-react';
-import { isNatalAtivo, setNatalAtivo, aplicarTema, getNeve, setNeve } from '../services/natal';
+import { isNatalAtivo, setNatalAtivo, aplicarTema, getNeve, setNeve, getFundo, setFundo } from '../services/natal';
 import './Definicoes.css';
 
 const BABY_THEMES = [
@@ -45,6 +45,7 @@ const Definicoes = () => {
   const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [natal, setNatal] = useState(isNatalAtivo);
   const [neve, setNeveEscolhida] = useState(getNeve);
+  const [fundo, setFundoEscolhido] = useState(getFundo);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('sofia_theme');
@@ -75,6 +76,11 @@ const Definicoes = () => {
     setNatal(novo);
     setMensagemSucesso(novo ? 'Modo Natal ativado!' : 'Modo Natal desativado.');
     setTimeout(() => setMensagemSucesso(''), 4000);
+  };
+
+  const escolherFundo = (tipo) => {
+    setFundo(tipo);
+    setFundoEscolhido(tipo);
   };
 
   const escolherNeve = (tipo) => {
@@ -153,6 +159,27 @@ const Definicoes = () => {
           <p className="text-small" style={{ marginTop: '0.75rem' }}>
             Fundo de Natal com bolachas de gengibre e cabeçalho com bolas rosa. Ao desligar, voltas ao tema e ao padrão do cabeçalho que tinhas escolhido.
           </p>
+          {natal && (
+            <div className="natal-row natal-subrow">
+              <span className="text-small" style={{ fontWeight: 600 }}>Fundo</span>
+              <div className="natal-seg" role="radiogroup" aria-label="Fundo do modo Natal">
+                {[
+                  { id: 'rosa', nome: '🍬 Rosa' },
+                  { id: 'vermelho', nome: '🎄 Vermelho' },
+                ].map((opcao) => (
+                  <button
+                    key={opcao.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={fundo === opcao.id}
+                    onClick={() => escolherFundo(opcao.id)}
+                  >
+                    {opcao.nome}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {natal && (
             <div className="natal-row natal-subrow">
               <span className="text-small" style={{ fontWeight: 600 }}>Neve</span>

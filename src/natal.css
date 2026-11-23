@@ -235,3 +235,15 @@
 [data-theme="baby-natal"] .natal-switch.on {
   background: #15803d;
 }
+
+/* ═══ Fundo vermelho (alternativa ao fundo rosa), escolhido nas Definições ═══
+   A imagem é um mosaico espelhado (2x2), por isso repete-se sem emendas.
+   O véu claro por cima dá transparência: quanto mais opaco, mais suave o fundo e mais legível o conteúdo. */
+[data-theme="baby-natal"][data-natal-fundo="vermelho"] {
+  --theme-bg-veil: rgba(255, 242, 244, 0.55);
+  --theme-bg-pattern: linear-gradient(var(--theme-bg-veil), var(--theme-bg-veil)), url("/natal-fundo-vermelho.jpg");
+}
+
+[data-theme="baby-natal"][data-natal-fundo="vermelho"] body {
+  background-size: auto, 760px auto;
+}

@@ -13,6 +13,27 @@ export const isNatalAtivo = () => {
   }
 };
 
+// Fundo do modo Natal: 'rosa' (bolachas de gengibre, por defeito) ou 'vermelho' (bolachas, bengalas e árvores).
+const CHAVE_FUNDO = 'sofia_natal_fundo';
+
+export const getFundo = () => {
+  try {
+    return localStorage.getItem(CHAVE_FUNDO) === 'vermelho' ? 'vermelho' : 'rosa';
+  } catch {
+    return 'rosa';
+  }
+};
+
+export const setFundo = (tipo) => {
+  try {
+    if (tipo === 'vermelho') localStorage.setItem(CHAVE_FUNDO, 'vermelho');
+    else localStorage.removeItem(CHAVE_FUNDO);
+  } catch {
+    // sem acesso ao armazenamento local
+  }
+  aplicarTema();
+};
+
 // Aplica ao <html> o tema de Natal (se ativo) ou o tema guardado pelo utilizador.
 export const aplicarTema = () => {
   let tema = 'rosegold';
@@ -22,6 +43,10 @@ export const aplicarTema = () => {
     // sem acesso ao armazenamento local: mantém o tema por defeito
   }
   document.documentElement.setAttribute('data-theme', tema);
+
+  // Fundo do modo Natal: o atributo só existe com o modo ligado
+  if (tema === NATAL_TEMA) document.documentElement.setAttribute('data-natal-fundo', getFundo());
+  else document.documentElement.removeAttribute('data-natal-fundo');
 };
 
 export const setNatalAtivo = (ativo) => {
