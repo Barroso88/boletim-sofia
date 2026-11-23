@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image } from 'lucide-react';
+import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image, TreePine } from 'lucide-react';
+import { isNatalAtivo, setNatalAtivo, aplicarTema } from '../services/natal';
 import './Definicoes.css';
 
 const BABY_THEMES = [
@@ -42,6 +43,7 @@ const Definicoes = () => {
   const [headerPattern, setHeaderPattern] = useState('/cabecalho.jpg');
   const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
   const [mensagemSucesso, setMensagemSucesso] = useState('');
+  const [natal, setNatal] = useState(isNatalAtivo);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('sofia_theme');
@@ -58,10 +60,27 @@ const Definicoes = () => {
     }
   }, []);
 
+  // Escolher um tema ou padrão próprio desliga o modo Natal
+  const desligarNatal = () => {
+    if (natal) {
+      setNatalAtivo(false);
+      setNatal(false);
+    }
+  };
+
+  const toggleNatal = () => {
+    const novo = !natal;
+    setNatalAtivo(novo);
+    setNatal(novo);
+    setMensagemSucesso(novo ? 'Modo Natal ativado!' : 'Modo Natal desativado.');
+    setTimeout(() => setMensagemSucesso(''), 4000);
+  };
+
   const changeTheme = (themeId) => {
     setActiveTheme(themeId);
     localStorage.setItem('sofia_theme', themeId);
-    document.documentElement.setAttribute('data-theme', themeId);
+    desligarNatal();
+    aplicarTema();
   };
 
   const changeHeaderPattern = (pattern) => {
@@ -71,6 +90,7 @@ const Definicoes = () => {
     }
     setHeaderPattern(finalPattern);
     localStorage.setItem('sofia_header_pattern', finalPattern);
+    desligarNatal();
     window.dispatchEvent(new CustomEvent('headerPatternChanged', { detail: finalPattern }));
     
     setMensagemSucesso('Padrão do cabeçalho atualizado!');
@@ -105,7 +125,30 @@ const Definicoes = () => {
       </div>
 
       <div className="settings-grid" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        
+
+        {/* Modo Natal */}
+        <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(219,39,119,0.25)' }}>
+          <div className="natal-row">
+            <div className="settings-header" style={{ marginBottom: 0 }}>
+              <TreePine size={24} color="var(--color-primary)" />
+              <h3 className="h3" style={{ color: 'var(--color-primary-dark)' }}>🎄 Modo Natal</h3>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={natal}
+              aria-label="Ativar modo Natal"
+              className={`natal-switch ${natal ? 'on' : ''}`}
+              onClick={toggleNatal}
+            >
+              <span className="natal-switch-knob" />
+            </button>
+          </div>
+          <p className="text-small" style={{ marginTop: '0.75rem' }}>
+            Fundo de Natal com bolachas de gengibre e cabeçalho com bolas rosa. Ao desligar, voltas ao tema e ao padrão do cabeçalho que tinhas escolhido.
+          </p>
+        </div>
+
         {/* Selector de Padrão do Cabeçalho */}
         <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(2,132,199,0.25)', background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(224,242,254,0.5))' }}>
           <div className="settings-header">

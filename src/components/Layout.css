@@ -12,7 +12,7 @@
   margin: 1.5rem 2rem;
   border-radius: var(--radius-full);
   background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--header-pattern, url('/cabecalho.jpg')) !important;
-  background-size: 160px 160px !important;
+  background-size: var(--header-pattern-size, 160px 160px) !important;
   background-repeat: repeat !important;
   background-position: center !important;
   border: 1px solid var(--color-primary);
@@ -235,7 +235,7 @@
     
     /* Background Image Pattern Tiled */
     background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--header-pattern, url('/cabecalho.jpg')) !important;
-    background-size: 140px 140px !important;
+    background-size: var(--header-pattern-size, 140px 140px) !important;
     background-repeat: repeat !important;
     background-position: center !important;
     backdrop-filter: blur(16px);
@@ -438,3 +438,35 @@
   background: var(--color-primary) !important;
 }
 
+
+/* ─── Modo Natal: botões do cabeçalho em vidro fosco rosa ─── */
+.navbar.navbar-natal .btn-settings-header,
+.navbar.navbar-natal .btn-refresh {
+  background: rgba(255, 255, 255, 0.58) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  backdrop-filter: blur(10px) saturate(1.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-primary-dark);
+  box-shadow: 0 4px 14px rgba(190, 24, 93, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  filter: none;
+}
+
+.navbar.navbar-natal .btn-settings-header:hover,
+.navbar.navbar-natal .btn-refresh:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(190, 24, 93, 0.28), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+.navbar.navbar-natal .btn-settings-header:active,
+.navbar.navbar-natal .btn-refresh:active {
+  transform: scale(0.94) !important;
+  filter: none;
+  box-shadow: 0 2px 6px rgba(190, 24, 93, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+.navbar.navbar-natal .btn-settings-header.active {
+  background: var(--color-primary) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  color: #fff;
+}

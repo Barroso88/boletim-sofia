@@ -112,3 +112,50 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Modo Natal: interruptor */
+.natal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.natal-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 52px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background: #D1D5DB;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.natal-switch.on {
+  background: var(--color-primary);
+}
+
+.natal-switch:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+.natal-switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.natal-switch.on .natal-switch-knob {
+  transform: translateX(22px);
+}

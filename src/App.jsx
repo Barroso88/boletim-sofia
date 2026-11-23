@@ -10,11 +10,11 @@ import Vacinas from './pages/Vacinas';
 import Leite from './pages/Leite';
 import Definicoes from './pages/Definicoes';
 import Perfil from './pages/Perfil';
+import { aplicarTema } from './services/natal';
 
 function App() {
   useEffect(() => {
-    const savedTheme = localStorage.getItem('sofia_theme') || 'rosegold';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    aplicarTema();
   }, []);
 
   return (

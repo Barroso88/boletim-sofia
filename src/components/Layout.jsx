@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList, RefreshCw } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
+import { isNatalAtivo, NATAL_CABECALHO } from '../services/natal';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -9,6 +10,7 @@ const Layout = ({ children }) => {
   const [headerPattern, setHeaderPattern] = useState('/cabecalho.jpg');
   const [headerFont, setHeaderFont] = useState("'Sweet Cucumber Mocktail', cursive");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [natal, setNatal] = useState(isNatalAtivo);
 
   useEffect(() => {
     const savedPattern = localStorage.getItem('sofia_header_pattern');
@@ -22,6 +24,10 @@ const Layout = ({ children }) => {
     
     const handlePatternChange = (e) => {
       setHeaderPattern(e.detail);
+    };
+    
+    const handleNatalChange = (e) => {
+      setNatal(e.detail);
     };
     
     const handleFontChange = (e) => {
@@ -38,10 +44,12 @@ const Layout = ({ children }) => {
     
     window.addEventListener('headerPatternChanged', handlePatternChange);
     window.addEventListener('headerFontChanged', handleFontChange);
+    window.addEventListener('natalModeChanged', handleNatalChange);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
       window.removeEventListener('headerPatternChanged', handlePatternChange);
       window.removeEventListener('headerFontChanged', handleFontChange);
+      window.removeEventListener('natalModeChanged', handleNatalChange);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
@@ -72,9 +80,10 @@ const Layout = ({ children }) => {
     <div className="layout">
       <VitaminaModal />
       <nav
-        className="navbar glass-card theme-neon"
+        className={`navbar glass-card theme-neon${natal ? ' navbar-natal' : ''}`}
         style={{
-          '--header-pattern': `url('${headerPattern}')`
+          '--header-pattern': `url('${natal ? NATAL_CABECALHO : headerPattern}')`,
+          ...(natal ? { '--header-pattern-size': 'cover' } : {})
         }}
       >
         <div className="navbar-left">

@@ -217,6 +217,27 @@
   --theme-bg-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg stroke='%23d97706' opacity='0.24'%3E%3Ccircle cx='40' cy='35' r='10' fill='%23f59e0b' fill-opacity='0.3' stroke-width='2'/%3E%3Cpath d='M28,45 C38,36 56,42 54,54 C40,58 26,52 28,45 Z' fill='%23f59e0b' fill-opacity='0.3' stroke-width='2'/%3E%3Cpath d='M48,35 Q56,36 48,40' fill='%23ea580c' stroke='none'/%3E%3Ccircle cx='44' cy='32' r='1.5' fill='%23451a03' stroke='none'/%3E%3Ccircle cx='115' cy='115' r='7' fill='none' stroke='%2306b6d4' stroke-width='2' opacity='0.8'/%3E%3Ccircle cx='128' cy='102' r='4' fill='none' stroke='%2306b6d4' stroke-width='2' opacity='0.8'/%3E%3Ccircle cx='110' cy='132' r='5' fill='none' stroke='%2306b6d4' stroke-width='2' opacity='0.8'/%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* Modo Natal (ativado nas Definições, não aparece na lista de temas) */
+[data-theme="baby-natal"] {
+  --color-primary: #DB2777;
+  --color-primary-light: #F9A8D4;
+  --color-primary-dark: #BE185D;
+  --color-secondary: #B45309; /* Gingerbread */
+  --color-bg: #FFF1F5;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #FCE7F3;
+  --color-text: #500724;
+  --color-text-light: #9D174D;
+  --color-border: rgba(219, 39, 119, 0.22);
+  /* Véu rosa por cima da imagem: quanto mais opaco, mais legível o conteúdo */
+  --theme-bg-veil: rgba(255, 241, 245, 0.52);
+  --theme-bg-pattern: linear-gradient(var(--theme-bg-veil), var(--theme-bg-veil)), url("/natal-fundo.jpg");
+}
+
+[data-theme="baby-natal"] body {
+  background-size: auto, 440px auto;
+}
+
 :root {
   /* Premium Soft Shadows */
   --shadow-sm: 0 4px 12px -2px rgba(15, 23, 42, 0.04);
