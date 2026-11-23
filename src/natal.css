@@ -247,3 +247,23 @@
 [data-theme="baby-natal"][data-natal-fundo="vermelho"] body {
   background-size: auto, 760px auto;
 }
+
+/* ═══ Adaptação a ecrãs estreitos (modo Natal) ═══
+   Nos Documentos, o botão "Novo Documento" e os separadores deixam de sair do ecrã: quebram linha. */
+[data-theme="baby-natal"] .doc-header-actions {
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  max-width: 100%;
+  justify-content: flex-start;
+}
+
+[data-theme="baby-natal"] .sub-tabs-container {
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+/* A classe .flex-wrap é usada nos cabeçalhos das páginas mas não está definida no CSS da app:
+   no modo Natal passa a quebrar linha em ecrãs estreitos, em vez de a linha encolher e sair do ecrã. */
+[data-theme="baby-natal"] .flex-wrap {
+  flex-wrap: wrap;
+}

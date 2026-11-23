@@ -3,7 +3,7 @@
 const CHAVE = 'sofia_natal';
 
 export const NATAL_TEMA = 'baby-natal';
-export const NATAL_CABECALHO = '/natal-cabecalho-casa.jpg';
+export const NATAL_CABECALHO = '/natal-cabecalho-casa.jpg?v=3';
 
 export const isNatalAtivo = () => {
   try {

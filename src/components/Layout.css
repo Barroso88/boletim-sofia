@@ -663,3 +663,66 @@
     inset 0 0 0 1.5px rgba(255, 255, 255, 0.55),
     0 10px 28px -6px rgba(143, 11, 30, 0.35) !important;
 }
+
+/* ─── Modo Natal: cabeçalho que se adapta a ecrãs estreitos e largos ─── */
+.navbar.navbar-natal .avatar-ring {
+  width: clamp(60px, 22.4vw, 84px);
+  height: clamp(60px, 22.4vw, 84px);
+}
+
+/* o nome tem o tamanho e o espaço escritos no código da página, por isso !important */
+.navbar.navbar-natal .brand-title {
+  font-size: clamp(2.2rem, 14.9vw, 3.5rem) !important;
+}
+
+@media (max-width: 380px) {
+  .navbar.navbar-natal {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+
+  .navbar.navbar-natal .brand-title {
+    padding: 0.25rem 0.25rem !important;
+  }
+
+  .navbar.navbar-natal .btn-settings-header {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* Ecrãs largos: o cabeçalho tem a navegação lá dentro, por isso o avatar fica no tamanho original
+   (não acrescenta largura) e o banner é mais alto para mostrar mais da imagem. */
+@media (min-width: 1025px) {
+  .navbar.navbar-natal .avatar-ring {
+    width: 72px;
+    height: 72px;
+  }
+
+  .navbar.navbar-natal {
+    min-height: 11rem;
+  }
+}
+
+/* Modo Natal, ecrãs médios-largos: menu do topo mais compacto para caber os 8 separadores no cabeçalho */
+@media (min-width: 1025px) and (max-width: 1400px) {
+  .navbar.navbar-natal {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .navbar.navbar-natal .brand-title {
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  .navbar.navbar-natal .nav-links.desktop-only {
+    gap: 0;
+    padding: 0.2rem;
+  }
+
+  .navbar.navbar-natal .nav-links.desktop-only .nav-item {
+    gap: 0.3rem;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.82rem;
+  }
+}

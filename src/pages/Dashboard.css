@@ -970,3 +970,42 @@
   0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)); }
   50% { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.85)); }
 }
+
+/* Modo Natal: títulos "Consultas" e "Vacinas" mais compactos em ecrãs muito estreitos
+   (as estrelinhas ocupam espaço e a fita não pode sair do ecrã). */
+@media (max-width: 380px) {
+  [data-theme="baby-natal"] .health-title {
+    gap: 0.4rem;
+    padding: 0.65rem 1rem;
+    font-size: 1.1rem;
+    max-width: 100%;
+  }
+}
+
+/* Modo Natal: a grelha das consultas e vacinas deixa o conteúdo encolher (minmax(0, 1fr)),
+   para a coluna não passar da largura do ecrã em telemóveis muito estreitos. */
+@media (max-width: 600px) {
+  [data-theme="baby-natal"] .health-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-theme="baby-natal"] .health-column {
+    min-width: 0;
+  }
+}
+
+/* Modo Natal: o nome e a data do evento quebram linha em ecrãs estreitos
+   (a data não pode ficar cortada pela borda do cartão). */
+[data-theme="baby-natal"] .event-header {
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+}
+
+[data-theme="baby-natal"] .event-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+[data-theme="baby-natal"] .event-date {
+  max-width: 100%;
+}
