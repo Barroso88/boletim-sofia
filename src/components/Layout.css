@@ -595,3 +595,10 @@
     drop-shadow(0 0 6px rgba(255, 255, 255, 0.95))
     drop-shadow(0 2px 4px rgba(127, 29, 29, 0.35));
 }
+
+/* Modo Natal (telemóvel): banner mais alto para a fotografia aparecer com menos corte */
+@media (max-width: 1024px) {
+  .navbar.navbar-natal {
+    min-height: 10.5rem;
+  }
+}
