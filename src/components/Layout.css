@@ -602,3 +602,24 @@
     min-height: 10.5rem;
   }
 }
+
+/* ─── Modo Natal: foto da bebé com contorno vermelho, glow branco e um pouco maior ─── */
+.navbar.navbar-natal .avatar-ring {
+  width: 84px;
+  height: 84px;
+}
+
+.navbar.navbar-natal .theme-neon-avatar {
+  border: 2px solid #dc2626 !important;
+  background: #dc2626 !important;
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, 0.95),
+    0 0 12px rgba(255, 255, 255, 0.9),
+    0 0 24px rgba(255, 255, 255, 0.65),
+    inset 0 0 6px rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Fio branco fino entre a fotografia e o contorno vermelho */
+.navbar.navbar-natal .avatar-ring .avatar {
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.95);
+}
