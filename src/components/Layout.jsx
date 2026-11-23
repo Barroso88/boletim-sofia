@@ -91,7 +91,7 @@ const Layout = ({ children }) => {
           <Link to="/perfil" className="navbar-brand brand-link">
             <div className="avatar-ring theme-neon-avatar">
               <div className="avatar">
-                <img src="/favicon.png?v=4" alt="Sofia" />
+                <img src={natal ? '/natal-foto.jpg' : '/favicon.png?v=4'} alt="Sofia" />
               </div>
             </div>
           </Link>
