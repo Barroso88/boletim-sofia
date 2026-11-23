@@ -623,3 +623,16 @@
 .navbar.navbar-natal .avatar-ring .avatar {
   box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.95);
 }
+
+/* ─── Modo Natal: fundo atrás da foto, verde pinheiro com luzinhas douradas (como o cabeçalho).
+       O verde faz sobressair o laço vermelho e a pele. ─── */
+.navbar.navbar-natal .avatar-ring .avatar {
+  background:
+    radial-gradient(circle at 20% 17%, rgba(255, 224, 140, 0.95) 0 4.5%, rgba(255, 224, 140, 0) 9%),
+    radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.85) 0 3.5%, rgba(255, 255, 255, 0) 8%),
+    radial-gradient(circle at 88% 66%, rgba(255, 214, 120, 0.85) 0 4.5%, rgba(255, 214, 120, 0) 9%),
+    radial-gradient(circle at 10% 60%, rgba(255, 255, 255, 0.7) 0 3%, rgba(255, 255, 255, 0) 7%),
+    radial-gradient(circle at 52% 6%, rgba(255, 214, 120, 0.75) 0 3%, rgba(255, 214, 120, 0) 6.5%),
+    radial-gradient(circle at 70% 90%, rgba(255, 224, 140, 0.55) 0 3%, rgba(255, 224, 140, 0) 7%),
+    radial-gradient(circle at 50% 42%, #3f8f63 0%, #1f6a45 55%, #124a2f 100%);
+}
