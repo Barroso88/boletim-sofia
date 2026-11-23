@@ -470,3 +470,73 @@
   border-color: rgba(255, 255, 255, 0.9) !important;
   color: #fff;
 }
+
+/* ─── Modo Natal: barra de navegação inferior flutuante (telemóvel) ─── */
+@media (max-width: 1024px) {
+  .nav-links.nav-links-natal {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0.4rem;
+    gap: 0.1rem;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 24px rgba(190, 24, 93, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  .nav-links-natal .nav-item {
+    flex: 1 1 auto;
+    width: auto; /* cada separador ocupa o que o seu texto precisa */
+    min-height: 48px;
+    padding: 0.4rem 0.2rem;
+    border-radius: 1.1rem;
+    color: var(--color-text-light);
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+
+  .nav-links-natal .nav-item:active {
+    transform: scale(0.95);
+  }
+
+  .nav-links-natal .nav-item svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nav-links-natal .nav-item span {
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+
+  .nav-links-natal .nav-item.active {
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    color: var(--color-primary-dark);
+  }
+
+  .nav-links-natal .nav-item.active span {
+    font-weight: 700;
+  }
+}
+
+/* Telemóveis muito pequenos: letra e espaços mais compactos para caberem os 7 separadores */
+@media (max-width: 350px) {
+  .nav-links.nav-links-natal {
+    left: 0.4rem;
+    right: 0.4rem;
+    padding: 0.3rem 0.2rem;
+  }
+
+  .nav-links-natal .nav-item {
+    padding: 0.4rem 0.1rem;
+  }
+
+  .nav-links-natal .nav-item span {
+    font-size: 0.58rem;
+  }
+}

@@ -152,7 +152,7 @@ const Layout = ({ children }) => {
       </main>
 
       {/* On mobile, this standalone nav-links sits at the very root of the layout avoiding ALL stacking context traps */}
-      <div className="nav-links mobile-only">
+      <div className={`nav-links mobile-only${natal ? ' nav-links-natal' : ''}`}>
         {navItems.map((item) => (
           <Link
             key={item.path}
