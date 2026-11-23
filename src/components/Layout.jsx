@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Baby, Calendar, Image, FileText, Scale, Syringe, Settings, ClipboardList, RefreshCw } from 'lucide-react';
 import VitaminaModal from './VitaminaModal';
 import { isNatalAtivo, getNeve, NATAL_CABECALHO } from '../services/natal';
+import { preCarregar } from '../services/paginas';
 import NatalBow from './NatalBow';
 import NatalSnow from './NatalSnow';
 import { carregarFonteCabecalho } from '../services/fontes';
@@ -144,6 +145,8 @@ const Layout = ({ children }) => {
             <Link
               key={item.path}
               to={item.path}
+              onPointerDown={() => preCarregar(item.path)}
+              onMouseEnter={() => preCarregar(item.path)}
               className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
             >
               {item.icon}
@@ -171,6 +174,8 @@ const Layout = ({ children }) => {
           <Link
             key={item.path}
             to={item.path}
+            onPointerDown={() => preCarregar(item.path)}
+            onMouseEnter={() => preCarregar(item.path)}
             className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
           >
             {item.icon}

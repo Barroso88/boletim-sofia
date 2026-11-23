@@ -1,47 +1,56 @@
-import { lazy, Suspense, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
+import Pagina from './components/Pagina';
+import ErroPagina from './components/ErroPagina';
 import { aplicarTema } from './services/natal';
+import { ORDEM_PREPARACAO, preCarregar, recarregarSeFicheiroEmFalta } from './services/paginas';
 
-// O Início carrega logo; as outras páginas só quando são abertas (e são preparadas em segundo plano
-// quando a app está parada). Assim o primeiro carregamento tem muito menos JavaScript para processar.
-const carregarAgenda = () => import('./pages/Agenda');
-const carregarMarcos = () => import('./pages/Marcos');
-const carregarDocumentos = () => import('./pages/Documentos');
-const carregarPeso = () => import('./pages/Peso');
-const carregarVacinas = () => import('./pages/Vacinas');
-const carregarLeite = () => import('./pages/Leite');
-const carregarDefinicoes = () => import('./pages/Definicoes');
-const carregarPerfil = () => import('./pages/Perfil');
-
-const Agenda = lazy(carregarAgenda);
-const Marcos = lazy(carregarMarcos);
-const Documentos = lazy(carregarDocumentos);
-const Peso = lazy(carregarPeso);
-const Vacinas = lazy(carregarVacinas);
-const Leite = lazy(carregarLeite);
-const Definicoes = lazy(carregarDefinicoes);
-const Perfil = lazy(carregarPerfil);
-
-// Primeiro as mais usadas e as mais pesadas (Registos e Peso, que tem o gráfico)
-const PAGINAS = [carregarLeite, carregarPeso, carregarAgenda, carregarVacinas, carregarMarcos, carregarDocumentos, carregarDefinicoes, carregarPerfil];
+// As rotas ficam dentro do router para o aviso de erro se limpar sozinho ao mudar de separador.
+function Rotas() {
+  const { pathname } = useLocation();
+  return (
+    <ErroPagina chave={pathname}>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/agenda" element={<Pagina caminho="/agenda" />} />
+          <Route path="/marcos" element={<Pagina caminho="/marcos" />} />
+          <Route path="/documentos" element={<Pagina caminho="/documentos" />} />
+          <Route path="/peso" element={<Pagina caminho="/peso" />} />
+          <Route path="/vacinas" element={<Pagina caminho="/vacinas" />} />
+          <Route path="/leite" element={<Pagina caminho="/leite" />} />
+          <Route path="/definicoes" element={<Pagina caminho="/definicoes" />} />
+          <Route path="/perfil" element={<Pagina caminho="/perfil" />} />
+        </Routes>
+      </Suspense>
+    </ErroPagina>
+  );
+}
 
 function App() {
   useEffect(() => {
     aplicarTema();
   }, []);
 
-  // Com a app parada, vai buscando as outras páginas uma a uma, para a navegação ser instantânea
+  // Depois de uma atualização, ficheiros antigos deixam de existir: recarrega uma vez para apanhar a versão nova
+  useEffect(() => {
+    const aoFalharFicheiro = () => recarregarSeFicheiroEmFalta();
+    window.addEventListener('vite:preloadError', aoFalharFicheiro);
+    return () => window.removeEventListener('vite:preloadError', aoFalharFicheiro);
+  }, []);
+
+  // Com a app parada, vai buscando as outras páginas, para abrirem logo ao tocar no separador
   useEffect(() => {
     let cancelado = false;
     let id;
     const preparar = (indice = 0) => {
-      if (cancelado || indice >= PAGINAS.length) return;
-      PAGINAS[indice]().catch(() => {});
-      id = window.setTimeout(() => preparar(indice + 1), 400);
+      if (cancelado || indice >= ORDEM_PREPARACAO.length) return;
+      preCarregar(ORDEM_PREPARACAO[indice]);
+      id = window.setTimeout(() => preparar(indice + 1), 150);
     };
-    id = window.setTimeout(() => preparar(0), 1500);
+    id = window.setTimeout(() => preparar(0), 800);
     return () => {
       cancelado = true;
       window.clearTimeout(id);
@@ -49,21 +58,9 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Layout>
-        <Suspense fallback={null}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/agenda" element={<Agenda />} />
-            <Route path="/marcos" element={<Marcos />} />
-            <Route path="/documentos" element={<Documentos />} />
-            <Route path="/peso" element={<Peso />} />
-            <Route path="/vacinas" element={<Vacinas />} />
-            <Route path="/leite" element={<Leite />} />
-            <Route path="/definicoes" element={<Definicoes />} />
-            <Route path="/perfil" element={<Perfil />} />
-          </Routes>
-        </Suspense>
+        <Rotas />
       </Layout>
     </BrowserRouter>
   );
