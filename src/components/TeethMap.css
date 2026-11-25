@@ -16,6 +16,13 @@
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.06);
 }
 
+/* No telemóvel há menos margem, para a boca (e os dentes) ficarem maiores */
+@media (max-width: 480px) {
+  .teething-layout {
+    padding: 1.25rem 0.5rem;
+  }
+}
+
 /* ── Header ─────────────────────────────────────────────────────────────── */
 .teething-header {
   text-align: center;
@@ -57,7 +64,7 @@
 /* ── SVG Chart wrapper ──────────────────────────────────────────────────── */
 .teeth-svg-wrap {
   width: 100%;
-  max-width: 340px;
+  max-width: 380px;
   margin: 0 auto;
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.12));
 }
@@ -71,56 +78,73 @@
 
 .svg-label-text {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  fill: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-anchor: middle;
   pointer-events: none;
 }
 
-/* ── Tooth group (ellipse + number) ─────────────────────────────────────── */
+.boca-gengiva {
+  fill: none;
+  stroke: #f4a3ad;
+  stroke-width: 54;
+  stroke-linecap: round;
+}
+
+/* ── Dentes ─────────────────────────────────────────────────────────────── */
 .tooth-group {
-  transition: filter 0.3s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .tooth-group:focus { outline: none; }
 
-.tooth-group:hover .tooth-el {
-  filter: brightness(1.12);
-}
-
-/* Tooth body */
+/* Por nascer: contorno tracejado na gengiva */
 .tooth-el {
-  /* Un-erupted: darker than gum — a muted brownish-mauve */
-  fill: #9e6060;
-  stroke: rgba(255, 255, 255, 0.18);
-  stroke-width: 1;
-  transition: fill 0.4s ease, filter 0.3s ease;
+  fill: rgba(255, 255, 255, 0.3);
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 1.3;
+  stroke-dasharray: 3 2.6;
+  transition: fill 0.3s ease;
 }
 
-/* Erupted: white + glow */
+/* Nascido: dente branco com relevo */
 .tooth-group.erupted .tooth-el {
-  fill: #ffffff;
-  stroke: rgba(255, 255, 255, 0.9);
-  stroke-width: 1.5;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+  fill: url(#boca-esmalte);
+  stroke: #e9ddd0;
+  stroke-width: 1;
+  stroke-dasharray: none;
 }
 
-/* Order number on tooth */
+.tooth-group:hover .tooth-el,
+.tooth-group:focus-visible .tooth-el {
+  stroke: #ffffff;
+  stroke-width: 2.5;
+}
+
+.tooth-sombra {
+  fill: rgba(125, 36, 52, 0.35);
+}
+
+.tooth-relevo {
+  fill: none;
+  stroke: #d9cbbd;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.tooth-bola {
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
 .tooth-num {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 8px;
-  font-weight: 800;
-  pointer-events: none;
-  transition: fill 0.3s ease;
-  /* Un-erupted: semi-transparent white */
-  fill: rgba(255, 255, 255, 0.55);
-}
-
-/* Erupted: number takes the order color (set inline) */
-.tooth-group.erupted .tooth-num {
-  /* fill set inline per tooth */
+  font-size: 10px;
   font-weight: 900;
+  text-anchor: middle;
+  pointer-events: none;
 }
 
 /* ── Legend ─────────────────────────────────────────────────────────────── */

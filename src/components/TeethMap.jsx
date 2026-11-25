@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { X, Calendar as CalendarIcon, Trash2, Sparkles, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import Boca from './Boca';
+import { DENTES as TEETH } from '../services/boca';
 import './TeethMap.css';
 
 /* ─── Eruption order colors ──────────────────────────────────────────────── */
@@ -17,34 +20,6 @@ const LEGEND = [
   { num: 5, label: 'Entre os 14 e 20 meses',  desc: 'Primeiros molares',             color: '#EF4444' },
   { num: 6, label: 'Entre os 18 e 24 meses',  desc: 'Caninos',                       color: '#9333EA' },
   { num: 7, label: 'Entre os 2 e 3 anos',     desc: 'Segundos molares',              color: '#F59E0B' },
-];
-
-/* ─── SVG Tooth definitions (viewBox 0 0 300 420) ────────────────────────── */
-const TEETH = [
-  // ── Upper arch — Right side
-  { id: 'u_m2_r', label: '2º Molar Sup. Direito',         order: 7, cx: 38,  cy: 155, rx: 16, ry: 14, rot: -55 },
-  { id: 'u_m1_r', label: '1º Molar Sup. Direito',         order: 5, cx: 42,  cy: 112, rx: 14, ry: 13, rot: -42 },
-  { id: 'u_c_r',  label: 'Canino Sup. Direito',            order: 6, cx: 62,  cy: 74,  rx: 10, ry: 15, rot: -28 },
-  { id: 'u_il_r', label: 'Incisivo Lateral Sup. Direito',  order: 3, cx: 97,  cy: 46,  rx: 11, ry: 14, rot: -12 },
-  { id: 'u_ic_r', label: 'Incisivo Central Sup. Direito',  order: 2, cx: 132, cy: 32,  rx: 13, ry: 17, rot: -2  },
-  // ── Upper arch — Left side
-  { id: 'u_ic_l', label: 'Incisivo Central Sup. Esquerdo', order: 2, cx: 168, cy: 32,  rx: 13, ry: 17, rot: 2   },
-  { id: 'u_il_l', label: 'Incisivo Lateral Sup. Esquerdo', order: 3, cx: 203, cy: 46,  rx: 11, ry: 14, rot: 12  },
-  { id: 'u_c_l',  label: 'Canino Sup. Esquerdo',           order: 6, cx: 238, cy: 74,  rx: 10, ry: 15, rot: 28  },
-  { id: 'u_m1_l', label: '1º Molar Sup. Esquerdo',         order: 5, cx: 258, cy: 112, rx: 14, ry: 13, rot: 42  },
-  { id: 'u_m2_l', label: '2º Molar Sup. Esquerdo',         order: 7, cx: 262, cy: 155, rx: 16, ry: 14, rot: 55  },
-  // ── Lower arch — Right side
-  { id: 'l_m2_r', label: '2º Molar Inf. Direito',          order: 7, cx: 42,  cy: 270, rx: 16, ry: 14, rot: 55  },
-  { id: 'l_m1_r', label: '1º Molar Inf. Direito',          order: 5, cx: 48,  cy: 310, rx: 14, ry: 13, rot: 42  },
-  { id: 'l_c_r',  label: 'Canino Inf. Direito',             order: 6, cx: 68,  cy: 348, rx: 10, ry: 14, rot: 28  },
-  { id: 'l_il_r', label: 'Incisivo Lateral Inf. Direito',   order: 4, cx: 102, cy: 374, rx: 10, ry: 13, rot: 12  },
-  { id: 'l_ic_r', label: 'Incisivo Central Inf. Direito',   order: 1, cx: 135, cy: 388, rx: 11, ry: 14, rot: 2   },
-  // ── Lower arch — Left side
-  { id: 'l_ic_l', label: 'Incisivo Central Inf. Esquerdo',  order: 1, cx: 165, cy: 388, rx: 11, ry: 14, rot: -2  },
-  { id: 'l_il_l', label: 'Incisivo Lateral Inf. Esquerdo',  order: 4, cx: 198, cy: 374, rx: 10, ry: 13, rot: -12 },
-  { id: 'l_c_l',  label: 'Canino Inf. Esquerdo',            order: 6, cx: 232, cy: 348, rx: 10, ry: 14, rot: -28 },
-  { id: 'l_m1_l', label: '1º Molar Inf. Esquerdo',          order: 5, cx: 252, cy: 310, rx: 14, ry: 13, rot: -42 },
-  { id: 'l_m2_l', label: '2º Molar Inf. Esquerdo',          order: 7, cx: 258, cy: 270, rx: 16, ry: 14, rot: -55 },
 ];
 
 /* ─── Date formatter ─────────────────────────────────────────────────────── */
@@ -135,78 +110,7 @@ const TeethMap = () => {
 
       {/* ── SVG Dental Chart ───────────────────────────────────────────── */}
       <div className="teeth-svg-wrap">
-        <svg viewBox="0 0 300 420" className="teeth-chart" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="gumGradU" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#c8888a" />
-              <stop offset="100%" stopColor="#b87070" />
-            </linearGradient>
-            <linearGradient id="gumGradL" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#b87070" />
-              <stop offset="100%" stopColor="#c8888a" />
-            </linearGradient>
-          </defs>
-
-          {/* Upper jaw */}
-          <path
-            fillRule="evenodd"
-            d="M 150,5 C 80,5 12,45 12,120 C 12,172 48,195 80,195 L 220,195 C 252,195 288,172 288,120 C 288,45 220,5 150,5 Z
-               M 150,82 C 118,82 88,102 88,142 C 88,172 108,195 140,195 L 160,195 C 192,195 212,172 212,142 C 212,102 182,82 150,82 Z"
-            fill="url(#gumGradU)"
-          />
-
-          {/* Lower jaw */}
-          <path
-            fillRule="evenodd"
-            d="M 80,225 C 44,225 12,255 12,312 C 12,385 78,415 150,415 C 222,415 288,385 288,312 C 288,255 256,225 220,225 Z
-               M 138,225 C 108,225 82,252 82,286 C 82,328 112,350 150,350 C 188,350 218,328 218,286 C 218,252 192,225 162,225 Z"
-            fill="url(#gumGradL)"
-          />
-
-          {/* Divider label */}
-          <text x="150" y="213" textAnchor="middle" className="svg-label-text">
-            ORDEM DE ERUPÇÃO
-          </text>
-
-          {/* ── Render each tooth (ellipse + order number) ─────────────── */}
-          {TEETH.map(tooth => {
-            const erupted = !!teethingData[tooth.id];
-            const color = ORDER_COLORS[tooth.order];
-            return (
-              <g
-                key={tooth.id}
-                className={`tooth-group${erupted ? ' erupted' : ''}`}
-                onClick={() => openModal(tooth)}
-                role="button"
-                tabIndex={0}
-                aria-label={tooth.label}
-                onKeyDown={e => e.key === 'Enter' && openModal(tooth)}
-                style={{ cursor: 'pointer' }}
-              >
-                {/* Tooth body */}
-                <ellipse
-                  className="tooth-el"
-                  cx={tooth.cx}
-                  cy={tooth.cy}
-                  rx={tooth.rx}
-                  ry={tooth.ry}
-                  transform={`rotate(${tooth.rot} ${tooth.cx} ${tooth.cy})`}
-                />
-                {/* Order number — always visible */}
-                <text
-                  x={tooth.cx}
-                  y={tooth.cy + 0.5}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  className="tooth-num"
-                  style={{ fill: erupted ? color : 'rgba(255,255,255,0.55)' }}
-                >
-                  {tooth.order}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+        <Boca nascidos={teethingData} cores={ORDER_COLORS} onEscolher={openModal} />
       </div>
 
       {/* ── Legend ──────────────────────────────────────────────────────── */}
@@ -254,7 +158,7 @@ const TeethMap = () => {
       )}
 
       {/* ── Modal ──────────────────────────────────────────────────────── */}
-      {selectedTooth && (
+      {selectedTooth && createPortal(
         <div className="tooth-modal-overlay" onClick={closeModal}>
           <div className="tooth-modal animate-fade-in" onClick={e => e.stopPropagation()}>
 
@@ -313,11 +217,12 @@ const TeethMap = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Confirmation Modal */}
-      {confirmarDelete && (
+      {confirmarDelete && createPortal(
         <div className="modal-overlay" style={{ zIndex: 2147483647 }} onClick={() => setConfirmarDelete(false)}>
           <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
             <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
@@ -342,7 +247,8 @@ const TeethMap = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
