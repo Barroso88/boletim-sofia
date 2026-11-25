@@ -217,6 +217,11 @@ async function setupTables() {
         hora TEXT NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS denticao (
+        dente TEXT PRIMARY KEY,
+        data TEXT NOT NULL
+      );
+
       -- Quem fez o registo (Pai, Mãe, Avô ou Avó). Os registos antigos ficam sem nome.
       ALTER TABLE leite ADD COLUMN IF NOT EXISTS quem TEXT;
       ALTER TABLE fraldas ADD COLUMN IF NOT EXISTS quem TEXT;
@@ -786,6 +791,40 @@ app.delete('/api/leite/:id', async (req, res) => {
 });
 
 // --- BANHOS ---
+// Dentição: uma linha por dente nascido
+const DENTE_VALIDO = /^[ul]_(ic|il|c|m1|m2)_[rl]$/;
+
+app.get('/api/denticao', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM denticao');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/denticao', async (req, res) => {
+  const { dente, data } = req.body || {};
+  if (!DENTE_VALIDO.test(dente || '') || !/^\d{4}-\d{2}-\d{2}$/.test(data || '')) {
+    return res.status(400).json({ error: 'Dente ou data inválidos' });
+  }
+  try {
+    await pool.query('INSERT INTO denticao (dente, data) VALUES ($1, $2) ON CONFLICT (dente) DO UPDATE SET data = $2', [dente, data]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/denticao/:dente', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM denticao WHERE dente = $1', [req.params.dente]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/banhos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM banhos ORDER BY data DESC, hora DESC, id DESC');

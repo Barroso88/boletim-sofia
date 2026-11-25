@@ -3,6 +3,7 @@ import { X, Calendar as CalendarIcon, Trash2, Sparkles, CheckCircle, Clock, Aler
 import { createPortal } from 'react-dom';
 import Boca from './Boca';
 import { DENTES as TEETH } from '../services/boca';
+import { denticao } from '../services/denticao';
 import './TeethMap.css';
 
 /* ─── Eruption order colors ──────────────────────────────────────────────── */
@@ -31,32 +32,13 @@ const formatDate = (iso) => {
 
 /* ─── Component ──────────────────────────────────────────────────────────── */
 const TeethMap = () => {
-  const [teethingData, setTeethingData] = useState(() => {
-    const saved = localStorage.getItem('sofia_denticao');
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [teethingData, setTeethingData] = useState(denticao.local);
   const [selectedTooth, setSelectedTooth] = useState(null);
   const [eruptionDate, setEruptionDate] = useState('');
 
+  // Mostra já o que está no telemóvel e atualiza com o que estiver no servidor
   useEffect(() => {
-    localStorage.setItem('sofia_denticao', JSON.stringify(teethingData));
-  }, [teethingData]);
-
-  useEffect(() => {
-    // Sanitize any phantom/legacy keys from localStorage
-    const validKeys = new Set(TEETH.map(t => t.id));
-    const sanitized = {};
-    let hasDirty = false;
-    Object.keys(teethingData).forEach(k => {
-      if (validKeys.has(k) && teethingData[k]) {
-        sanitized[k] = teethingData[k];
-      } else {
-        hasDirty = true;
-      }
-    });
-    if (hasDirty) {
-      setTeethingData(sanitized);
-    }
+    denticao.carregar().then(setTeethingData);
   }, []);
 
   const openModal = (t) => {
@@ -69,6 +51,7 @@ const TeethMap = () => {
     e.preventDefault();
     if (!eruptionDate) return;
     setTeethingData(prev => ({ ...prev, [selectedTooth.id]: eruptionDate }));
+    denticao.guardar(selectedTooth.id, eruptionDate);
     closeModal();
   };
 
@@ -79,6 +62,7 @@ const TeethMap = () => {
     setTeethingData(prev => {
       const next = { ...prev }; delete next[selectedTooth.id]; return next;
     });
+    denticao.remover(selectedTooth.id);
     setConfirmarDelete(false);
     closeModal();
   };
