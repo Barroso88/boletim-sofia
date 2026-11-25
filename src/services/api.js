@@ -441,6 +441,45 @@ export const api = {
   },
 
   // --- FRALDAS ---
+  async getBanhos(localKey = 'sofia_banhos') {
+    const remote = await fetchWithFallback(`${API_BASE}/banhos`);
+    if (remote && Array.isArray(remote)) {
+      const saved = localStorage.getItem(localKey);
+      const localList = saved ? JSON.parse(saved) : [];
+      if (remote.length === 0 && localList.length > 0) {
+        localList.forEach(r => this.saveBanho(r, localKey));
+        return localList;
+      }
+      localStorage.setItem(localKey, JSON.stringify(remote));
+      return remote;
+    }
+    const saved = localStorage.getItem(localKey);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  async saveBanho(registo, localKey = 'sofia_banhos') {
+    const saved = localStorage.getItem(localKey);
+    const list = (saved ? JSON.parse(saved) : []).filter(r => r.id !== registo.id);
+    list.push(registo);
+    list.sort((a, b) => `${b.data}T${b.hora}`.localeCompare(`${a.data}T${a.hora}`));
+    localStorage.setItem(localKey, JSON.stringify(list));
+
+    await fetchWithFallback(`${API_BASE}/banhos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registo)
+    });
+  },
+
+  async deleteBanho(id, localKey = 'sofia_banhos') {
+    const saved = localStorage.getItem(localKey);
+    if (saved) {
+      const list = JSON.parse(saved).filter(r => r.id !== id);
+      localStorage.setItem(localKey, JSON.stringify(list));
+    }
+    fetchWithFallback(`${API_BASE}/banhos/${id}`, { method: 'DELETE' });
+  },
+
   async getFraldas(localKey = 'sofia_fraldas') {
     const remote = await fetchWithFallback(`${API_BASE}/fraldas`);
     if (remote && Array.isArray(remote)) {

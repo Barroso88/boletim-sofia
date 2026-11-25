@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { differenceInMonths, differenceInDays, differenceInYears, format, differenceInWeeks } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers, CloudRain, Sun } from 'lucide-react';
+import { tempoDesdeBanho } from '../services/banhos';
+import { Bath } from 'lucide-react';
 import { api } from '../services/api';
 import { defaultVacinas } from '../data/defaultVacinas';
 import { SALTOS_DESENVOLVIMENTO } from '../data/saltos';
@@ -37,6 +39,7 @@ const Dashboard = () => {
   const [vacinas, setVacinas] = useState([]);
   const [registosLeite, setRegistosLeite] = useState([]);
   const [registosFraldas, setRegistosFraldas] = useState([]);
+  const [registosBanhos, setRegistosBanhos] = useState([]);
   const [registosSonos, setRegistosSonos] = useState([]);
   const [dpp, setDpp] = useState(null);
 
@@ -45,6 +48,7 @@ const Dashboard = () => {
     api.getVacinas(defaultVacinas).then(data => setVacinas(data));
     api.getLeite().then(data => setRegistosLeite(data || []));
     api.getFraldas().then(data => setRegistosFraldas(data || []));
+    api.getBanhos().then(data => setRegistosBanhos(data || []));
     api.getSonos().then(data => setRegistosSonos(data || []));
     api.getPerfil().then(data => {
       if (data && data.data_provavel_parto) {
@@ -153,6 +157,9 @@ const Dashboard = () => {
     return dtB.localeCompare(dtA);
   });
   const ultimaFralda = sortedFraldas[0];
+
+  const ultimoBanho = [...registosBanhos].sort((a, b) => `${b.data}T${b.hora}`.localeCompare(`${a.data}T${a.hora}`))[0];
+  const desdeBanho = ultimoBanho ? tempoDesdeBanho(ultimoBanho.data, ultimoBanho.hora) : null;
 
   const getSonoEffectiveTime = (s) => {
     let d = new Date(`${s.data}T${s.hora_inicio}:00`);
@@ -640,6 +647,44 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="snapshot-empty">Sem registos de sono</div>
+          )}
+        </div>
+        {/* Card 4: Último Banho */}
+        <div
+          className="quick-snapshot-card bath-card glass-card"
+          onClick={() => {
+            sessionStorage.setItem('leite_active_tab', 'banhos');
+            navigate('/leite');
+          }}
+        >
+          <div className="snapshot-header">
+            <div className="snapshot-title-group">
+              <div className="snapshot-icon-badge">
+                <Bath size={34} color="#0891b2" />
+              </div>
+              <div>
+                <h3 className="snapshot-title">Último Banho</h3>
+                <p className="snapshot-subtitle">Higiene</p>
+              </div>
+            </div>
+          </div>
+
+          {desdeBanho ? (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <div className={`snapshot-timer-pill ${desdeBanho.isUrgent ? 'urgent' : 'ok'}`}>
+                  <Clock size={16} />
+                  <span>há {desdeBanho.text}</span>
+                </div>
+              </div>
+              <div className="snapshot-body">
+                <div className="snapshot-meta">
+                  <span>às <strong>{ultimoBanho.hora}</strong> ({formatDataLabel(ultimoBanho.data)})</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="snapshot-empty">Sem registos de banho</div>
           )}
         </div>
       </div>

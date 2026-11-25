@@ -17,6 +17,9 @@ const DIAPER_TYPES = [
   { id: 'Cocó + Xixi', label: 'Cocó + Xixi', icon: '🧻', badgeClass: 'coco-xixi' },
 ];
 
+import BanhosTab from '../components/BanhosTab';
+import { Bath } from 'lucide-react';
+
 const Leite = () => {
   const [activeSubTab, setActiveSubTab] = useState(() => {
     return sessionStorage.getItem('leite_active_tab') || 'leite';
@@ -618,7 +621,7 @@ const Leite = () => {
       {/* Header */}
       <header className="page-header mb-2">
         <h1 className="page-title">
-          <span>Leite & Fraldas & Sono</span>
+          <span>Leite, Fraldas, Sono & Banho</span>
           <Sparkles size={24} style={{ color: 'var(--color-secondary)' }} />
         </h1>
         <p className="text-secondary" style={{ marginTop: '0.2rem' }}>Acompanhamento diário da Sofia</p>
@@ -646,6 +649,13 @@ const Leite = () => {
         >
           <img src={dormirIcon} alt="Sono" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
           <span>Sono</span>
+        </button>
+        <button
+          className={`sub-tab-btn btn-banho ${activeSubTab === 'banhos' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('banhos')}
+        >
+          <Bath size={18} />
+          <span>Banhos</span>
         </button>
       </div>
 
@@ -993,6 +1003,9 @@ const Leite = () => {
           </div>
         </>
       )}
+
+      {/* ─── TAB 4: BANHOS ─── */}
+      {activeSubTab === 'banhos' && <BanhosTab data={dataSelecionada} />}
 
       {/* ─── TAB 2: FRALDAS ──────────────────────────────────────────────── */}
       {activeSubTab === 'fraldas' && (
