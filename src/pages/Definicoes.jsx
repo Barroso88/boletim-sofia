@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image, TreePine } from 'lucide-react';
+import { Settings, Palette, CheckCircle, BellRing, Eye, RotateCcw, Sparkles, Image, TreePine, Smartphone } from 'lucide-react';
 import { isNatalAtivo, setNatalAtivo, aplicarTema, getNeve, setNeve, getFundo, setFundo } from '../services/natal';
 import { carregarTodasAsFontes } from '../services/fontes';
+import { PESSOAS, getQuem, setQuem } from '../services/quem';
 import './Definicoes.css';
 
 const BABY_THEMES = [
@@ -47,6 +48,12 @@ const Definicoes = () => {
   const [natal, setNatal] = useState(isNatalAtivo);
   const [neve, setNeveEscolhida] = useState(getNeve);
   const [fundo, setFundoEscolhido] = useState(getFundo);
+  const [quem, setQuemEscolhido] = useState(getQuem);
+
+  const escolherQuem = (valor) => {
+    setQuem(valor);
+    setQuemEscolhido(valor);
+  };
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('sofia_theme');
@@ -140,6 +147,33 @@ const Definicoes = () => {
       </div>
 
       <div className="settings-grid" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+        {/* De quem é este telemóvel */}
+        <div className="glass-card settings-section animate-fade-in">
+          <div className="settings-header">
+            <Smartphone size={24} color="var(--color-primary)" />
+            <h3 className="h3" style={{ color: 'var(--color-primary-dark)' }}>De quem é este telemóvel?</h3>
+          </div>
+          <div className="natal-seg quem-seg" role="radiogroup" aria-label="De quem é este telemóvel">
+            {[...PESSOAS, null].map((pessoa) => (
+              <button
+                key={pessoa || 'ninguem'}
+                type="button"
+                role="radio"
+                aria-checked={quem === pessoa}
+                onClick={() => escolherQuem(pessoa)}
+              >
+                {pessoa || 'Não indicar'}
+              </button>
+            ))}
+          </div>
+          <p className="text-small" style={{ marginTop: '0.75rem' }}>
+            {quem
+              ? `Os registos novos feitos neste telemóvel ficam marcados como ${quem}.`
+              : 'Os registos novos feitos neste telemóvel ficam sem nome.'}
+            {' '}A escolha só vale para este telemóvel.
+          </p>
+        </div>
 
         {/* Modo Natal */}
         <div className="glass-card settings-section animate-fade-in" style={{ border: '2px solid rgba(219,39,119,0.25)' }}>

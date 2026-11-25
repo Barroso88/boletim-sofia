@@ -205,3 +205,18 @@
   outline: 3px solid var(--color-primary-light);
   outline-offset: 1px;
 }
+
+/* De quem é este telemóvel */
+.quem-seg {
+  justify-content: stretch;
+}
+
+.quem-seg button {
+  flex: 1;
+  min-height: 40px;
+}
+
+.quem-seg button[aria-checked="true"] {
+  background: var(--color-primary-dark);
+  color: #ffffff;
+}

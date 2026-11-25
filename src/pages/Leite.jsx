@@ -4,6 +4,8 @@ import { format, parseISO, formatDistanceToNow, subDays, differenceInDays } from
 import { ptBR } from 'date-fns/locale';
 import { Plus, Milk, Trash2, Calendar as CalendarIcon, Clock, Minus, Sparkles, ChevronLeft, ChevronRight, Droplets, Layers, Pencil, AlertTriangle, X, BarChart2, TrendingUp, Award, Package, Moon } from 'lucide-react';
 import { api } from '../services/api';
+import { comAutor } from '../services/quem';
+import Quem from '../components/Quem';
 import './Leite.css';
 import biberaoIcon from '../assets/icons/baby-bottle.png';
 import fraldaIcon from '../assets/icons/diaper.png';
@@ -403,12 +405,12 @@ const Leite = () => {
   const adicionarRegistoLeite = (e) => {
     e.preventDefault();
     if (!novaHoraLeite || !novaQuantidade) return;
-    const registo = {
+    const registo = comAutor({
       id: editandoIdLeite || Date.now(),
       data: dataSelecionada,
       hora: novaHoraLeite,
       quantidade_ml: Number(novaQuantidade),
-    };
+    }, registosLeite);
     setRegistosLeite(prev => {
       const exists = prev.some(r => r.id === registo.id);
       if (exists) return prev.map(r => r.id === registo.id ? registo : r);
@@ -486,13 +488,13 @@ const Leite = () => {
     const duracao = novaHoraFimSono ? calcularDuracao(novaHoraInicioSono, novaHoraFimSono) : 0;
     if (novaHoraFimSono && duracao === 0) return; // Evitar registos de 0 min se tiver hora fim
     
-    const registo = {
+    const registo = comAutor({
       id: editandoIdSono || Date.now(),
       data: novaDataSono,
       hora_inicio: novaHoraInicioSono,
       hora_fim: novaHoraFimSono || "",
       duracao_minutos: duracao,
-    };
+    }, registosSonos);
     setRegistosSonos(prev => {
       const exists = prev.some(r => r.id === registo.id);
       if (exists) return prev.map(r => r.id === registo.id ? registo : r);
@@ -580,12 +582,12 @@ const Leite = () => {
   const adicionarRegistoFralda = (e) => {
     e.preventDefault();
     if (!novaHoraFralda || !tipoFraldaSelecionado) return;
-    const registo = {
+    const registo = comAutor({
       id: editandoIdFralda || Date.now(),
       data: dataSelecionada,
       hora: novaHoraFralda,
       tipo: tipoFraldaSelecionado,
-    };
+    }, registosFraldas);
     setRegistosFraldas(prev => {
       const exists = prev.some(r => r.id === registo.id);
       if (exists) return prev.map(r => r.id === registo.id ? registo : r);
@@ -871,6 +873,7 @@ const Leite = () => {
                       <div className="feeding-time">{reg.hora}</div>
                       <div className="feeding-relative-time">
                         {dataSelecionada === hojeStr ? 'Hoje' : dataSelecionada}
+                      <Quem nome={reg.quem} />
                       </div>
                     </div>
                   </div>
@@ -1160,6 +1163,7 @@ const Leite = () => {
                         <div className="feeding-time">{reg.hora}</div>
                         <div className="feeding-relative-time">
                           {dataSelecionada === hojeStr ? 'Hoje' : dataSelecionada}
+                        <Quem nome={reg.quem} />
                         </div>
                       </div>
                     </div>
@@ -1394,6 +1398,7 @@ const Leite = () => {
                                 'Em curso'
                               )}
                             </span>
+                            <Quem nome={reg.quem} />
                             {(reg.is_split_start || reg.is_split_end) && reg.hora_fim && (
                               <span style={{ fontSize: '0.7rem', background: 'rgba(139,92,246,0.1)', color: '#8b5cf6', padding: '2px 6px', borderRadius: '10px' }} title="Tempo contabilizado para o dia de hoje">
                                 Parcial: {partialHrs > 0 ? `${partialHrs}h ` : ''}{partialMins}m

@@ -6,6 +6,8 @@ import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers, CloudRain, Sun 
 import { tempoDesdeBanho } from '../services/banhos';
 import { Bath } from 'lucide-react';
 import { api } from '../services/api';
+import { comAutor } from '../services/quem';
+import Quem from '../components/Quem';
 import { defaultVacinas } from '../data/defaultVacinas';
 import { SALTOS_DESENVOLVIMENTO } from '../data/saltos';
 import biberaoIcon from '../assets/icons/baby-bottle.png';
@@ -451,7 +453,7 @@ const Dashboard = () => {
                 {ultimaMamada.quantidade_ml} <span className="snapshot-unit">ml</span>
               </div>
               <div className="snapshot-meta">
-                <span>às <strong>{ultimaMamada.hora}</strong> ({formatDataLabel(ultimaMamada.data)})</span>
+                <span>às <strong>{ultimaMamada.hora}</strong> ({formatDataLabel(ultimaMamada.data)})<Quem nome={ultimaMamada.quem} /></span>
               </div>
             </div>
           ) : (
@@ -520,7 +522,7 @@ const Dashboard = () => {
                 {ultimaFralda.tipo}
               </div>
               <div className="snapshot-meta">
-                <span>às <strong>{ultimaFralda.hora}</strong> ({formatDataLabel(ultimaFralda.data)})</span>
+                <span>às <strong>{ultimaFralda.hora}</strong> ({formatDataLabel(ultimaFralda.data)})<Quem nome={ultimaFralda.quem} /></span>
               </div>
             </div>
           ) : (
@@ -614,7 +616,7 @@ const Dashboard = () => {
                     Acordou
                   </button>
                   <div className="snapshot-meta" style={{ marginTop: '0' }}>
-                    <span>às <strong>{ultimoSono.hora_inicio}</strong> ({formatDataLabel(ultimoSono.data)})</span>
+                    <span>às <strong>{ultimoSono.hora_inicio}</strong> ({formatDataLabel(ultimoSono.data)})<Quem nome={ultimoSono.quem} /></span>
                   </div>
                 </div>
               ) : (
@@ -626,13 +628,13 @@ const Dashboard = () => {
                       e.stopPropagation();
                       const horaAtual = format(new Date(), 'HH:mm');
                       const dataAtual = format(new Date(), 'yyyy-MM-dd');
-                      const novoSono = {
+                      const novoSono = comAutor({
                         id: Date.now(),
                         data: dataAtual,
                         hora_inicio: horaAtual,
                         hora_fim: '',
                         duracao_minutos: 0
-                      };
+                      });
                       setRegistosSonos(prev => [novoSono, ...prev]);
                       await api.saveSono(novoSono);
                     }}
@@ -640,7 +642,7 @@ const Dashboard = () => {
                     Adormeceu
                   </button>
                   <div className="snapshot-meta" style={{ marginTop: '0' }}>
-                    <span>{ultimoSono.hora_inicio} - {ultimoSono.hora_fim} ({formatDataLabel(ultimoSono.data)})</span>
+                    <span>{ultimoSono.hora_inicio} - {ultimoSono.hora_fim} ({formatDataLabel(ultimoSono.data)})<Quem nome={ultimoSono.quem} /></span>
                   </div>
                 </div>
               )}
@@ -679,7 +681,7 @@ const Dashboard = () => {
               </div>
               <div className="snapshot-body">
                 <div className="snapshot-meta">
-                  <span>às <strong>{ultimoBanho.hora}</strong> ({formatDataLabel(ultimoBanho.data)})</span>
+                  <span>às <strong>{ultimoBanho.hora}</strong> ({formatDataLabel(ultimoBanho.data)})<Quem nome={ultimoBanho.quem} /></span>
                 </div>
               </div>
             </>

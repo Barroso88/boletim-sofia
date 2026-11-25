@@ -4,6 +4,8 @@ import { ptBR } from 'date-fns/locale';
 import { Bath, Plus, Clock, Pencil, Trash2 } from 'lucide-react';
 import { api } from '../services/api';
 import { tempoDesdeBanho } from '../services/banhos';
+import { comAutor } from '../services/quem';
+import Quem from './Quem';
 
 const AZUL = 'linear-gradient(135deg, #0891b2, #22d3ee)';
 
@@ -38,7 +40,7 @@ const BanhosTab = ({ data }) => {
   const guardar = (e) => {
     e.preventDefault();
     if (!hora) return;
-    const registo = { id: editandoId || Date.now(), data, hora };
+    const registo = comAutor({ id: editandoId || Date.now(), data, hora }, registos);
     setRegistos((lista) => [registo, ...lista.filter((r) => r.id !== registo.id)]);
     api.saveBanho(registo);
     fechar();
@@ -125,7 +127,10 @@ const BanhosTab = ({ data }) => {
                 <div className="feeding-icon-box" style={{ background: 'rgba(8, 145, 178, 0.1)', color: '#0891b2' }}>
                   <Bath size={20} />
                 </div>
-                <div className="feeding-time">{registo.hora}</div>
+                <div className="feeding-time">
+                  {registo.hora}
+                  <Quem nome={registo.quem} />
+                </div>
               </div>
               {aConfirmar === registo.id ? (
                 <div className="btn-action-group">

@@ -217,6 +217,12 @@ async function setupTables() {
         hora TEXT NOT NULL
       );
 
+      -- Quem fez o registo (Pai ou Mãe). Os registos antigos ficam sem nome.
+      ALTER TABLE leite ADD COLUMN IF NOT EXISTS quem TEXT;
+      ALTER TABLE fraldas ADD COLUMN IF NOT EXISTS quem TEXT;
+      ALTER TABLE sonos ADD COLUMN IF NOT EXISTS quem TEXT;
+      ALTER TABLE banhos ADD COLUMN IF NOT EXISTS quem TEXT;
+
       CREATE TABLE IF NOT EXISTS perfil (
         id INT PRIMARY KEY DEFAULT 1,
         nome_completo TEXT,
@@ -560,6 +566,14 @@ app.delete('/api/documentos/:id', async (req, res) => {
   }
 });
 
+// Autor de um registo, vindo da app (corpo) ou da voz (?quem=pai). Qualquer outro valor é ignorado.
+function lerQuem(req) {
+  const valor = String((req.body && req.body.quem) || (req.query && req.query.quem) || '').trim().toLowerCase();
+  if (valor === 'pai') return 'Pai';
+  if (valor === 'mãe' || valor === 'mae') return 'Mãe';
+  return null;
+}
+
 function getNowLisbon() {
   const now = new Date();
   const data = now.toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' });
@@ -663,8 +677,8 @@ const handleSaveLeite = async (req, res) => {
 
   try {
     await pool.query(
-      'INSERT INTO leite (id, data, hora, quantidade_ml) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, quantidade_ml = $4',
-      [recordId, recordData, recordHora, qty]
+      'INSERT INTO leite (id, data, hora, quantidade_ml, quem) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, quantidade_ml = $4, quem = COALESCE(leite.quem, $5)',
+      [recordId, recordData, recordHora, qty, lerQuem(req)]
     );
     res.json({ success: true, id: recordId, data: recordData, hora: recordHora, quantidade_ml: qty });
   } catch (err) {
@@ -787,8 +801,8 @@ const handleSaveBanho = async (req, res) => {
 
   try {
     await pool.query(
-      'INSERT INTO banhos (id, data, hora) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3',
-      [recordId, recordData, recordHora]
+      'INSERT INTO banhos (id, data, hora, quem) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, quem = COALESCE(banhos.quem, $4)',
+      [recordId, recordData, recordHora, lerQuem(req)]
     );
     res.json({ success: true, id: recordId, data: recordData, hora: recordHora });
   } catch (err) {
@@ -849,8 +863,8 @@ const handleSaveFralda = async (req, res) => {
 
   try {
     await pool.query(
-      'INSERT INTO fraldas (id, data, hora, tipo) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, tipo = $4',
-      [recordId, recordData, recordHora, tipo]
+      'INSERT INTO fraldas (id, data, hora, tipo, quem) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3, tipo = $4, quem = COALESCE(fraldas.quem, $5)',
+      [recordId, recordData, recordHora, tipo, lerQuem(req)]
     );
     res.json({ success: true, id: recordId, data: recordData, hora: recordHora, tipo });
   } catch (err) {
@@ -906,8 +920,8 @@ const handleDormir = async (req, res) => {
 
     const recordId = Date.now();
     await pool.query(
-      'INSERT INTO sonos (id, data, hora_inicio, hora_fim, duracao_minutos) VALUES ($1, $2, $3, $4, $5)',
-      [recordId, data, hora_inicio, '', 0]
+      'INSERT INTO sonos (id, data, hora_inicio, hora_fim, duracao_minutos, quem) VALUES ($1, $2, $3, $4, $5, $6)',
+      [recordId, data, hora_inicio, '', 0, lerQuem(req)]
     );
 
     res.json({
@@ -991,8 +1005,8 @@ app.post('/api/sonos', async (req, res) => {
 
   try {
     await pool.query(
-      'INSERT INTO sonos (id, data, hora_inicio, hora_fim, duracao_minutos) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET data = $2, hora_inicio = $3, hora_fim = $4, duracao_minutos = $5',
-      [id || Date.now(), data, hora_inicio, hora_fim, duracao_minutos]
+      'INSERT INTO sonos (id, data, hora_inicio, hora_fim, duracao_minutos, quem) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (id) DO UPDATE SET data = $2, hora_inicio = $3, hora_fim = $4, duracao_minutos = $5, quem = COALESCE(sonos.quem, $6)',
+      [id || Date.now(), data, hora_inicio, hora_fim, duracao_minutos, lerQuem(req)]
     );
     res.json({ success: true });
   } catch (err) {

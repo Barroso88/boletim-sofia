@@ -759,3 +759,17 @@ button, input, select, textarea {
   border-color: rgba(239, 68, 68, 0.35);
   transform: translateY(-1px);
 }
+
+/* Quem fez o registo */
+.quem-chip {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: middle;
+}
