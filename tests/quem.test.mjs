@@ -40,3 +40,10 @@ test('só aceita Pai ou Mãe; "ninguém" apaga a escolha', () => {
   guardado.set('sofia_quem', 'Outro');
   assert.equal(getQuem(), null);
 });
+
+test('os avós também podem ser escolhidos', () => {
+  for (const pessoa of ['Pai', 'Mãe', 'Avô', 'Avó']) {
+    setQuem(pessoa);
+    assert.equal(getQuem(), pessoa);
+  }
+});

@@ -760,16 +760,23 @@ button, input, select, textarea {
   transform: translateY(-1px);
 }
 
-/* Quem fez o registo */
+/* Quem fez o registo. Cada pessoa tem a sua cor, igual em todos os temas (daí o !important). */
+[data-quem='Pai'] { --quem-cor: #2563eb; }
+[data-quem='Mãe'] { --quem-cor: #db2777; }
+[data-quem='Avô'] { --quem-cor: #172554; }
+[data-quem='Avó'] { --quem-cor: #831843; }
+
 .quem-chip {
   display: inline-block;
   margin-left: 0.4rem;
-  padding: 0.05rem 0.5rem;
+  padding: 0.1rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid currentColor;
+  background: var(--quem-cor, #475569) !important;
+  color: #ffffff !important;
   font-size: 0.72rem;
   font-weight: 800;
   line-height: 1.5;
   white-space: nowrap;
   vertical-align: middle;
+  text-shadow: none !important;
 }

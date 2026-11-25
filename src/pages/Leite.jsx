@@ -20,7 +20,7 @@ const DIAPER_TYPES = [
 ];
 
 import BanhosTab from '../components/BanhosTab';
-import { Bath } from 'lucide-react';
+import banhoIcon from '../assets/icons/baby-bath.svg';
 
 const Leite = () => {
   const [activeSubTab, setActiveSubTab] = useState(() => {
@@ -656,7 +656,7 @@ const Leite = () => {
           className={`sub-tab-btn btn-banho ${activeSubTab === 'banhos' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('banhos')}
         >
-          <Bath size={18} />
+          <img src={banhoIcon} alt="" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
           <span>Banhos</span>
         </button>
       </div>

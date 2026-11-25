@@ -217,7 +217,7 @@ async function setupTables() {
         hora TEXT NOT NULL
       );
 
-      -- Quem fez o registo (Pai ou Mãe). Os registos antigos ficam sem nome.
+      -- Quem fez o registo (Pai, Mãe, Avô ou Avó). Os registos antigos ficam sem nome.
       ALTER TABLE leite ADD COLUMN IF NOT EXISTS quem TEXT;
       ALTER TABLE fraldas ADD COLUMN IF NOT EXISTS quem TEXT;
       ALTER TABLE sonos ADD COLUMN IF NOT EXISTS quem TEXT;
@@ -566,11 +566,14 @@ app.delete('/api/documentos/:id', async (req, res) => {
   }
 });
 
-// Autor de um registo, vindo da app (corpo) ou da voz (?quem=pai). Qualquer outro valor é ignorado.
+// Autor de um registo (Pai, Mãe, Avô ou Avó), vindo da app (corpo) ou da voz (?quem=pai). Qualquer outro valor é ignorado.
 function lerQuem(req) {
   const valor = String((req.body && req.body.quem) || (req.query && req.query.quem) || '').trim().toLowerCase();
   if (valor === 'pai') return 'Pai';
   if (valor === 'mãe' || valor === 'mae') return 'Mãe';
+  // com acento obrigatório: sem ele não se distingue avô de avó
+  if (valor === 'avô') return 'Avô';
+  if (valor === 'avó') return 'Avó';
   return null;
 }
 

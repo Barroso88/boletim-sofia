@@ -1,5 +1,5 @@
 // De quem é este telemóvel. Os registos novos feitos nele levam esse nome.
-export const PESSOAS = ['Pai', 'Mãe'];
+export const PESSOAS = ['Pai', 'Mãe', 'Avô', 'Avó'];
 const CHAVE = 'sofia_quem';
 
 export const getQuem = () => {

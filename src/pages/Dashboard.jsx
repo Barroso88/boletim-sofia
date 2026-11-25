@@ -4,7 +4,7 @@ import { differenceInMonths, differenceInDays, differenceInYears, format, differ
 import { ptBR } from 'date-fns/locale';
 import { Calendar, Syringe, Milk, Sparkles, Clock, Moon, Layers, CloudRain, Sun } from 'lucide-react';
 import { tempoDesdeBanho } from '../services/banhos';
-import { Bath } from 'lucide-react';
+import banhoIcon from '../assets/icons/baby-bath.svg';
 import { api } from '../services/api';
 import { comAutor } from '../services/quem';
 import Quem from '../components/Quem';
@@ -662,7 +662,7 @@ const Dashboard = () => {
           <div className="snapshot-header">
             <div className="snapshot-title-group">
               <div className="snapshot-icon-badge">
-                <Bath size={34} color="#0891b2" />
+                <img src={banhoIcon} alt="" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />
               </div>
               <div>
                 <h3 className="snapshot-title">Último Banho</h3>

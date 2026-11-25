@@ -160,6 +160,7 @@ const Definicoes = () => {
                 key={pessoa || 'ninguem'}
                 type="button"
                 role="radio"
+                data-quem={pessoa || undefined}
                 aria-checked={quem === pessoa}
                 onClick={() => escolherQuem(pessoa)}
               >

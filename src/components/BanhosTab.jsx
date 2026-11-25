@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Bath, Plus, Clock, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Clock, Pencil, Trash2 } from 'lucide-react';
 import { api } from '../services/api';
 import { tempoDesdeBanho } from '../services/banhos';
 import { comAutor } from '../services/quem';
 import Quem from './Quem';
-
-const AZUL = 'linear-gradient(135deg, #0891b2, #22d3ee)';
+import banhoIcon from '../assets/icons/baby-bath.svg';
 
 // Separador "Banhos" da página de Registos. `data` é o dia escolhido (yyyy-MM-dd).
 const BanhosTab = ({ data }) => {
@@ -57,8 +56,8 @@ const BanhosTab = ({ data }) => {
       <div className="leite-hero-card">
         <div className="hero-top-row">
           <div className="hero-title-group">
-            <div className="icon-badge-glow" style={{ background: AZUL }}>
-              <Bath size={26} />
+            <div className="icon-badge-glow" style={{ background: '#ecfeff' }}>
+              <img src={banhoIcon} alt="" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
             </div>
             <div>
               <h2 className="hero-day-title">{diaDaSemana}</h2>
@@ -84,7 +83,7 @@ const BanhosTab = ({ data }) => {
         <form className="add-form-card" onSubmit={guardar}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
             <h3 className="h3 flex-center" style={{ gap: '0.5rem' }}>
-              <Bath size={20} />
+              <img src={banhoIcon} alt="" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
               <span>{editandoId ? 'Editar Banho' : 'Registar Banho'}</span>
             </h3>
             <span className="text-secondary" style={{ fontSize: '0.85rem' }}>{data}</span>
@@ -108,7 +107,7 @@ const BanhosTab = ({ data }) => {
       )}
 
       <h3 className="h3 flex-center" style={{ gap: '0.5rem', marginTop: '0.5rem' }}>
-        <Bath size={18} />
+        <img src={banhoIcon} alt="" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
         <span>Banhos Registados</span>
       </h3>
 
@@ -125,7 +124,7 @@ const BanhosTab = ({ data }) => {
             <div key={registo.id} className="feeding-card">
               <div className="feeding-left">
                 <div className="feeding-icon-box" style={{ background: 'rgba(8, 145, 178, 0.1)', color: '#0891b2' }}>
-                  <Bath size={20} />
+                  <img src={banhoIcon} alt="" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
                 </div>
                 <div className="feeding-time">
                   {registo.hora}
