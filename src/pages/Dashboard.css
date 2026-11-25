@@ -659,6 +659,56 @@
     0 8px 32px -4px rgba(236, 72, 153, 0.25) !important;
 }
 
+/* Total de leite bebido hoje, no card "Última Mamada" */
+.leite-total-hoje {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  border: 1px solid var(--color-border);
+}
+
+.leite-total-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.leite-total-titulo {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.leite-total-mamadas {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.leite-total-valor {
+  margin-left: auto;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* Modo Natal: rebordo dourado e total em vermelho */
+[data-theme="baby-natal"] .leite-total-hoje {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid #e8c766;
+}
+
+[data-theme="baby-natal"] .leite-total-valor {
+  color: #c8102e;
+}
+
 /* ─── Modo Natal: contador de idade com três bolas de Natal 3D penduradas ─── */
 [data-theme="baby-natal"] .hero-card.glass-card {
   background: linear-gradient(160deg, rgba(240, 253, 244, 0.95), rgba(255, 247, 247, 0.95));

@@ -142,6 +142,11 @@ const Dashboard = () => {
   });
   const ultimaMamada = sortedLeite[0];
 
+  // Total de leite que a Sofia já bebeu hoje (mesma conta do "Total diário" da página de Registos)
+  const dataDeHoje = format(new Date(), 'yyyy-MM-dd');
+  const mamadasDeHoje = registosLeite.filter((r) => r.data === dataDeHoje);
+  const mlDeHoje = mamadasDeHoje.reduce((total, r) => total + (Number(r.quantidade_ml) || 0), 0);
+
   const sortedFraldas = [...registosFraldas].sort((a, b) => {
     const dtA = `${a.data}T${a.hora}`;
     const dtB = `${b.data}T${b.hora}`;
@@ -444,6 +449,20 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="snapshot-empty">Sem registos de leite</div>
+          )}
+
+          {ultimaMamada && (
+            <div className="leite-total-hoje">
+              <div className="leite-total-texto">
+                <span className="leite-total-titulo">Hoje já bebeu</span>
+                <span className="leite-total-mamadas">
+                  {mamadasDeHoje.length} {mamadasDeHoje.length === 1 ? 'mamada' : 'mamadas'}
+                </span>
+              </div>
+              <span className="leite-total-valor">
+                {mlDeHoje} <span className="snapshot-unit">ml</span>
+              </span>
+            </div>
           )}
         </div>
 
