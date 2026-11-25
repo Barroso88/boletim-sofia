@@ -211,6 +211,12 @@ async function setupTables() {
         duracao_minutos INTEGER NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS banhos (
+        id BIGINT PRIMARY KEY,
+        data TEXT NOT NULL,
+        hora TEXT NOT NULL
+      );
+
       CREATE TABLE IF NOT EXISTS perfil (
         id INT PRIMARY KEY DEFAULT 1,
         nome_completo TEXT,
@@ -762,6 +768,48 @@ app.delete('/api/leite/:id', async (req, res) => {
   }
 });
 
+// --- BANHOS ---
+app.get('/api/banhos', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM banhos ORDER BY data DESC, hora DESC, id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+const handleSaveBanho = async (req, res) => {
+  const { id, data, hora } = req.body || {};
+  const { data: currentData, hora: currentHora } = getNowLisbon();
+  const recordId = id || Date.now();
+  const recordData = data || currentData;
+  const recordHora = hora || currentHora;
+
+  try {
+    await pool.query(
+      'INSERT INTO banhos (id, data, hora) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET data = $2, hora = $3',
+      [recordId, recordData, recordHora]
+    );
+    res.json({ success: true, id: recordId, data: recordData, hora: recordHora });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+app.post('/api/banhos', handleSaveBanho);
+app.get('/api/banhos/registar', handleSaveBanho);
+app.all('/api/webhook/banhos', handleSaveBanho);
+
+app.delete('/api/banhos/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM banhos WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --- FRALDAS ---
 app.get('/api/fraldas', async (req, res) => {
   try {
@@ -1289,6 +1337,27 @@ app.get('/api/ha/status', async (req, res) => {
       };
     }
 
+    // Último banho
+    const banhoRes = await pool.query('SELECT * FROM banhos ORDER BY data DESC, hora DESC, id DESC LIMIT 1');
+    let ultimoBanho = null;
+    if (banhoRes.rows.length > 0) {
+      const row = banhoRes.rows[0];
+      let past = new Date(`${row.data}T${row.hora}:00`);
+      if (past > nowLisbon) {
+        past.setDate(past.getDate() - 1);
+      }
+      const diffMin = Math.max(0, Math.floor((nowLisbon - past) / (1000 * 60)));
+      const dias = Math.floor(diffMin / (24 * 60));
+      const tempo = dias >= 1 ? `${dias} ${dias === 1 ? 'dia' : 'dias'}` : formatMinutosRelativos(diffMin);
+      ultimoBanho = {
+        data: row.data,
+        hora: row.hora,
+        minutos_decorridos: diffMin,
+        tempo_relativo: tempo,
+        frase: `O último banho da Sofia foi há ${tempo}, às ${row.hora}.`
+      };
+    }
+
     // 4. Próxima Consulta
     const agendaRes = await pool.query('SELECT * FROM agenda ORDER BY data ASC');
     let proximaConsulta = null;
@@ -1345,6 +1414,7 @@ app.get('/api/ha/status', async (req, res) => {
       leite_ontem: leiteOntem,
       ultimo_sono: ultimoSono,
       ultima_fralda: ultimaFralda,
+      ultimo_banho: ultimoBanho,
       proxima_consulta: proximaConsulta,
       proxima_vacina: proximaVacina
     });
